@@ -80,7 +80,14 @@ const checkoutContactPage = {
     return {
       props: { countries },
     };
-  }
-}
+  },
+};
 
-export { indexPage, productPage, categoryPage, staticPage, blogPage, checkoutContactPage };
+export {
+  indexPage,
+  productPage,
+  categoryPage,
+  staticPage,
+  blogPage,
+  checkoutContactPage,
+};
