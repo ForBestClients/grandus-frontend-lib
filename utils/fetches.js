@@ -7,7 +7,7 @@ import {
 
 const indexPage = {
   serverSideProps: async (context) => {
-    const homepageData = await fetch(`${reqGetHost()}/api/v1/pages/homepage`);
+    const homepageData = await fetch(`${reqGetHost()}/api/pages/homepage`);
     const data = await homepageData.json();
     return {
       props: data,
@@ -31,7 +31,7 @@ const categoryPage = {
     const pathParts = explodeCategoryPath(get(context, "params.category"));
     let pagination = null;
 
-    const url = `${reqGetHost()}/api/v1/pages/category/${
+    const url = `${reqGetHost()}/api/pages/category/${
       pathParts.category
     }?filter=${get(pathParts, "filter", []).join("/")}&page=${get(
       context,
