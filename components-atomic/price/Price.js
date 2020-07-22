@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import styles from "./Price.module.scss";
 
-export default ({ priceData, className, microData = true }) => {
+export default ({ priceData, className, microData = true, options = {} }) => {
   if (isEmpty(priceData)) {
     return null;
   }
@@ -16,9 +16,9 @@ export default ({ priceData, className, microData = true }) => {
       ) : null}
 
       <span data-property={"price"}>{priceData.priceFormatted}</span>
-      <span data-property={"priceWithoutVat"}>
-        {priceData.priceWithoutVatFormatted}
-      </span>
+      {
+        !options?.hideVatPrice ? <span data-property={"priceWithoutVat"}> {priceData.priceWithoutVatFormatted} </span> : ""
+      }
     </span>
   );
 };
