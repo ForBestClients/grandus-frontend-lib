@@ -1,6 +1,8 @@
 import styles from "./Image.module.scss";
 
-const host = "https://www.mobilonline.sk";
+const host = process.env.NEXT_PUBLIC_IMAGE_HOST
+  ? process.env.NEXT_PUBLIC_IMAGE_HOST
+  : "";
 
 export default ({
   photo,
@@ -16,7 +18,7 @@ export default ({
   }
 
   return (
-    <picture className={className}>
+    <picture className={`${styles.wrapper} ${className ? className : ""}`}>
       <source
         type="image/webp"
         srcSet={`${host}${photo.path}/${size}.webp 1x, ${host}${photo.path}/${size}@2x.webp 2x`}

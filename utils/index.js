@@ -40,6 +40,12 @@ export const reqApiHost = (req) => {
   return process.env.HOST_API;
 };
 
+export const getProductCardFields = () => {
+  return process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
+  ? `${process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS}`
+  : "id,name,urlTitle,storeStatus,finalPriceData,photo";
+}
+
 export const reqGetHeaders = (req) => {
   const result = {
     "Content-Type": "application/json",
