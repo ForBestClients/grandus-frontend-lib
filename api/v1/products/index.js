@@ -4,13 +4,12 @@ import {
   reqApiHost,
   processQueryFilter,
   forwardPaginationHeaders,
+  getProductCardFields
 } from "grandus-lib/utils";
-
-const fields = "fields=id,name,urlTitle,storeStatus,finalPriceData,photo";
 
 export default async (req, res) => {
   const products = await fetch(
-    `${reqApiHost(req)}/api/v2/products/filter?${fields}&page=${get(
+    `${reqApiHost(req)}/api/v2/products/filter?fields=${getProductCardFields()}&page=${get(
       req,
       "query.page",
       1
