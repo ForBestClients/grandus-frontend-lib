@@ -15,7 +15,7 @@ export default ({ priceData, className, microData = true, options = {} }) => {
         </>
       ) : null}
 
-      <span data-property={"price"}>{priceData.priceFormatted}</span>
+      <span data-property={"price"} className={`${ options?.mainPriceClass ? options?.mainPriceClass : ""}`}>{priceData.priceFormatted}</span>
       {
         !options?.hideVatPrice ? <span data-property={"priceWithoutVat"}> {priceData.priceWithoutVatFormatted} </span> : ""
       }
