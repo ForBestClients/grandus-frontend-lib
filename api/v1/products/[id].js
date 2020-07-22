@@ -76,7 +76,8 @@ export default withSession(async (req, res) => {
       isListed: get(product, "isListed"),
       isOrderable: get(product, "isOrderable"),
       externalUrl: get(product, "externalUrl", ""),
-      gallery: get(product, "gallery", [])
+      gallery: get(product, "gallery", []),
+      detailedParameters: get(product, "detailedParameters", [])
     };
 
     res.statusCode = 200;
@@ -86,7 +87,7 @@ export default withSession(async (req, res) => {
   }
 
   const product = await fetch(
-    `${reqApiHost(req)}/api/v2/products/${get(req, "query.id")}?expand=gallery`,
+    `${reqApiHost(req)}/api/v2/products/${get(req, "query.id")}?expand=gallery,detailedParameters`,
     {
       headers: reqGetHeaders(req),
     }
