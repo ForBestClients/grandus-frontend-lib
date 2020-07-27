@@ -22,42 +22,118 @@ if (process.env.CACHE_ENABLED) {
   }
 }
 
+/**
+ * Initialized Redis client
+ */
 export default client;
 
 /**
- * Generate unified cache KEY
+ * Generate unified cache KEY from provided array enriched with env prefix and suffix
+ *
+ * @param {Array} keyParts - parts which will be concated
+ */
+export const getCacheKey = (keyParts = []) => {
+  return [
+    process.env.CACHE_KEY_PREFIX ? process.env.CACHE_KEY_PREFIX : "prefix",
+    process.env.HOST ? process.env.HOST : "undefined-host",
+    ...keyParts,
+    process.env.CACHE_KEY_SUFFIX ? process.env.CACHE_KEY_SUFFIX : "suffix",
+  ]
+    .join("-")
+    .replace(/ /gi, "--"); //regex to replace all occurances of ' '
+};
+
+/**
+ * Generate unified cache KEY from request
  *
  * @param {object} req
  */
-export const cacheKeyByRequest = (req) => {
+export const getCacheKeyByRequest = (req) => {
   let user = {};
   if (req.session) {
     user = req.session.get(USER_CONSTANT);
   }
-  return [
-    process.env.CACHE_KEY_PREFIX ? process.env.CACHE_KEY_PREFIX : "prefix",
-    get(req, "url", "/"),
-    get(user, "accessToken", 0),
-    process.env.CACHE_KEY_SUFFIX ? process.env.CACHE_KEY_SUFFIX : "suffix",
-  ].join("-");
+
+  return getCacheKey([get(req, "url", "/"), get(user, "accessToken", 0)]);
 };
 
-export const outputCachedData = async (req, res, cache) => {
+/**
+ * Generate unified cache KEY by type
+ *
+ * @param {options} type enumerated set of predefined options
+ * @param {object} options specified options which variate specific options
+ */
+export const getCacheKeyByType = (type = "request", options = {}) => {
+  switch (type) {
+    case "webinstance":
+      return getCacheKey(["system-webinstance"]);
+    case "header":
+      return getCacheKey(["system-layout-header"]);
+    case "footer":
+      return getCacheKey(["system-layout-footer"]);
+    case "custom":
+      return getCacheKey(get(options, "cacheKeyParts", "undefined-custom-key"));
+    case "request":
+      return getCacheKeyByRequest(get(options, "req", null));
+    default:
+      return getCacheKey([`undefined-${type}`]);
+  }
+};
+
+/**
+ * Get data from Redis cache
+ *
+ * @param {object} req nextjs request object
+ * @param {instance} cache sinstance of previosly initiated redis client
+ * @param {object} options specified options which variate specific options
+ */
+export const getCachedData = async (req, cache, options = {}) => {
   if (!cache) return false;
-  const cachedData = await cache.get(
-    cacheKeyByRequest(req, (err) => console.error(err))
+  const data = await cache.get(
+    getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options })
+    // (err) => console.error(err)
   );
-  if (isNull(cachedData)) return false;
+
+  if (!data) {
+    return false;
+  }
+
+  return JSON.parse(data);
+};
+
+/**
+ * Get data from Redis cache and output it to response.
+ * used mainly by API
+ *
+ * @param {object} req nextjs request object
+ * @param {object} res nextjs response object
+ * @param {instance} cache sinstance of previosly initiated redis client
+ * @param {object} options specified options which variate specific options
+ */
+export const outputCachedData = async (req, res, cache, options = {}) => {
+  if (!cache) return false;
+
+  const cachedData = await getCachedData(req, cache, options);
+  if (isNull(cachedData) || cachedData == false) return false;
 
   res.status(200).json(cachedData);
   return true;
 };
 
-export const saveDataToCache = async (req, cache, data) => {
+/**
+ * Save data to Redis cache
+ *
+ * @param {object} req nextjs request object
+ * @param {instance} cache sinstance of previosly initiated redis client
+ * @param {object} data data to be saved in cache
+ * @param {object} options specified options which variate specific options
+ */
+export const saveDataToCache = async (req, cache, data, options = {}) => {
   if (!cache) return false;
+
   try {
     cache.set(
-      cacheKeyByRequest(req),
+      getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options }),
       JSON.stringify(data),
       "EX",
       process.env.CACHE_TIME ? process.env.CACHE_TIME : 60
