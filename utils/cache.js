@@ -1,6 +1,9 @@
 import { get, split, zip, zipObject, map, isNull } from "lodash";
 import Redis from "ioredis";
-import { USER_CONSTANT } from "grandus-lib/constants/SessionConstants";
+import {
+  USER_CONSTANT,
+  USER_WISHLIST_CONSTANT,
+} from "grandus-lib/constants/SessionConstants";
 
 let client = null;
 if (process.env.CACHE_ENABLED) {
@@ -21,6 +24,19 @@ if (process.env.CACHE_ENABLED) {
     );
   }
 }
+
+/**
+ * Internal function for getting user AccessToken from session. If user is not logged in, result is unified 0
+ *
+ * @param {Object} req  - url request object
+ */
+const extractUserAccessToken = (req) => {
+  let user = {};
+  if (req && req?.session) {
+    user = req.session.get(USER_CONSTANT);
+  }
+  return get(user, "accessToken", 0);
+};
 
 /**
  * Initialized Redis client
@@ -47,14 +63,11 @@ export const getCacheKey = (keyParts = []) => {
  * Generate unified cache KEY from request
  *
  * @param {object} req
+ *
+ * @returns {string} User AccessToken or 0
  */
 export const getCacheKeyByRequest = (req) => {
-  let user = {};
-  if (req.session) {
-    user = req.session.get(USER_CONSTANT);
-  }
-
-  return getCacheKey([get(req, "url", "/"), get(user, "accessToken", 0)]);
+  return getCacheKey([get(req, "url", "/"), extractUserAccessToken(req)]);
 };
 
 /**
@@ -75,6 +88,11 @@ export const getCacheKeyByType = (type = "request", options = {}) => {
       return getCacheKey(get(options, "cacheKeyParts", "undefined-custom-key"));
     case "request":
       return getCacheKeyByRequest(get(options, "req", null));
+    case "wishlist":
+      return getCacheKey([
+        USER_WISHLIST_CONSTANT,
+        extractUserAccessToken(get(options, "req", null)),
+      ]);
     default:
       return getCacheKey([`undefined-${type}`]);
   }

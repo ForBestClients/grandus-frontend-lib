@@ -42,9 +42,9 @@ export const reqApiHost = (req) => {
 
 export const getProductCardFields = () => {
   return process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
-  ? `${process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS}`
-  : "id,name,urlTitle,storeStatus,finalPriceData,photo";
-}
+    ? `${process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS}`
+    : "id,name,urlTitle,storeStatus,finalPriceData,photo";
+};
 
 export const reqGetHeaders = (req) => {
   const result = {
@@ -53,7 +53,7 @@ export const reqGetHeaders = (req) => {
     "Webinstance-Token": process.env.GRANDUS_TOKEN_WEBINSTANCE,
   };
 
-  if (!req.session) return result;
+  if (!get(req, "session")) return result;
 
   const user = req.session.get(USER_CONSTANT);
 
