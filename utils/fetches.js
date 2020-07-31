@@ -6,6 +6,14 @@ import {
 } from "grandus-lib/utils";
 
 const indexPage = {
+  // staticProps: async () => { //TODO next 9.5 static optimization
+  //   const homepageData = await fetch(`${reqGetHost()}/api/pages/homepage`);
+  //   const data = await homepageData.json();
+  //   return {
+  //     props: data,
+  //     revalidate: 1
+  //   };
+  // },  
   serverSideProps: async (context) => {
     const homepageData = await fetch(`${reqGetHost()}/api/pages/homepage`);
     const data = await homepageData.json();
