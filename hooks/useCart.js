@@ -1,8 +1,9 @@
-// import { useEffect } from "react";
+import { useState } from "react";
 import useSWR from "swr";
 import { get, isFunction, filter } from "lodash";
 
 export default function useCart(initialCart) {
+  const [isLoading, setIsLoading] = useState(false);
   const { data: cart, mutate, isValidating } = useSWR(
     `/api/v1/cart`,
     (url) => fetch(url).then((r) => r.json()),
@@ -13,6 +14,7 @@ export default function useCart(initialCart) {
   );
 
   const itemRemove = async (itemId, callback) => {
+    setIsLoading(true);
     mutate(
       { ...cart, items: filter(cart?.items, (item) => item?.id !== itemId) },
       false
@@ -28,9 +30,11 @@ export default function useCart(initialCart) {
       }),
       false
     );
+    setIsLoading(false);
   };
 
   const cartUpdate = async (data, callback) => {
+    setIsLoading(true);
     try {
       await mutate(
         await fetch(`/api/v1/cart`, {
@@ -51,6 +55,7 @@ export default function useCart(initialCart) {
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
   const itemAdd = async (count, store, productId, callback) => {
@@ -92,6 +97,7 @@ export default function useCart(initialCart) {
   };
 
   const saveContact = async (values, callback) => {
+    setIsLoading(true);
     try {
         await fetch(`/api/v1/cart/contact`, {
           method: "POST",
@@ -108,9 +114,11 @@ export default function useCart(initialCart) {
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   }
 
   const createOrder = async (values, callback) => {
+    setIsLoading(true);
     try {
       await mutate(
         await fetch(`/api/v1/order/create`, {
@@ -127,12 +135,13 @@ export default function useCart(initialCart) {
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   }
 
   return {
     cart: get(cart, "accessToken") ? cart : null,
     mutateCart: mutate,
-    isLoading: isValidating,
+    isLoading: isValidating || isLoading,
     itemAdd,
     itemRemove,
     itemUpdate,
