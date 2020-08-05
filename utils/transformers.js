@@ -1,11 +1,13 @@
 import { get, map } from "lodash";
 
-export const transformWishlist = (apiWishlist) => {
+export const transformWishlist = (object) => {
   return {
-    count: get(apiWishlist, "count", 0),
-    items: get(apiWishlist, "items", []),
-    productIds: map(get(apiWishlist, "items", []), (item) =>
-      get(item, "product.id")
+    count: get(object, "count", 0),
+    items: get(object, "items", []),
+    productIds: get(
+      object,
+      "productIds",
+      map(get(object, "items", []), (item) => get(item, "product.id"))
     ),
   };
 };
