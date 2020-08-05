@@ -1,10 +1,12 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { isFunction, find, get, parseInt } from "lodash";
+import { transformWishlist } from "grandus-lib/utils/transformers";
 
-export default () => {
+const useWishlist = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: wishlist, mutate, isValidating } = useSWR(
+
+  const { data, mutate, isValidating } = useSWR(
     `/api/v1/wishlist`,
     (url) => fetch(url).then((r) => r.json()),
     {
@@ -13,6 +15,8 @@ export default () => {
       shouldRetryOnError: false,
     }
   );
+
+  let wishlist = transformWishlist(data);
 
   const getItem = (productId) => {
     return find(
@@ -101,3 +105,5 @@ export default () => {
     itemExists,
   };
 };
+
+export default useWishlist;

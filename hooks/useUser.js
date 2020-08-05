@@ -7,7 +7,7 @@ export default function useUser({
   redirectTo = false,
   redirectIfFound = false,
 } = {}) {
-  const { data: user, mutate: mutateUser, isValidating } = useSWR(
+  const { data: user, mutate, isValidating } = useSWR(
     `/api/v1/auth/profile`,
     (url) => fetch(url).then((r) => r.json()),
     {
@@ -35,7 +35,7 @@ export default function useUser({
 
   return {
     user: get(user, "accessToken") ? user : null,
-    mutateUser,
+    mutateUser: mutate,
     isLoading: isValidating,
   };
 }

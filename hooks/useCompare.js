@@ -2,7 +2,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { get, isFunction } from "lodash";
 
-export default () => {
+const useCompare = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: compare, mutate, isValidating } = useSWR(
     `/api/v1/compare`,
@@ -64,6 +64,8 @@ export default () => {
     isLoading: isValidating || isLoading,
     itemAdd,
     itemRemove,
-    itemExists,
+    itemExists
   };
 };
+
+export default useCompare;
