@@ -1,11 +1,12 @@
 import { isEmpty } from 'lodash';
+import styles from "./Price.module.scss";
 
 export default ({ priceData, className, microData = true, options = {} }) => {
   if (isEmpty(priceData)) {
     return null;
   }
   return (
-    <span className={className}>
+    <span className={`${styles.wrapper} ${className ? className : ""}`}>
       {microData ? (
         <>
           <meta itemProp="priceCurrency" content={priceData.currency} />

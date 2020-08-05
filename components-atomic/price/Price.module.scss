@@ -1,0 +1,9 @@
+.wrapper {
+    display: inline-flex;
+    box-sizing: border-box;
+    flex-direction: column;
+    span[data-property="priceWithoutVat"] {
+        opacity: .7;
+        font-size: .8em;
+    }
+}
