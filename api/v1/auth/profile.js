@@ -19,7 +19,7 @@ export default withSession(async (req, res) => {
   ).then((result) => result.json());
 
   if (get(user, "statusCode") !== 200) {
-    res.status(get(user, "data.code")).json(get(user, "data.messages"));
+    res.status(get(user, "statusCode")).json(get(user, "data.messages"));
   } else {
     req.session.set(USER_CONSTANT, extractSessionUser(get(user, "data")));
     await req.session.save();
