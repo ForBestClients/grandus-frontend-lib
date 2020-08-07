@@ -1,9 +1,6 @@
 import { get } from "lodash";
-import {
-  getPaginationFromHeaders,
-  reqGetHost,
-} from "grandus-lib/utils";
-import { arrayToPath } from "grandus-lib/hooks/useFilter"
+import { reqGetHost } from "grandus-lib/utils";
+import { arrayToPath } from "grandus-lib/hooks/useFilter";
 
 const indexPage = {
   // staticProps: async () => { //TODO next 9.5 static optimization
@@ -13,7 +10,7 @@ const indexPage = {
   //     props: data,
   //     revalidate: 1
   //   };
-  // },  
+  // },
   serverSideProps: async (context) => {
     const homepageData = await fetch(`${reqGetHost()}/api/pages/homepage`);
     const data = await homepageData.json();
@@ -36,23 +33,21 @@ const productPage = {
 
 const categoryPage = {
   serverSideProps: async (context) => {
-    let pagination = null;
-
-    const url = `${reqGetHost()}/api/pages/category/${
-      get(context, "params.category")
-    }?param=${arrayToPath(get(context, "params.parameters", []))}&page=${get(
+    const url = `${reqGetHost()}/api/pages/category/${get(
+      context,
+      "params.category"
+    )}?param=${arrayToPath(get(context, "params.parameters", []))}&page=${get(
       context,
       "query.page",
       1
     )}&perPage=${get(context, "query.perPage", 64)}&orderBy=time-desc`;
 
     const data = await fetch(url).then((result) => {
-      pagination = getPaginationFromHeaders(result.headers);
       return result.json();
     });
 
     return {
-      props: { pagination, ...data },
+      props: data,
     };
   },
 };

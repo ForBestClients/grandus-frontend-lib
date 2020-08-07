@@ -103,7 +103,7 @@ export const forwardPaginationHeaders = (fwdToHeaders, fwdFromHeaders) => {
   );
   fwdToHeaders.setHeader(
     "x-pagination-per-page",
-    fwdFromHeaders.get("x-pagination-total-count")
+    fwdFromHeaders.get("x-pagination-per-page")
   );
 
   return fwdToHeaders;

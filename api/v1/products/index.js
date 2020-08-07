@@ -4,7 +4,7 @@ import {
   reqGetHeaders,
   reqApiHost,
   processQueryFilter,
-  forwardPaginationHeaders,
+  getPaginationFromHeaders,
   getProductCardFields,
 } from "grandus-lib/utils";
 import { pathToParams } from "grandus-lib/hooks/useFilter";
@@ -34,6 +34,7 @@ export default withSession(async (req, res) => {
     getProductCardFields() +
     (get(req, "query.fields") ? `,${get(req, "query.fields")}` : "");
 
+  let pagination = {};
   const products = await fetch(
     `${reqApiHost(req)}/api/v2/products/filter?fields=${fields}&page=${get(
       req,
@@ -47,14 +48,17 @@ export default withSession(async (req, res) => {
     }
   )
     .then((result) => {
-      forwardPaginationHeaders(res, result.headers);
+      pagination = getPaginationFromHeaders(result.headers);
       return result.json();
     })
-    .then((r) => r.data);
+    .then((r) => get(r, "data", []));
 
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify(products));
+  const data = {
+    products: products,
+    pagination: pagination,
+  };
+
+  res.status(200).json(data);
 });
 
 export const config = {
