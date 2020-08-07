@@ -6,18 +6,9 @@ import {
   mapValues,
   chunk,
   split,
-  head,
-  slice,
   get,
   parseInt,
 } from "lodash";
-
-export const explodeCategoryPath = (queryParams = []) => {
-  return {
-    category: head(queryParams),
-    filter: slice(queryParams, 1),
-  };
-};
 
 export const reqPrepareQuery = (pathParts = [], query = {}, assign = {}) => {
   const innerQuery = { ...query };

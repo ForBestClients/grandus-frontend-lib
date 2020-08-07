@@ -7,6 +7,7 @@ import {
   forwardPaginationHeaders,
   getProductCardFields,
 } from "grandus-lib/utils";
+import { pathToParams } from "grandus-lib/hooks/useFilter";
 
 export default withSession(async (req, res) => {
   const requestBody = {
@@ -22,6 +23,10 @@ export default withSession(async (req, res) => {
 
     if (get(req, "query.productIds")) {
       requestBody.productIds = get(req, "query.productIds", []);
+    }
+
+    if (get(req, "query.param")) {
+      requestBody.param = pathToParams(get(req, "query.param", ""));
     }
   }
 

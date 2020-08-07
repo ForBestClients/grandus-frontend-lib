@@ -1,9 +1,9 @@
 import { get } from "lodash";
 import {
-  explodeCategoryPath,
   getPaginationFromHeaders,
   reqGetHost,
 } from "grandus-lib/utils";
+import { arrayToPath } from "grandus-lib/hooks/useFilter"
 
 const indexPage = {
   // staticProps: async () => { //TODO next 9.5 static optimization
@@ -36,12 +36,11 @@ const productPage = {
 
 const categoryPage = {
   serverSideProps: async (context) => {
-    const pathParts = explodeCategoryPath(get(context, "params.category"));
     let pagination = null;
 
     const url = `${reqGetHost()}/api/pages/category/${
-      pathParts.category
-    }?filter=${get(pathParts, "filter", []).join("/")}&page=${get(
+      get(context, "params.category")
+    }?param=${arrayToPath(get(context, "params.parameters", []))}&page=${get(
       context,
       "query.page",
       1
