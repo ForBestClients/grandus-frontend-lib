@@ -9,7 +9,6 @@ export default withSession(async (req, res) => {
     headers: reqGetHeaders(req),
     body: req.body,
   }).then((result) => result.json());
-  console.log(newUser);
 
   if (get(newUser, "statusCode") !== 201) {
     res.statusCode = get(newUser, "data.statusCode", 500);
