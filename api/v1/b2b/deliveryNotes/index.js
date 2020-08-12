@@ -10,17 +10,17 @@ import cache, {
 export default withSession(async (req, res) => {
   if (await outputCachedData(req, res, cache)) return;
 
-  const orders = await fetch(
+  const items = await fetch(
     `${reqApiHost(req)}/api/v2/users/${get(
       req.session.get(USER_CONSTANT),
       "id"
-    )}/orders`,
+    )}/delivery-notes`,
     {
       headers: reqGetHeaders(req),
     }
   ).then((result) => result.json());
 
-  saveDataToCache(req, cache, orders?.data);
+  saveDataToCache(req, cache, items?.data);
 
-  res.status(200).json(orders?.data);
+  res.status(200).json(items?.data);
 });
