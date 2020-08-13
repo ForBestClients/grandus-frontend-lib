@@ -11,11 +11,25 @@ export default withSession(async (req, res) => {
     return;
   }
 
+  let requestOptions = {
+    headers: reqGetHeaders(req),
+  };
+
+  switch (req.method) {
+    case "PUT":
+    case "POST":
+      requestOptions = {
+        ...requestOptions,
+        ...{ method: req.method, body: req.body },
+      };
+      break;
+    default:
+      break;
+  }
+
   const user = await fetch(
     `${reqApiHost(req)}/api/v2/users/${get(userSession, "id")}`,
-    {
-      headers: reqGetHeaders(req),
-    }
+    requestOptions
   ).then((result) => result.json());
 
   if (get(user, "statusCode") !== 200) {

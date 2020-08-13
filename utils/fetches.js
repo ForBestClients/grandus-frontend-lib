@@ -85,6 +85,17 @@ const checkoutContactPage = {
   },
 };
 
+const userProfilePage = {
+  serverSideProps: async () => {
+    const countries = await fetch(
+      `${reqGetHost()}/api/v1/countries`
+    ).then((result) => result.json());
+    return {
+      props: { countries },
+    };
+  },
+};
+
 export {
   indexPage,
   productPage,
@@ -92,4 +103,5 @@ export {
   staticPage,
   blogPage,
   checkoutContactPage,
+  userProfilePage
 };

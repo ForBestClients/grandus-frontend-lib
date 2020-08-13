@@ -20,7 +20,18 @@ export const extractSessionUser = (user) => {
     accessToken: get(user, "accessToken"),
     id: get(user, "id"),
     fullName: get(user, "fullName"),
-    email: get(user, "email"),
+    name: get(user, 'attributes.name'),
+    surname: get(user, 'attributes.surname'),
+    email: get(user, "attributes.email"),
+    phone: get(user, 'attributes.phone'),
+    street: get(user, 'attributes.street'),
+    city: get(user, 'attributes.city'),
+    zip: get(user, 'attributes.zip'),
+    countryId: get(user, 'countryId'),
+    companyName: get(user, 'attributes.companyName'),
+    ico: get(user, 'attributes.ico'),
+    dic: get(user, 'attributes.dic'),
+    icDPH: get(user, 'attributes.icDPH'),
   };
 };
 
