@@ -11,7 +11,11 @@ import { pathToParams } from "grandus-lib/hooks/useFilter";
 
 export default withSession(async (req, res) => {
   const requestBody = {
-    orderBy: "priority-desc",
+    orderBy: get(
+      req,
+      "query.orderBy",
+      process.env.NEXT_PUBLIC_PRODUCT_DEFAULT_ORDERING
+    ),
   };
 
   if (get(req, "query")) {
@@ -40,7 +44,11 @@ export default withSession(async (req, res) => {
       req,
       "query.page",
       1
-    )}&per-page=${get(req, "query.perPage", 3)}`,
+    )}&per-page=${get(
+      req,
+      "query.perPage",
+      process.env.NEXT_PUBLIC_PRODUCT_DEFAULT_PER_PAGE
+    )}`,
     {
       method: "post",
       headers: reqGetHeaders(req),
