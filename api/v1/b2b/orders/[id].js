@@ -8,19 +8,20 @@ import cache, {
 } from "grandus-lib/utils/cache";
 
 export default withSession(async (req, res) => {
+
   if (await outputCachedData(req, res, cache)) return;
 
-  const orders = await fetch(
+  const order = await fetch(
     `${reqApiHost(req)}/api/v2/users/${get(
       req.session.get(USER_CONSTANT),
       "id"
-    )}/orders`,
+    )}/orders/${get(req, 'query.id')}?expand=items,orderItems,paymentType,deliveryInfo,invoices,canCreateInvoice,deliveryNotes,origin,suborders,operationUnit,user,parameters`,
     {
       headers: reqGetHeaders(req),
     }
   ).then((result) => result.json());
 
-  saveDataToCache(req, cache, orders?.data);
+  saveDataToCache(req, cache, order?.data);
 
-  res.status(200).json(orders?.data);
+  res.status(200).json(order?.data);
 });
