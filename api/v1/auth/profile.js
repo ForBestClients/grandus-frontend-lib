@@ -38,6 +38,6 @@ export default withSession(async (req, res) => {
     req.session.set(USER_CONSTANT, extractSessionUser(get(user, "data")));
     await req.session.save();
 
-    res.status(200).json(extractSessionUser(get(user, "data")));
+    res.status(200).json(get(user, "data"));
   }
 });

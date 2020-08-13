@@ -13,21 +13,21 @@ export default withSession(async (req, res) => {
   if (get(newUser, "statusCode") !== 201) {
     res.statusCode = get(newUser, "data.statusCode", 500);
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({
+    res.json({
       data: {
         messages: get(newUser, 'data.messages')
       },
       success: get(newUser, 'success', false)
-    }));
+    });
   } else {
     req.session.set(USER_CONSTANT, extractSessionUser(get(newUser, "data")));
     await req.session.save();
 
     res.statusCode = 201;
     res.setHeader("Content-Type", "application/json");
-    res.end(JSON.stringify({
+    res.json({
       data: get(newUser, 'data'),
       success: get(newUser, 'success', false)
-    }));
+    });
   }
 });
