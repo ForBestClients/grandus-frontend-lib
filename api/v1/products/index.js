@@ -1,4 +1,4 @@
-import { get } from "lodash";
+import { get, isArray } from "lodash";
 import withSession from "grandus-lib/utils/session";
 import {
   reqGetHeaders,
@@ -24,7 +24,9 @@ export default withSession(async (req, res) => {
     }
 
     if (get(req, "query.productIds")) {
-      requestBody.productIds = get(req, "query.productIds", []);
+      requestBody.productIds = isArray(get(req, "query.productIds", []))
+        ? get(req, "query.productIds", [])
+        : [get(req, "query.productIds")];
     }
 
     if (get(req, "query.param")) {

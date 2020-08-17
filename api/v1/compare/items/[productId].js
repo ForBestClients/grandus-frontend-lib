@@ -38,7 +38,7 @@ export default withSession(async (req, res) => {
       break;
 
     default:
-      res.setHeader("Allow", ["POST", "DELETE"]);
+      res.setHeader("Allow", ["PUT", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 });
