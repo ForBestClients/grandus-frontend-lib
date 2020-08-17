@@ -3,7 +3,6 @@ import withSession from "grandus-lib/utils/session";
 import {
   reqGetHeaders,
   reqApiHost,
-  processQueryFilter,
   getPaginationFromHeaders,
   getProductCardFields,
 } from "grandus-lib/utils";
@@ -19,8 +18,7 @@ export default withSession(async (req, res) => {
   };
 
   if (get(req, "query")) {
-    requestBody.param = processQueryFilter(get(req, "query"));
-
+    
     if (get(req, "query.category")) {
       requestBody.categoryName = get(req, "query.category", "");
     }

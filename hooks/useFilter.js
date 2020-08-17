@@ -1,7 +1,73 @@
 import { useState } from "react";
 
 import useSWR from "swr";
-import { fromPairs, split, flatMap, isEmpty, chunk, map } from "lodash";
+import { get, fromPairs, split, flatMap, isEmpty, chunk, map } from "lodash";
+
+export const queryToQuery = (
+  query,
+  dataToChange = {},
+  toDelete = ["parameters", "category"]
+) => {
+  let newQuery = {
+    ...query,
+    ...dataToChange,
+  };
+
+  if (!isEmpty(toDelete)) {
+    toDelete.map((key) => delete newQuery[key]);
+  }
+
+  return newQuery;
+};
+
+export const queryToQueryString = (
+  query,
+  dataToChange = {},
+  toDelete = ["parameters", "category"]
+) => {
+  const queryAdjusted = queryToQuery(query, dataToChange, toDelete);
+  let queryParts = [];
+
+  map(queryAdjusted, (value, key) => {
+    queryParts.push(`${key}=${value}`);
+  });
+
+  return queryParts.join("&");
+};
+
+export const getCategoryLinkAttributesFromRouter = (router, options = {}) => {
+  return getCategoryLinkAttributes(
+    get(router, "query.category"),
+    arrayToPath(get(router, "query.parameters", [])),
+    router.query,
+    options
+  );
+};
+
+export const getCategoryLinkAttributes = (
+  category,
+  parameters = '',
+  query = {},
+  options = {}
+) => {
+  const newQuery = get(options, "toDelete")
+    ? queryToQuery(
+        query,
+        get(options, "dataToChange", {}),
+        get(options, "toDelete")
+      )
+    : queryToQuery(query, get(options, "dataToChange", {}));
+  return {
+    href: {
+      pathname: `/kategoria/[category]/[[...parameters]]`,
+      query: newQuery,
+    },
+    as: {
+      pathname: `/kategoria/${category}/${parameters}`,
+      query: newQuery,
+    },
+  };
+};
 
 export const arrayToParams = (array) => {
   if (isEmpty(array)) {
