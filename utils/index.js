@@ -1,22 +1,5 @@
 import { USER_CONSTANT } from "grandus-lib/constants/SessionConstants";
-import {
-  fromPairs,
-  mapKeys,
-  toNumber,
-  mapValues,
-  chunk,
-  split,
-  get,
-  parseInt,
-} from "lodash";
-
-export const reqPrepareQuery = (pathParts = [], query = {}, assign = {}) => {
-  const innerQuery = { ...query };
-  if (pathParts.length) {
-    pathParts.map((part) => delete innerQuery[part]);
-  }
-  return Object.assign(innerQuery, assign);
-};
+import { get, parseInt } from "lodash";
 
 export const reqExtractUri = (url) => {
   const uriPosition = url.indexOf("?");
@@ -56,21 +39,8 @@ export const reqGetHeaders = (req) => {
   return result;
 };
 
-export const processQueryFilter = (query) => {
-  const filter = get(query, "filter", false);
-
-  if (!filter) {
-    return null;
-  }
-
-  let result = fromPairs(chunk(split(filter, "/"), 2));
-
-  result = mapKeys(result, (value, key) =>
-    toNumber(get(split(key, "-"), "[1]"))
-  );
-  result = mapValues(result, (value) => split(value, ","));
-
-  return result;
+export const scrollToTop = () => {
+  if (typeof window !== "undefined") window.scrollTo(0, 0);
 };
 
 /**
@@ -86,25 +56,4 @@ export const getPaginationFromHeaders = (headers) => {
     currentPage: parseInt(headers.get("x-pagination-current-page")),
     perPage: parseInt(headers.get("x-pagination-per-page")),
   };
-};
-
-export const forwardPaginationHeaders = (fwdToHeaders, fwdFromHeaders) => {
-  fwdToHeaders.setHeader(
-    "x-pagination-total-count",
-    fwdFromHeaders.get("x-pagination-total-count")
-  );
-  fwdToHeaders.setHeader(
-    "x-pagination-page-count",
-    fwdFromHeaders.get("x-pagination-page-count")
-  );
-  fwdToHeaders.setHeader(
-    "x-pagination-current-page",
-    fwdFromHeaders.get("x-pagination-current-page")
-  );
-  fwdToHeaders.setHeader(
-    "x-pagination-per-page",
-    fwdFromHeaders.get("x-pagination-per-page")
-  );
-
-  return fwdToHeaders;
 };
