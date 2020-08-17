@@ -10,6 +10,12 @@ const TextInput = (props) => {
       errors,
       handleBlur,
       handleChange,
+      addonAfter,
+      addonBefore,
+      allowClear = false,
+      disabled = false,
+      validateStatus = '',
+      help = ''
     } = props;
     return (
       <Form.Item
@@ -17,14 +23,14 @@ const TextInput = (props) => {
           get(touched, fieldName)
             ? get(errors, fieldName)
               ? "error"
-              : "success"
+              : validateStatus
             : null
         }
         hasFeedback={get(touched, fieldName)}
         help={
           get(touched, fieldName) && get(errors, fieldName)
             ? get(errors, fieldName)
-            : null
+            : help
         }
       >
         <Input
@@ -34,6 +40,10 @@ const TextInput = (props) => {
           placeholder={label}
           onChange={handleChange}
           onBlur={handleBlur}
+          addonAfter={addonAfter}
+          addonBefore={addonBefore}
+          allowClear={allowClear}
+          disabled={disabled}
         />
       </Form.Item>
     );

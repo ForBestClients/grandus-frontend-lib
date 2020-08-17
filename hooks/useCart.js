@@ -41,7 +41,7 @@ export default function useCart(initialCart) {
           method: "POST",
           body: JSON.stringify({
             cart: {
-              ...data
+              ...data,
             },
           }),
         }).then((result) => {
@@ -99,23 +99,23 @@ export default function useCart(initialCart) {
   const saveContact = async (values, callback) => {
     setIsLoading(true);
     try {
-        await fetch(`/api/v1/cart/contact`, {
-          method: "POST",
-          body: JSON.stringify(values),
-        }).then((result) => {
-          result.json().then(data => {
-            if (isFunction(callback)) {
-              callback(data);
-            }
+      await fetch(`/api/v1/cart/contact`, {
+        method: "POST",
+        body: JSON.stringify(values),
+      }).then((result) => {
+        result.json().then((data) => {
+          if (isFunction(callback)) {
+            callback(data);
+          }
 
-            return data;
-          })
-        })
+          return data;
+        });
+      });
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
     setIsLoading(false);
-  }
+  };
 
   const createOrder = async (values, callback) => {
     setIsLoading(true);
@@ -136,7 +136,48 @@ export default function useCart(initialCart) {
       console.error("An unexpected error happened:", error);
     }
     setIsLoading(false);
-  }
+  };
+
+  const applyCoupon = async (couponHash, callback) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/v1/cart/coupon`, {
+        method: "POST",
+        body: JSON.stringify({ couponHash }),
+      }).then((result) => {
+        if (isFunction(callback)) {
+          callback(result);
+        }
+        return result.json();
+      });
+      return response;
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
+    
+  };
+
+  const removeCoupon = async (callback) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/v1/cart/coupon`, {
+        method: "DELETE",
+      }).then((result) => {
+        if (isFunction(callback)) {
+          callback(result);
+        }
+        return result.json();
+      });
+
+      return response;
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return {
     cart: get(cart, "accessToken") ? cart : null,
@@ -147,6 +188,8 @@ export default function useCart(initialCart) {
     itemUpdate,
     cartUpdate,
     saveContact,
-    createOrder
+    createOrder,
+    applyCoupon,
+    removeCoupon,
   };
 }
