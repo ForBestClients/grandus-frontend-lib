@@ -42,5 +42,6 @@ export const extractSessionCart = (cart) => {
     count: get(cart, "count"),
     countPieces: get(cart, "pieceCount"),
     sum: get(cart, "sumData"),
+    coupon: get(cart, "coupon")
   };
 };
