@@ -62,20 +62,6 @@ export default withSession(async (req, res) => {
 
   if (order) {
     res.status(get(order, 'statusCode')).json(get(order, "data"));
-
-    // Update or create data in your database
-    //   res.status(200).json({ id, name: name || `User ${id}` });
     return;
-
-    //   if (get(user, "statusCode") !== 200) {
-    //     res.statusCode = get(user, "data.code");
-    //     res.end(JSON.stringify(get(user, "data.messages")));
-    //   } else {
-    //     req.session.set(USER_CONSTANT, get(user, "data"));
-    //     await req.session.save();
-
-    //     res.statusCode = 200;
-    //     res.end(JSON.stringify(get(user, "data")));
-    //   }
   }
 });
