@@ -1,5 +1,5 @@
 import withSession from "grandus-lib/utils/session";
-import { reqGetHeaders, reqApiHost } from "grandus-lib/utils";
+import { reqGetHeaders, reqApiHost, reqGetHost } from "grandus-lib/utils";
 import {
   CART_CONSTANT,
   CART_CONTACT_CONSTANT,
@@ -47,7 +47,7 @@ export default withSession(async (req, res) => {
       note: get(values, "note", "TEST"),
       deliveryType: get(values, "delivery", ""),
       paymentType: get(values, "payment", ""),
-      cardPaymentReturnUrl: "xxx",
+      cardPaymentReturnUrl: `${reqGetHost()}/objednavka/dakujeme`,
       privacyPolicy: get(values, "", 1),
       termsAndConditions: get(values, "", 1),
     },
@@ -60,21 +60,22 @@ export default withSession(async (req, res) => {
     body: JSON.stringify(orderData),
   }).then((result) => result.json());
 
-  res.statusCode = 200;
-  res.end(JSON.stringify(get(order, "data")));
+  if (order) {
+    res.status(get(order, 'statusCode')).json(get(order, "data"));
 
-  // Update or create data in your database
-  //   res.status(200).json({ id, name: name || `User ${id}` });
-  return;
+    // Update or create data in your database
+    //   res.status(200).json({ id, name: name || `User ${id}` });
+    return;
 
-  //   if (get(user, "statusCode") !== 200) {
-  //     res.statusCode = get(user, "data.code");
-  //     res.end(JSON.stringify(get(user, "data.messages")));
-  //   } else {
-  //     req.session.set(USER_CONSTANT, get(user, "data"));
-  //     await req.session.save();
+    //   if (get(user, "statusCode") !== 200) {
+    //     res.statusCode = get(user, "data.code");
+    //     res.end(JSON.stringify(get(user, "data.messages")));
+    //   } else {
+    //     req.session.set(USER_CONSTANT, get(user, "data"));
+    //     await req.session.save();
 
-  //     res.statusCode = 200;
-  //     res.end(JSON.stringify(get(user, "data")));
-  //   }
+    //     res.statusCode = 200;
+    //     res.end(JSON.stringify(get(user, "data")));
+    //   }
+  }
 });

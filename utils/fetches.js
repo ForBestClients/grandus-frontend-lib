@@ -92,6 +92,18 @@ const userProfilePage = {
   },
 };
 
+const thanksPage = {
+  serverSideProps: async (context) => {
+    const order = await fetch(
+      `${reqGetHost()}/api/v1/order?orderToken=${get(context, 'query.orderToken', '')}`
+    ).then(response => response.json());
+    console.log(order);
+    return {
+      props: { order },
+    };
+  },
+};
+
 export {
   indexPage,
   productPage,
@@ -100,4 +112,5 @@ export {
   blogPage,
   checkoutContactPage,
   userProfilePage,
+  thanksPage
 };
