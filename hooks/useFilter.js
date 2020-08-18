@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import useSWR from "swr";
 import { get, fromPairs, split, flatMap, isEmpty, chunk, map } from "lodash";
 
@@ -46,7 +44,7 @@ export const getCategoryLinkAttributesFromRouter = (router, options = {}) => {
 
 export const getCategoryLinkAttributes = (
   category,
-  parameters = '',
+  parameters = "",
   query = {},
   options = {}
 ) => {
@@ -100,8 +98,6 @@ export const paramsToPath = (params) => {
 };
 
 const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
-  const [isLoading, setIsLoading] = useState(false);
-
   let uri = [];
 
   if (!isEmpty(parameters)) {
@@ -120,7 +116,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
-      shouldRetryOnError: false,
+      shouldRetryOnError: true,
       ...options,
     }
   );
@@ -128,7 +124,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
   return {
     filter,
     mutateFilter: mutate,
-    isLoading: isValidating || isLoading,
+    isLoading: isValidating,
   };
 };
 
