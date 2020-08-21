@@ -97,7 +97,6 @@ const thanksPage = {
     const order = await fetch(
       `${reqGetHost()}/api/v1/order?orderToken=${get(context, 'query.orderToken', '')}`
     ).then(response => response.json());
-    console.log(order);
     return {
       props: { order },
     };
