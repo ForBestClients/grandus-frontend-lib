@@ -15,7 +15,7 @@ const TextInput = (props) => {
       allowClear = false,
       disabled = false,
       validateStatus = '',
-      help = ''
+      help = null
     } = props;
     return (
       <Form.Item
