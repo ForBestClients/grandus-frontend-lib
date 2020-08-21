@@ -2,8 +2,6 @@ import { get, find, first, isEmpty, map } from "lodash";
 
 import styles from "./switcher.module.scss";
 
-console.log(styles);
-
 const Switcher = ({
   defaultValue,
   setFieldValue,
