@@ -43,7 +43,6 @@ const Switcher = ({
 
   React.useEffect(() => {
     setSelectedValue(defaultValue);
-    console.log("state value", defaultValue);
     setFieldValue(inputName, defaultValue);
   }, [defaultValue]);
 
