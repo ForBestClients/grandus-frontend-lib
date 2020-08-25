@@ -36,7 +36,9 @@ const categoryPage = {
     const category = get(context, "params.category");
     const parameters = arrayToPath(get(context, "params.parameters", []));
     const uri = queryToQueryString(get(context, "query", {}), {});
-    const url = `${reqGetHost()}/api/pages/category/${category}?param=${parameters}&${uri}`;
+    const url = `${reqGetHost()}/api/pages/category/${category}?param=${encodeURIComponent(
+      parameters
+    )}&${uri}`;
 
     const data = await fetch(url).then((result) => {
       return result.json();
@@ -95,8 +97,12 @@ const userProfilePage = {
 const thanksPage = {
   serverSideProps: async (context) => {
     const order = await fetch(
-      `${reqGetHost()}/api/v1/order?orderToken=${get(context, 'query.orderToken', '')}`
-    ).then(response => response.json());
+      `${reqGetHost()}/api/v1/order?orderToken=${get(
+        context,
+        "query.orderToken",
+        ""
+      )}`
+    ).then((response) => response.json());
     return {
       props: { order },
     };
@@ -111,5 +117,5 @@ export {
   blogPage,
   checkoutContactPage,
   userProfilePage,
-  thanksPage
+  thanksPage,
 };
