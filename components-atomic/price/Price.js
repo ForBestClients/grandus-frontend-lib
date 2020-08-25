@@ -4,7 +4,7 @@ import { isB2B } from 'grandus-lib/utils/index';
 import useWebInstance from 'grandus-lib/hooks/useWebInstance';
 import useUser from 'grandus-lib/hooks/useUser';
 
-export default ({ priceData, className, microData = true, options = {} }) => {
+const Price = ({ priceData, className, microData = true, options = {} }) => {
   if (isEmpty(priceData)) {
     return null;
   }
@@ -31,3 +31,5 @@ export default ({ priceData, className, microData = true, options = {} }) => {
     </span>
   );
 };
+
+export default Price;

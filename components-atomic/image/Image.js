@@ -4,7 +4,7 @@ const host = process.env.NEXT_PUBLIC_IMAGE_HOST
   ? process.env.NEXT_PUBLIC_IMAGE_HOST
   : "";
 
-export default ({
+const Image = ({
   photo,
   size,
   type,
@@ -34,3 +34,5 @@ export default ({
     </picture>
   );
 };
+
+export default Image;
