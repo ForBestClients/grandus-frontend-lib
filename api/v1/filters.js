@@ -1,6 +1,6 @@
 import { reqExtractUri, reqGetHeaders, reqApiHost } from "grandus-lib/utils";
 import _, { get } from "lodash";
-import { pathToParams } from "grandus-lib/hooks/useFilter";
+import { getApiBodyFromPath } from "grandus-lib/hooks/useFilter";
 
 export default async (req, res) => {
   const result = await fetch(
@@ -10,10 +10,7 @@ export default async (req, res) => {
       headers: reqGetHeaders(req),
       body: JSON.stringify({
         categoryName: get(req, "query.id", ""),
-        param: pathToParams(get(req, "query.param", [])),
-        //   page: 1,
-        //   perPage: 1,
-        //   orderBy: 'time-desc'
+        ...getApiBodyFromPath(get(req, "query.param", [])),
       }),
     }
   ).then((r) => {

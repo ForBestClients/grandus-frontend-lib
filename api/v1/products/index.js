@@ -6,7 +6,7 @@ import {
   getPaginationFromHeaders,
   getProductCardFields,
 } from "grandus-lib/utils";
-import { pathToParams } from "grandus-lib/hooks/useFilter";
+import { getApiBodyFromPath, pathToParams } from "grandus-lib/hooks/useFilter";
 
 export default withSession(async (req, res) => {
   const requestBody = {
@@ -18,19 +18,20 @@ export default withSession(async (req, res) => {
   };
 
   if (get(req, "query")) {
-    
     if (get(req, "query.category")) {
+      //deleteCategory
       requestBody.categoryName = get(req, "query.category", "");
     }
 
     if (get(req, "query.productIds")) {
+      //delete proctuIds
       requestBody.productIds = isArray(get(req, "query.productIds", []))
         ? get(req, "query.productIds", [])
         : [get(req, "query.productIds")];
     }
 
     if (get(req, "query.param")) {
-      requestBody.param = pathToParams(get(req, "query.param", ""));
+      // requestBody.param = pathToParams(get(req, "query.param", ""));
     }
   }
 
@@ -52,7 +53,10 @@ export default withSession(async (req, res) => {
     {
       method: "post",
       headers: reqGetHeaders(req),
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify({
+        ...requestBody,
+        ...getApiBodyFromPath(get(req, "query.param")),
+      }),
     }
   )
     .then((result) => {
