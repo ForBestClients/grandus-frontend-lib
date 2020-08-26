@@ -43,6 +43,18 @@ export const scrollToTop = () => {
   if (typeof window !== "undefined") window.scrollTo(0, 0);
 };
 
+export const getImageUrl = (image, size, type) => {
+  const host = process.env.NEXT_PUBLIC_IMAGE_HOST
+    ? process.env.NEXT_PUBLIC_IMAGE_HOST
+    : "";
+
+  if (!image) {
+    return false;
+  }
+
+  return host + image.path + '/' + size + '.' + type;
+}
+
 /**
  *
  * Headers pagination
