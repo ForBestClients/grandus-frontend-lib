@@ -74,6 +74,24 @@ export const getImageUrl = (image, size, type) => {
   return host + image.path + '/' + size + '.' + type;
 }
 
+/**
+ * Generates url to attachment.
+ * Automaticaly add host and construct path
+ * 
+ * @param {object} attachment 
+ */
+export const getAttachmentUrl = (attachment) => {
+  const host = process.env.NEXT_PUBLIC_IMAGE_HOST
+    ? process.env.NEXT_PUBLIC_IMAGE_HOST
+    : "";
+
+  if (!attachment) {
+    return false;
+  }
+
+  return host + attachment.fileUrl;
+}
+
 export const isB2B = (eshopType = ESHOP_TYPE_B2C, user) => {
   return (
     toNumber(eshopType) === ESHOP_TYPE_B2B ||
