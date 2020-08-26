@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import { get } from 'lodash'
+import { ESHOP_TYPE_B2C } from "grandus-lib/constants/AppConstants";
 
 export default function useWebInstance() {
   const { data = null } = useSWR(
@@ -16,5 +17,6 @@ export default function useWebInstance() {
     webInstance: data,
     domain: get(data, 'domain'),
     settings: get(data, 'globalSettings'),
+    eshopType: get(data, 'globalSettings.type_of_shop', ESHOP_TYPE_B2C),
   };
 }

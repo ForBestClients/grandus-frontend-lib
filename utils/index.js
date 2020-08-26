@@ -1,5 +1,11 @@
 import { USER_CONSTANT } from "grandus-lib/constants/SessionConstants";
-import { get, parseInt } from "lodash";
+import {
+  ESHOP_TYPE_B2B,
+  ESHOP_TYPE_B2C,
+  ESHOP_TYPE_B2B_LOCKED,
+  ESHOP_TYPE_MIXED,
+} from "grandus-lib/constants/AppConstants";
+import { get, parseInt, toNumber } from "lodash";
 
 export const reqExtractUri = (url) => {
   const uriPosition = url.indexOf("?");
@@ -54,6 +60,14 @@ export const getImageUrl = (image, size, type) => {
 
   return host + image.path + '/' + size + '.' + type;
 }
+
+export const isB2B = (eshopType = ESHOP_TYPE_B2C, user) => {
+  return (
+    toNumber(eshopType) === ESHOP_TYPE_B2B ||
+    toNumber(eshopType) === ESHOP_TYPE_B2B_LOCKED ||
+    (toNumber(eshopType) === ESHOP_TYPE_MIXED && get(user, "company.vatNumber", false))
+  );
+};
 
 /**
  *

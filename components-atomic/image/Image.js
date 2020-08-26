@@ -1,7 +1,7 @@
 import styles from "./Image.module.scss";
 import {getImageUrl} from "grandus-lib/utils/index";
 
-export default ({
+const Image = ({
   photo,
   size,
   type,
@@ -31,3 +31,5 @@ export default ({
     </picture>
   );
 };
+
+export default Image;

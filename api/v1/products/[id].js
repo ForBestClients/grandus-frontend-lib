@@ -88,7 +88,8 @@ export default withSession(async (req, res) => {
   }
 
   const product = await fetch(
-    `${reqApiHost(req)}/api/v2/products/${get(req, "query.id")}?expand=gallery,detailedParameters,additionalInfos`,
+    `${reqApiHost(req)}/api/v2/products/${get(req, "query.id")}?expand=gallery,detailedParameters,attachments,additionalInfos`,
+
     {
       headers: reqGetHeaders(req),
     }

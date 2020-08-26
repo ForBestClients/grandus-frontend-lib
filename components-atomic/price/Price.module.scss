@@ -2,7 +2,7 @@
     display: inline-flex;
     box-sizing: border-box;
     flex-direction: column;
-    span[data-property="priceWithoutVat"] {
+    span[data-type=secondary] {
         opacity: .7;
         font-size: .8em;
     }
