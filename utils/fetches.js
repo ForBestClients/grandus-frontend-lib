@@ -2,9 +2,6 @@ import { get } from "lodash";
 import { reqGetHost } from "grandus-lib/utils";
 import { arrayToPath, queryToQueryString } from "grandus-lib/hooks/useFilter";
 
-import dayjs from 'dayjs';
-import isoWeek from 'dayjs/plugin/isoWeek';
-
 const indexPage = {
   // staticProps: async () => { //TODO next 9.5 static optimization
   //   const homepageData = await fetch(`${reqGetHost()}/api/pages/homepage`);
@@ -112,29 +109,6 @@ const thanksPage = {
   },
 };
 
-const operationUnitsPage = {
-  serverSideProps: async context => {
-    const data = await fetch(`${reqGetHost()}/api/v1/operation-units`).then(response => response.json());
-    return {
-      props: data,
-    }
-  }
-}
-
-const operationUnitPage = {
-  serverSideProps: async context => {
-    const from = dayjs().startOf('isoWeek');
-    const operationUnit = await fetch(`${reqGetHost()}/api/v1/operation-units/${context?.params?.id}`).then(response => response.json());
-    const disabledDates = await fetch(`${reqGetHost()}/api/v1/operation-units/${context?.params?.id}?from=${from.format('YYYY-MM-DD')}&to=${from.add(8, 'days').format('YYYY-MM-DD')}`).then(response => response.json());
-    return {
-      props: {
-        operationUnit: operationUnit,
-        disabledDates: disabledDates,
-      }
-    }
-  }
-}
-
 export {
   indexPage,
   productPage,
@@ -144,6 +118,4 @@ export {
   checkoutContactPage,
   userProfilePage,
   thanksPage,
-  operationUnitsPage,
-  operationUnitPage,
 };
