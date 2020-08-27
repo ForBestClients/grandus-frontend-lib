@@ -1,8 +1,5 @@
 import styles from "./Image.module.scss";
-
-const host = process.env.NEXT_PUBLIC_IMAGE_HOST
-  ? process.env.NEXT_PUBLIC_IMAGE_HOST
-  : "";
+import {getImageUrl} from "grandus-lib/utils/index";
 
 const Image = ({
   photo,
@@ -21,13 +18,13 @@ const Image = ({
     <picture className={`${styles.wrapper} ${className ? className : ""}`}>
       <source
         type="image/webp"
-        srcSet={`${host}${photo.path}/${size}.webp 1x, ${host}${photo.path}/${size}@2x.webp 2x`}
+        srcSet={`${getImageUrl(photo, size, "webp")} 1x, ${getImageUrl(photo, size + "@2x", "webp")} 2x`}
       />
       <source
-        srcSet={`${host}${photo.path}/${size}.${type} 1x, ${host}${photo.path}/${size}@2x.${type} 2x`}
+        srcSet={`${getImageUrl(photo, size, type)} 1x, ${getImageUrl(photo, size + "@2x", type)} 2x`}
       />
       <img
-        src={`${host}${photo.path}/${size}.${type}`}
+        src={`${getImageUrl(photo, size, type)}`}
         title={title ? title : photo.title}
         alt={alt ? alt : photo.description}
       />

@@ -49,6 +49,49 @@ export const scrollToTop = () => {
   if (typeof window !== "undefined") window.scrollTo(0, 0);
 };
 
+/**
+ * Generates image path for certain image.
+ * Automaticaly add host and construct path by provided attributes.
+ * Url is constructed as :
+ * - host from environment (.env.*)
+ * - path from image object (image.path)
+ * - size provided size of image (resolutionXxResolutionY)
+ * - tyoe format of image to be generated (.jpg, .png, .webp)
+ * 
+ * @param {object} image
+ * @param {string} size 
+ * @param {string} type 
+ */
+export const getImageUrl = (image, size, type) => {
+  const host = process.env.NEXT_PUBLIC_IMAGE_HOST
+    ? process.env.NEXT_PUBLIC_IMAGE_HOST
+    : "";
+
+  if (!image) {
+    return false;
+  }
+
+  return host + image.path + '/' + size + '.' + type;
+}
+
+/**
+ * Generates url to attachment.
+ * Automaticaly add host and construct path
+ * 
+ * @param {object} attachment 
+ */
+export const getAttachmentUrl = (attachment) => {
+  const host = process.env.NEXT_PUBLIC_IMAGE_HOST
+    ? process.env.NEXT_PUBLIC_IMAGE_HOST
+    : "";
+
+  if (!attachment) {
+    return false;
+  }
+
+  return host + attachment.fileUrl;
+}
+
 export const isB2B = (eshopType = ESHOP_TYPE_B2C, user) => {
   return (
     toNumber(eshopType) === ESHOP_TYPE_B2B ||
