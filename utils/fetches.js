@@ -12,7 +12,7 @@ const indexPage = {
   //   };
   // },
   serverSideProps: async (context) => {
-    const homepageData = await fetch(`${reqGetHost()}/api/pages/homepage`);
+    const homepageData = await fetch(`${reqGetHost(context?.req)}/api/pages/homepage`);
     const data = await homepageData.json();
     return {
       props: data,
@@ -23,7 +23,7 @@ const indexPage = {
 const productPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost()}/api/v1/products/${context?.params?.id}?initial=1`
+      `${reqGetHost(context?.req)}/api/v1/products/${context?.params?.id}?initial=1`
     ).then((result) => result.json());
     return {
       props: { product: data },
@@ -36,7 +36,7 @@ const categoryPage = {
     const category = get(context, "params.category");
     const parameters = arrayToPath(get(context, "params.parameters", []));
     const uri = queryToQueryString(get(context, "query", {}), {});
-    const url = `${reqGetHost()}/api/pages/category/${category}?param=${encodeURIComponent(
+    const url = `${reqGetHost(context?.req)}/api/pages/category/${category}?param=${encodeURIComponent(
       parameters
     )}&${uri}`;
 
@@ -53,7 +53,7 @@ const categoryPage = {
 const blogPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost()}/api/v1/blogs/${context?.params?.id}`
+      `${reqGetHost(context?.req)}/api/v1/blogs/${context?.params?.id}`
     ).then((result) => result.json());
     return {
       props: { blog: data },
@@ -64,7 +64,7 @@ const blogPage = {
 const staticPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost()}/api/v1/statics/${context?.params?.id}`
+      `${reqGetHost(context?.req)}/api/v1/statics/${context?.params?.id}`
     ).then((result) => result.json());
     return {
       props: { page: data },
@@ -75,7 +75,7 @@ const staticPage = {
 const checkoutContactPage = {
   serverSideProps: async () => {
     const countries = await fetch(
-      `${reqGetHost()}/api/v1/countries`
+      `${reqGetHost(context?.req)}/api/v1/countries`
     ).then((result) => result.json());
     return {
       props: { countries },
@@ -86,7 +86,7 @@ const checkoutContactPage = {
 const userProfilePage = {
   serverSideProps: async () => {
     const countries = await fetch(
-      `${reqGetHost()}/api/v1/countries`
+      `${reqGetHost(context?.req)}/api/v1/countries`
     ).then((result) => result.json());
     return {
       props: { countries },
@@ -97,7 +97,7 @@ const userProfilePage = {
 const thanksPage = {
   serverSideProps: async (context) => {
     const order = await fetch(
-      `${reqGetHost()}/api/v1/order?orderToken=${get(
+      `${reqGetHost(context?.req)}/api/v1/order?orderToken=${get(
         context,
         "query.orderToken",
         ""
