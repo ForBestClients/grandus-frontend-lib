@@ -12,7 +12,9 @@ const indexPage = {
   //   };
   // },
   serverSideProps: async (context) => {
-    const homepageData = await fetch(`${reqGetHost(context?.req)}/api/pages/homepage`);
+    const homepageData = await fetch(
+      `${reqGetHost(context?.req)}/api/pages/homepage`
+    );
     const data = await homepageData.json();
     return {
       props: data,
@@ -23,7 +25,9 @@ const indexPage = {
 const productPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/products/${context?.params?.id}?initial=1`
+      `${reqGetHost(context?.req)}/api/v1/products/${
+        context?.params?.id
+      }?initial=1`
     ).then((result) => result.json());
     return {
       props: { product: data },
@@ -36,7 +40,9 @@ const categoryPage = {
     const category = get(context, "params.category");
     const parameters = arrayToPath(get(context, "params.parameters", []));
     const uri = queryToQueryString(get(context, "query", {}), {});
-    const url = `${reqGetHost(context?.req)}/api/pages/category/${category}?param=${encodeURIComponent(
+    const url = `${reqGetHost(
+      context?.req
+    )}/api/pages/category/${category}?param=${encodeURIComponent(
       parameters
     )}&${uri}`;
 
@@ -44,6 +50,27 @@ const categoryPage = {
       return result.json();
     });
 
+    return {
+      props: data,
+    };
+  },
+};
+
+const blogListingPage = {
+  serverSideProps: async (context) => {
+    const uri = [];
+    if (context?.query.id) {
+      uri.push(`communityCategoryId=${get(context, "params.id", "")}`);
+    }
+    if (context?.query.page) {
+      uri.push(`page=${get(context, "query.page", 1)}`);
+    }
+    if (context?.query.perPage) {
+      uri.push(`perPage=${get(context, "query.perPage", "")}`);
+    }
+    const data = await fetch(
+      `${reqGetHost(context?.req)}/api/v1/blogs?${uri.join('&')}`
+    ).then((result) => result.json());
     return {
       props: data,
     };
@@ -114,6 +141,7 @@ export {
   productPage,
   categoryPage,
   staticPage,
+  blogListingPage,
   blogPage,
   checkoutContactPage,
   userProfilePage,
