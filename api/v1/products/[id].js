@@ -1,5 +1,10 @@
 import withSession from "grandus-lib/utils/session";
-import { reqGetHeaders, reqApiHost } from "grandus-lib/utils";
+import {
+  reqGetHeaders,
+  reqApiHost,
+  getProductDetailExpand,
+  getProductDetailFields,
+} from "grandus-lib/utils";
 import { get } from "lodash";
 
 export default withSession(async (req, res) => {
@@ -78,7 +83,7 @@ export default withSession(async (req, res) => {
       externalUrl: get(product, "externalUrl", ""),
       gallery: get(product, "gallery", []),
       detailedParameters: get(product, "detailedParameters", []),
-      additionalInfos: get(product, "additionalInfos", [])
+      additionalInfos: get(product, "additionalInfos", []),
     };
 
     res.statusCode = 200;
@@ -88,7 +93,10 @@ export default withSession(async (req, res) => {
   }
 
   const product = await fetch(
-    `${reqApiHost(req)}/api/v2/products/${get(req, "query.id")}?expand=gallery,detailedParameters,attachments,additionalInfos`,
+    `${reqApiHost(req)}/api/v2/products/${get(
+      req,
+      "query.id"
+    )}?${getProductDetailExpand(true)}&${getProductDetailFields(true)}`,
 
     {
       headers: reqGetHeaders(req),
