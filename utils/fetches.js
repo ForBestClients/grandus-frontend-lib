@@ -69,7 +69,7 @@ const blogListingPage = {
       uri.push(`perPage=${get(context, "query.perPage", "")}`);
     }
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/blogs?${uri.join('&')}`
+      `${reqGetHost(context?.req)}/api/v1/blogs?${uri.join("&")}`
     ).then((result) => result.json());
     return {
       props: data,
@@ -100,7 +100,7 @@ const staticPage = {
 };
 
 const checkoutContactPage = {
-  serverSideProps: async () => {
+  serverSideProps: async (context) => {
     const countries = await fetch(
       `${reqGetHost(context?.req)}/api/v1/countries`
     ).then((result) => result.json());
@@ -111,7 +111,7 @@ const checkoutContactPage = {
 };
 
 const userProfilePage = {
-  serverSideProps: async () => {
+  serverSideProps: async (context) => {
     const countries = await fetch(
       `${reqGetHost(context?.req)}/api/v1/countries`
     ).then((result) => result.json());
