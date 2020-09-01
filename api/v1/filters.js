@@ -28,6 +28,6 @@ export default async (req, res) => {
   output.breadcrumbs = get(result, "breadcrumbs");
   output.meta = get(result, "meta");
 
-  saveDataToCache(req, cache, data);
+  saveDataToCache(req, cache, output);
   res.status(get(result, "statusCode", 500)).json(output);
 };
