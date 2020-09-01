@@ -1,5 +1,5 @@
 import { reqExtractUri, reqGetHeaders, reqApiHost } from "grandus-lib/utils";
-import _, { get } from "lodash";
+import { get } from "lodash";
 import { getApiBodyFromPath } from "grandus-lib/hooks/useFilter";
 
 export default async (req, res) => {
@@ -17,7 +17,9 @@ export default async (req, res) => {
     return r.json();
   });
 
-  res.statusCode = result.statusCode;
-  res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify(result.data));
+  const output = result.data;
+  output.breadcrumbs = get(result, "breadcrumbs");
+  output.meta = get(result, "meta");
+
+  res.status(get(result, "statusCode", 500)).json(output);
 };

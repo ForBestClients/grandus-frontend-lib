@@ -103,9 +103,12 @@ export default withSession(async (req, res) => {
     }
   ).then((result) => result.json());
 
-  res.statusCode = get(product, "statusCode", 500);
-  res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify(product.data));
+  const output = get(product, "data", {});
+  output.breadcrumbs = get(product, "breadcrumbs");
+  output.meta = get(product, "meta");
+
+  res.status(get(product, "statusCode", 500)).json(output);
+  res.status(200).json(data);
 });
 
 export const config = {
