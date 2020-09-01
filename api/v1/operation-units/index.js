@@ -4,8 +4,15 @@ import {
   reqApiHost,
   getPaginationFromHeaders,
 } from "grandus-lib/utils";
+import cache, {
+  outputCachedData,
+  saveDataToCache,
+} from "grandus-lib/utils/cache";
 
 export default async (req, res) => {
+
+  if (await outputCachedData(req, res, cache)) return;
+
   let pagination = {};
   const operationUnits = await fetch(
     `${reqApiHost(req)}/api/v2/operation-units?page=${get(
@@ -33,5 +40,6 @@ export default async (req, res) => {
     pagination: pagination,
   };
 
+  saveDataToCache(req, cache, data);
   res.status(200).json(data);
 };

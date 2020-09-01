@@ -1,14 +1,17 @@
 import { reqGetHeaders, reqApiHost } from "grandus-lib/utils";
+import { get } from "lodash";
+import cache, {
+  outputCachedData,
+  saveDataToCache,
+} from "grandus-lib/utils/cache";
 
 export default async (req, res) => {
-  const result = await fetch(
-    `${reqApiHost(req)}/api/v2/countries`,
-    {
-      headers: reqGetHeaders(req),
-    }
-  ).then((r) => r.json());
+  if (await outputCachedData(req, res, cache)) return;
 
-  res.statusCode = result.statusCode;
-  res.setHeader("Content-Type", "application/json");
-  res.end(JSON.stringify(result.data));
+  const result = await fetch(`${reqApiHost(req)}/api/v2/countries`, {
+    headers: reqGetHeaders(req),
+  }).then((r) => r.json());
+
+  saveDataToCache(req, cache, get(result, "data", {}));
+  res.status(get(product, "statusCode", 500)).json(get(result, "data", {}));
 };

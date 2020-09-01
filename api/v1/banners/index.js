@@ -17,6 +17,6 @@ export default async (req, res) => {
   if (banners.statusCode == 200) {
     saveDataToCache(req, cache, data);
   }
-  
+
   res.status(banners.statusCode).json(data);
 };

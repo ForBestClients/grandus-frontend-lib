@@ -1,4 +1,8 @@
 import withSession from "grandus-lib/utils/session";
+import cache, {
+  outputCachedData,
+  saveDataToCache,
+} from "grandus-lib/utils/cache";
 import {
   reqGetHeaders,
   reqApiHost,
@@ -9,6 +13,8 @@ import { get } from "lodash";
 
 export default withSession(async (req, res) => {
   if (get(req, "query.initial") == 1) {
+    if (await outputCachedData(req, res, cache)) return;
+
     const product = await fetch(
       `${reqApiHost(req)}/api/v2/products?urlTitle=${get(req, "query.id")}`,
       {
@@ -107,8 +113,8 @@ export default withSession(async (req, res) => {
   output.breadcrumbs = get(product, "breadcrumbs");
   output.meta = get(product, "meta");
 
+  saveDataToCache(req, cache, output);
   res.status(get(product, "statusCode", 500)).json(output);
-  res.status(200).json(data);
 });
 
 export const config = {
