@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Router from "next/router";
 import useSWR from "swr";
-import { get } from "lodash";
+import { get, isFunction } from "lodash";
 
 export default function useUser({
   redirectTo = false,
@@ -13,7 +13,7 @@ export default function useUser({
     {
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
-      shouldRetryOnError: false
+      shouldRetryOnError: false,
     }
   );
 
@@ -33,9 +33,45 @@ export default function useUser({
     }
   }, [user, redirectIfFound, redirectTo]);
 
+  const createUser = async (values, callback) => {
+    try {
+      const reqBody = {
+        user: {
+          email: get(values, "user.email"),
+          password: get(values, "user.password"),
+          passwordRepeat: get(values, "user.passwordRepeat"),
+        },
+      };
+      if (get(values, "cart.accessToken")) {
+        reqBody.cart = { accessToken: get(values, "cart.accessToken") };
+      }
+      if (get(values, "company")) {
+        reqBody.company = {
+          name: get(values, "company.name"),
+          businessId: get(values, "company.ico"),
+          taxId: get(values, "company.dic"),
+          vatNumber: get(values, "company.icDPH"),
+        };
+      }
+      const user = await fetch(`/api/v1/auth/signup`, {
+        method: "POST",
+        body: JSON.stringify(reqBody),
+      }).then((response) => response.json());
+      if (get(user, "success", false)) {
+        await mutate(get(user, "data"), false);
+      }
+      if (isFunction(callback)) {
+        callback(user);
+      }
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    }
+  };
+
   return {
     user: get(user, "accessToken") ? user : null,
     mutateUser: mutate,
+    createUser,
     isLoading: isValidating,
   };
 }
