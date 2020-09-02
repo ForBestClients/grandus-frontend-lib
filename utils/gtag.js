@@ -4,7 +4,6 @@ const TagManager = {
   googleAnalyticsCode: "",
   init: function (googleAnalyticsCode = "") {
     this.googleAnalyticsCode = googleAnalyticsCode;
-    console.log('init', this.googleAnalyticsCode);
     if (!googleAnalyticsCode) {
       return null;
     }
