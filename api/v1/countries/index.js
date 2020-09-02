@@ -13,5 +13,5 @@ export default async (req, res) => {
   }).then((r) => r.json());
 
   saveDataToCache(req, cache, get(result, "data", {}));
-  res.status(get(product, "statusCode", 500)).json(get(result, "data", {}));
+  res.status(get(result, "statusCode", 500)).json(get(result, "data", {}));
 };
