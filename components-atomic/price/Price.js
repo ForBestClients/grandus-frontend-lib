@@ -1,14 +1,14 @@
-import { isEmpty } from 'lodash';
+import { isEmpty } from "lodash";
 import styles from "./Price.module.scss";
-import { isB2B } from 'grandus-lib/utils/index';
-import useWebInstance from 'grandus-lib/hooks/useWebInstance';
-import useUser from 'grandus-lib/hooks/useUser';
+import { isB2B } from "grandus-lib/utils/index";
+import useWebInstance from "grandus-lib/hooks/useWebInstance";
+import useUser from "grandus-lib/hooks/useUser";
 
 const Price = ({ priceData, className, microData = true, options = {} }) => {
   if (isEmpty(priceData)) {
     return null;
   }
-  const { eshopType } = useWebInstance()
+  const { eshopType } = useWebInstance();
   const { user } = useUser();
   const isB2BEshop = isB2B(eshopType, user);
   return (
@@ -21,13 +21,30 @@ const Price = ({ priceData, className, microData = true, options = {} }) => {
         </>
       ) : null}
 
-      <span data-property={"price"} data-type={isB2BEshop ? 'secondary' : 'primary'} className={`${ options?.mainPriceClass ? options?.mainPriceClass : ""}`}>{priceData.priceFormatted}</span>
-      {
-        !options?.hideVatPrice ? 
-          <span data-property={"priceWithoutVat"} data-type={isB2BEshop ? 'primary' : 'secondary'} className={`${ options?.withoutVatPriceClass ? options?.withoutVatPriceClass : ""}`}> 
-            {priceData.priceWithoutVatFormatted} 
-          </span> : ""
-      }
+      <span
+        data-property={"price"}
+        data-type={isB2BEshop ? "secondary" : "primary"}
+        className={`${options?.mainPriceClass ? options?.mainPriceClass : ""}`}
+      >
+        {priceData?.priceFormatted
+          ? priceData?.priceFormatted
+          : `${priceData?.price} ${priceData.currencySymbol}`}
+      </span>
+      {!options?.hideVatPrice ? (
+        <span
+          data-property={"priceWithoutVat"}
+          data-type={isB2BEshop ? "primary" : "secondary"}
+          className={`${
+            options?.withoutVatPriceClass ? options?.withoutVatPriceClass : ""
+          }`}
+        >
+          {priceData?.priceWithoutVatFormatted
+            ? priceData.priceWithoutVatFormatted
+            : `${priceData.priceWithoutVat} ${priceData.currencySymbol}`}
+        </span>
+      ) : (
+        ""
+      )}
     </span>
   );
 };
