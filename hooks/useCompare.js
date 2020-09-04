@@ -5,7 +5,7 @@ import { get, isFunction } from "lodash";
 const useCompare = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: compare, mutate, isValidating } = useSWR(
-    `/api/v1/compare`,
+    `/api/lib/v1/compare`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
@@ -25,7 +25,7 @@ const useCompare = () => {
   const itemRemove = async (productId, callback) => {
     setIsLoading(true);
     await mutate(
-      await fetch(`/api/v1/compare/items/${productId}`, {
+      await fetch(`/api/lib/v1/compare/items/${productId}`, {
         method: "DELETE",
       }).then((result) => {
         if (isFunction(callback)) {
@@ -42,7 +42,7 @@ const useCompare = () => {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/v1/compare/items/${productId}`, {
+        await fetch(`/api/lib/v1/compare/items/${productId}`, {
           method: "PUT",
         }).then((result) => {
           if (isFunction(callback)) {

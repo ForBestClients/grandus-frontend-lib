@@ -25,7 +25,7 @@ const indexPage = {
 const productPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/products/${
+      `${reqGetHost(context?.req)}/api/lib/v1/products/${
         context?.params?.id
       }?initial=1`
     ).then((result) => result.json());
@@ -69,7 +69,7 @@ const blogListingPage = {
       uri.push(`perPage=${get(context, "query.perPage", "")}`);
     }
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/blogs?${uri.join("&")}`
+      `${reqGetHost(context?.req)}/api/lib/v1/blogs?${uri.join("&")}`
     ).then((result) => result.json());
     return {
       props: data,
@@ -80,7 +80,7 @@ const blogListingPage = {
 const blogPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/blogs/${context?.params?.id}`
+      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${context?.params?.id}`
     ).then((result) => result.json());
     return {
       props: { blog: data },
@@ -91,7 +91,7 @@ const blogPage = {
 const staticPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/statics/${context?.params?.id}`
+      `${reqGetHost(context?.req)}/api/lib/v1/statics/${context?.params?.id}`
     ).then((result) => result.json());
     return {
       props: { page: data },
@@ -102,7 +102,7 @@ const staticPage = {
 const checkoutContactPage = {
   serverSideProps: async (context) => {
     const countries = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/countries`
+      `${reqGetHost(context?.req)}/api/lib/v1/countries`
     ).then((result) => result.json());
     return {
       props: { countries },
@@ -113,7 +113,7 @@ const checkoutContactPage = {
 const userProfilePage = {
   serverSideProps: async (context) => {
     const countries = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/countries`
+      `${reqGetHost(context?.req)}/api/lib/v1/countries`
     ).then((result) => result.json());
     return {
       props: { countries },
@@ -124,7 +124,7 @@ const userProfilePage = {
 const thanksPage = {
   serverSideProps: async (context) => {
     const order = await fetch(
-      `${reqGetHost(context?.req)}/api/v1/order?orderToken=${get(
+      `${reqGetHost(context?.req)}/api/lib/v1/order?orderToken=${get(
         context,
         "query.orderToken",
         ""

@@ -170,7 +170,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
     uri.push(`id=${category}`);
   }
 
-  const url = `/api/v1/filters?${uri.join("&")}`;
+  const url = `/api/lib/v1/filters?${uri.join("&")}`;
 
   const { data: filter, mutate, isValidating } = useSWR(
     url,

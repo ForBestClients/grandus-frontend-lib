@@ -8,7 +8,7 @@ export default function useUser({
   redirectIfFound = false,
 } = {}) {
   const { data: user, mutate, isValidating } = useSWR(
-    `/api/v1/auth/profile`,
+    `/api/lib/v1/auth/profile`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
@@ -53,7 +53,7 @@ export default function useUser({
           vatNumber: get(values, "company.icDPH"),
         };
       }
-      const user = await fetch(`/api/v1/auth/signup`, {
+      const user = await fetch(`/api/lib/v1/auth/signup`, {
         method: "POST",
         body: JSON.stringify(reqBody),
       }).then((response) => response.json());
