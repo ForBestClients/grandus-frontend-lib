@@ -2,14 +2,20 @@ import { useState } from "react";
 import useSWR from "swr";
 import { get, isFunction, filter } from "lodash";
 
-export default function useCart(initialCart) {
+export default function useCart(initialCart = false, options = {}) {
+  const swrOptions = {};
+  if (initialCart) {
+    swrOptions.initialData = initialCart;
+    swrOptions.revalidateOnMount = true;
+  }
+
   const [isLoading, setIsLoading] = useState(false);
   const { data: cart, mutate, isValidating } = useSWR(
     `/api/lib/v1/cart`,
     (url) => fetch(url).then((r) => r.json()),
     {
-      initialData: initialCart,
-      revalidateOnMount: true,
+      ...swrOptions,
+      ...options,
     }
   );
 
@@ -158,7 +164,6 @@ export default function useCart(initialCart) {
     } finally {
       setIsLoading(false);
     }
-    
   };
 
   const removeCoupon = async (callback) => {
