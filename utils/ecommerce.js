@@ -40,6 +40,7 @@ const EnhancedEcommerce = {
             brand: product?.brand?.name,
             category: get(getProductCategory(product), "name", undefined),
             list: list,
+            position: product?.position
           },
         ],
       },
@@ -48,36 +49,60 @@ const EnhancedEcommerce = {
   },
   cartAdd: (product, quantity = 1) => {
     const data = {
-      'add': {                                
-        'products': [{                        
-          'name': product?.name,
-          'id': product?.id,
-          'price': product?.finalPriceData?.price,
-          'brand': product?.brand?.name,
-          'category': get(getProductCategory(product), "name", undefined),
-          'quantity': quantity
-         }]
-      }
-    }
+      add: {
+        products: [
+          {
+            name: product?.name,
+            id: product?.id,
+            price: product?.finalPriceData?.price,
+            brand: product?.brand?.name,
+            category: get(getProductCategory(product), "name", undefined),
+            quantity: quantity,
+          },
+        ],
+      },
+    };
 
-    return prepareData(data, 'addToCart');
+    return prepareData(data, "addToCart");
   },
   cartRemove: (product, quantity = 1) => {
     const data = {
-      'remove': {                                
-        'products': [{                        
-          'name': product?.name,
-          'id': product?.id,
-          'price': product?.finalPriceData?.price,
-          'brand': product?.brand?.name,
-          'category': get(getProductCategory(product), "name", undefined),
-          'quantity': quantity
-         }]
-      }
+      remove: {
+        products: [
+          {
+            name: product?.name,
+            id: product?.id,
+            price: product?.finalPriceData?.price,
+            brand: product?.brand?.name,
+            category: get(getProductCategory(product), "name", undefined),
+            quantity: quantity,
+          },
+        ],
+      },
+    };
+
+    return prepareData(data, "removeFromCart");
+  },
+  checkout: (items, step = null) => {
+    const data = {
+      checkout: {
+        products: items.map((item, index) => ({
+          name: item?.product?.name,
+          id: item?.product?.id,
+          price: item?.priceTotalData?.price,
+          brand: item?.product?.brand?.name,
+          category: get(getProductCategory(item?.product), "name", undefined),
+          quantity: item?.count,
+        })),
+      },
+    };
+
+    if (step) {
+      data.checkout.actionField = { step };
     }
 
-    return prepareData(data, 'removeFromCart');
-  }
+    return prepareData(data, "checkout");
+  },
 };
 
 const getProductCategory = (product) => {
