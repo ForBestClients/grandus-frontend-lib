@@ -122,6 +122,10 @@ export const getAttachmentUrl = (attachment) => {
   return host + attachment.fileUrl;
 };
 
+export const convertToNumber = (numberCandidate) => {
+  return parseFloat(numberCandidate.replace(",", "."));
+};
+
 export const isB2B = (eshopType = ESHOP_TYPE_B2C, user) => {
   return (
     toNumber(eshopType) === ESHOP_TYPE_B2B ||
