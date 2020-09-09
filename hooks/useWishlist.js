@@ -7,7 +7,7 @@ const useWishlist = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { data, mutate, isValidating } = useSWR(
-    `/api/v1/wishlist`,
+    `/api/lib/v1/wishlist`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
@@ -52,7 +52,7 @@ const useWishlist = () => {
     setIsLoading(true);
 
     await mutate(
-      await fetch(`/api/v1/wishlist/items/${wishlistItem?.id}`, {
+      await fetch(`/api/lib/v1/wishlist/items/${wishlistItem?.id}`, {
         method: "DELETE",
       }).then((result) => {
         if (isFunction(callback)) {
@@ -78,7 +78,7 @@ const useWishlist = () => {
     );
     try {
       await mutate(
-        await fetch(`/api/v1/wishlist/items/${productId}`, {
+        await fetch(`/api/lib/v1/wishlist/items/${productId}`, {
           method: "POST",
         }).then((result) => {
           if (isFunction(callback)) {

@@ -5,7 +5,7 @@ import { get, isFunction, filter } from "lodash";
 export default function useCart(initialCart) {
   const [isLoading, setIsLoading] = useState(false);
   const { data: cart, mutate, isValidating } = useSWR(
-    `/api/v1/cart`,
+    `/api/lib/v1/cart`,
     (url) => fetch(url).then((r) => r.json()),
     {
       initialData: initialCart,
@@ -20,7 +20,7 @@ export default function useCart(initialCart) {
       false
     );
     await mutate(
-      await fetch(`/api/v1/cart/items/${itemId}`, {
+      await fetch(`/api/lib/v1/cart/items/${itemId}`, {
         method: "DELETE",
       }).then((result) => {
         if (isFunction(callback)) {
@@ -37,7 +37,7 @@ export default function useCart(initialCart) {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/v1/cart`, {
+        await fetch(`/api/lib/v1/cart`, {
           method: "POST",
           body: JSON.stringify({
             cart: {
@@ -61,7 +61,7 @@ export default function useCart(initialCart) {
   const itemAdd = async (count, store, productId, callback) => {
     try {
       await mutate(
-        await fetch(`/api/v1/cart`, {
+        await fetch(`/api/lib/v1/cart`, {
           method: "POST",
           body: JSON.stringify({
             items: { count: count, sizeId: store, productId: productId },
@@ -81,7 +81,7 @@ export default function useCart(initialCart) {
 
   const itemUpdate = async (itemId, body, callback) => {
     await mutate(
-      await fetch(`/api/v1/cart/items/${itemId}`, {
+      await fetch(`/api/lib/v1/cart/items/${itemId}`, {
         method: "PUT",
         body: JSON.stringify({
           item: body,
@@ -100,7 +100,7 @@ export default function useCart(initialCart) {
   const saveContact = async (values, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/v1/cart/contact`, {
+      await fetch(`/api/lib/v1/cart/contact`, {
         method: "POST",
         body: JSON.stringify(values),
       }).then((result) => {
@@ -122,7 +122,7 @@ export default function useCart(initialCart) {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/v1/order/create`, {
+        await fetch(`/api/lib/v1/order/create`, {
           method: "POST",
           body: JSON.stringify(values),
         }).then((result) => {
@@ -143,7 +143,7 @@ export default function useCart(initialCart) {
   const applyCoupon = async (couponHash, callback) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/v1/cart/coupon`, {
+      const response = await fetch(`/api/lib/v1/cart/coupon`, {
         method: "POST",
         body: JSON.stringify({ couponHash }),
       }).then((result) => {
@@ -164,7 +164,7 @@ export default function useCart(initialCart) {
   const removeCoupon = async (callback) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/v1/cart/coupon`, {
+      const response = await fetch(`/api/lib/v1/cart/coupon`, {
         method: "DELETE",
       }).then((result) => {
         if (isFunction(callback)) {
