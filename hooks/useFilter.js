@@ -9,6 +9,7 @@ import {
   map,
   find,
   isArray,
+  omit
 } from "lodash";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
 
@@ -185,6 +186,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
 
   return {
     filter,
+    hasActiveFilters: !isEmpty(omit(get(filter, 'selected', []), 'category')),
     mutateFilter: mutate,
     isLoading: isValidating,
   };

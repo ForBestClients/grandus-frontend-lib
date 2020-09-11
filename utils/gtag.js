@@ -1,9 +1,7 @@
-import { isFunction } from 'lodash';
+import { omit, set, isFunction, chunk, forEach, get, clone } from "lodash";
 
 const TagManager = {
-  googleAnalyticsCode: "",
   init: function (googleAnalyticsCode = "") {
-    this.googleAnalyticsCode = googleAnalyticsCode;
     if (!googleAnalyticsCode) {
       return null;
     }
@@ -51,13 +49,37 @@ const TagManager = {
       page_path: url,
     });
   },
-  push: function (data, callback) {
+  push: async function (data, callback) {
     if (this.isEnabled()) {
       dataLayer.push(data);
     }
 
     if (isFunction(callback)) {
-      callback(data)
+      callback(data);
+    }
+  },
+  pushChunked: async function (
+    data,
+    key = "products",
+    chunkSize = 30,
+    callback
+  ) {
+    if (this.isEnabled()) {
+      const baseObject = omit(data, key);
+      const objectToChunk = get(data, key, []);
+
+      if (objectToChunk.length > chunkSize) {
+        let newPushData = {};
+        forEach(chunk(objectToChunk, chunkSize), (chunk) => {
+          newPushData = clone(baseObject);
+          set(newPushData, key, chunk);
+          this.push(newPushData);
+        });
+      }
+    }
+
+    if (isFunction(callback)) {
+      callback(data);
     }
   },
 };
