@@ -5,7 +5,7 @@ import {
   ESHOP_TYPE_B2B_LOCKED,
   ESHOP_TYPE_MIXED,
 } from "grandus-lib/constants/AppConstants";
-import { get, parseInt, toNumber } from "lodash";
+import { get, parseInt, toNumber, deburr, toLower } from "lodash";
 
 export const reqExtractUri = (url) => {
   const uriPosition = url.indexOf("?");
@@ -133,6 +133,10 @@ export const isB2B = (eshopType = ESHOP_TYPE_B2C, user) => {
     (toNumber(eshopType) === ESHOP_TYPE_MIXED &&
       get(user, "company.vatNumber", false))
   );
+};
+
+export const deburredSearch = (string, value) => {
+  return deburr(toLower(string)).indexOf(deburr(toLower(value))) >= 0;
 };
 
 /**
