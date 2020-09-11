@@ -1,4 +1,4 @@
-import { get, first, isFunction } from "lodash";
+import { get, map, first, isFunction } from "lodash";
 const EnhancedEcommerce = {
   impressions: (products, list = undefined) => {
     const data = {
@@ -102,6 +102,37 @@ const EnhancedEcommerce = {
     }
 
     return prepareData(data, "checkout");
+  },
+  purchase: (order, step = null) => {
+    const items = get(order, 'orderItems', []);
+    const couponsString = map(get(order, 'coupons'), coupon => get(coupon, 'hash')).join('|');
+    const data = {
+      purchase: {
+        actionField: {
+          id: get(order, 'orderNumber'), // Transaction ID. Required for purchases and refunds.
+          affiliation: '',
+          revenue: parseFloat(_.get(order, 'totalSumData.price', 0)), // Total transaction value (incl. tax and shipping)
+          tax: get(order, 'totalSumData.vatFraction', 0),
+          shipping: (parseFloat(get(order, 'deliveryPrice', 0)) + parseFloat(get(order, 'paymentPrice', 0))),
+          coupon: couponsString
+        },
+        products: items.map((item, index) => ({
+          name: item?.name,
+          id: item?.productId,
+          price: item?.totalPriceData?.price,
+          brand: item?.product?.brand?.name,
+          category: get(getProductCategory(item?.product), "name", undefined),
+          quantity: item?.count,
+          coupon: couponsString
+        })),
+      },
+    };
+
+    if (step) {
+      data.checkout.actionField = { step };
+    }
+
+    return prepareData(data);
   },
 };
 
