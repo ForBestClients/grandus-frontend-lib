@@ -1,10 +1,11 @@
 //RESERVED URL PARTS
 export const RESERVED_URI_PARTS = [
   {
-    key: "price",
+    key: ['priceFrom', 'priceTo'],
     urlTitle: "cena",
     title: "Cena", //@todo translation
     priority: 1,
+    hash: 'price'
   },
   {
     key: "storeLocation",
