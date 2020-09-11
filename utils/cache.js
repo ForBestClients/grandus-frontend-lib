@@ -85,7 +85,11 @@ export const getCacheKeyByType = (type = "request", options = {}) => {
     case "footer":
       return getCacheKey(["system-layout-footer"]);
     case "custom":
-      return getCacheKey(get(options, "cacheKeyParts", "undefined-custom-key"));
+      const cacheParts = ["custom-key", ...get(options, "cacheKeyParts", [])];
+      if (get(options, "cacheKeyUseUser", true)) {
+        cacheParts.push(extractUserAccessToken(get(options, "req", null)));
+      }
+      return getCacheKey(cacheParts);
     case "request":
       return getCacheKeyByRequest(get(options, "req", null));
     case "wishlist":
@@ -94,7 +98,7 @@ export const getCacheKeyByType = (type = "request", options = {}) => {
         extractUserAccessToken(get(options, "req", null)),
       ]);
     default:
-      return getCacheKey([`undefined-${type}`]);
+      return getCacheKey([`default-${type}`]);
   }
 };
 
@@ -134,6 +138,7 @@ export const outputCachedData = async (req, res, cache, options = {}) => {
   const cachedData = await getCachedData(req, cache, options);
   if (isNull(cachedData) || cachedData == false) return false;
 
+  res.setHeader("Grandus-Cached-Data", true);
   res.status(200).json(cachedData);
   return true;
 };
