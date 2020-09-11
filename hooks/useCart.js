@@ -93,10 +93,11 @@ export default function useCart(initialCart = false, options = {}) {
           item: body,
         }),
       }).then((result) => {
+        const data = result.json();
         if (isFunction(callback)) {
-          callback(result);
+          callback(data);
         }
-        return result.json();
+        return data;
       }),
       false
     );
