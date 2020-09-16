@@ -10,6 +10,8 @@ import {
   find,
   isArray,
   omit
+  sortBy,
+  flatten,
 } from "lodash";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
 
@@ -18,6 +20,8 @@ const replaceKeyForUrlTitle = (key) =>
 
 const replaceUrlTitleForKey = (urlTitle) =>
   get(find(RESERVED_URI_PARTS, ["urlTitle", urlTitle]), "key", urlTitle);
+
+const sortChunks = (chunks) => sortBy(chunks, (pair) => pair[0]);
 
 export const getApiBodyFromParams = (params = []) => {
   if (!params) {
@@ -34,11 +38,19 @@ export const getApiBodyFromParams = (params = []) => {
       get(newParams, [reserved.key])
     );
     if (identifiedReserved) {
-      apiBody[reserved.key] = isArray(identifiedReserved)
-        ? map(identifiedReserved, (ir) => decodeURIComponent(ir))
-        : [decodeURIComponent(identifiedReserved)];
-      delete newParams[reserved.urlTitle];
-      delete newParams[reserved.key];
+      if (isArray(reserved.key)) {
+        map(reserved.key, (key, index) => {
+          apiBody[key] = get(identifiedReserved, `[${index}]`);
+        });
+
+        delete newParams[reserved.urlTitle];
+      } else {
+        apiBody[reserved.key] = isArray(identifiedReserved)
+          ? map(identifiedReserved, (ir) => decodeURIComponent(ir))
+          : [decodeURIComponent(identifiedReserved)];
+        delete newParams[reserved.urlTitle];
+        delete newParams[reserved.key];
+      }
     }
   });
 
@@ -133,11 +145,13 @@ export const arrayToParams = (array) => {
     return {};
   }
   return fromPairs(
-    chunk(
-      map(array, (value) =>
-        map(split(value, ","), (val) => encodeURIComponent(val))
-      ),
-      2
+    sortChunks(
+      chunk(
+        map(array, (value) =>
+          map(split(value, ","), (val) => encodeURIComponent(val))
+        ),
+        2
+      )
     )
   );
 };
@@ -153,11 +167,11 @@ export const arrayToPath = (array) => {
   if (isEmpty(array)) {
     return "";
   }
-  return array.join("/");
+  return flatten(sortChunks(chunk(array, 2))).join("/");
 };
 
 export const paramsToPath = (params) => {
-  return flatMap(params, (value, key) => [key, value]).join("/");
+  return arrayToPath(flatMap(params, (value, key) => [key, value]));
 };
 
 const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
