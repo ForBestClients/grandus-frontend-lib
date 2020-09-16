@@ -9,7 +9,7 @@ import {
   map,
   find,
   isArray,
-  omit
+  omit,
   sortBy,
   flatten,
 } from "lodash";
