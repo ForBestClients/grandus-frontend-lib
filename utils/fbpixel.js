@@ -5,10 +5,9 @@ const FBPixel = {
     }
 
     return (
-      <>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
             !function(f,b,e,v,n,t,s)
             {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
             n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -20,16 +19,8 @@ const FBPixel = {
             fbq('init', '${fbPixelCode}');
             fbq('track', 'PageView');
             `,
-          }}
-        />
-        <noscript>
-          <img
-            height="1"
-            width="1"
-            src={`https://www.facebook.com/tr?id=${fbPixelCode}&ev=PageView&noscript=1`}
-          />
-        </noscript>
-      </>
+        }}
+      />
     );
   },
   registerPageViewTracking: function (router) {
@@ -44,7 +35,7 @@ const FBPixel = {
     return window !== undefined && window.fbq;
   },
   pageView: function () {
-    fbq('track', 'PageView');
+    fbq("track", "PageView");
   },
 };
 
