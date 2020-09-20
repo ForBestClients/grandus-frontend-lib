@@ -9,6 +9,7 @@ import {
   map,
   find,
   isArray,
+  omit,
   sortBy,
   flatten,
 } from "lodash";
@@ -199,6 +200,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
 
   return {
     filter,
+    hasActiveFilters: !isEmpty(omit(get(filter, 'selected', []), 'category')),
     mutateFilter: mutate,
     isLoading: isValidating,
   };

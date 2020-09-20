@@ -1,33 +1,26 @@
-import { isFunction } from 'lodash';
+import { omit, set, isFunction, chunk, forEach, get, clone } from "lodash";
 
 const TagManager = {
-  googleAnalyticsCode: "",
-  init: function (googleAnalyticsCode = "") {
-    this.googleAnalyticsCode = googleAnalyticsCode;
-    if (!googleAnalyticsCode) {
+  init: function (googleTagManagerCode = "") {
+    if (!googleTagManagerCode) {
       return null;
     }
 
     return (
       <>
-        {/* Global Site Tag (gtag.js) - Google Analytics */}
-        <script
-          async
-          src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsCode}`}
-        />
+        {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
-                window.dataLayer = window.dataLayer || [];
-                window.gtmTrackingId = '${googleAnalyticsCode}';
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${googleAnalyticsCode}', {
-                    page_path: window.location.pathname,
-                });
+              (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+              j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+              'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','${googleTagManagerCode}');
             `,
           }}
         />
+        <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${googleTagManagerCode}`} height="0" width="0" style={{ display:'none', visibility:'hidden'}}></iframe></noscript>
       </>
     );
   },
@@ -51,13 +44,37 @@ const TagManager = {
       page_path: url,
     });
   },
-  push: function (data, callback) {
+  push: async function (data, callback) {
     if (this.isEnabled()) {
       dataLayer.push(data);
     }
 
     if (isFunction(callback)) {
-      callback(data)
+      callback(data);
+    }
+  },
+  pushChunked: async function (
+    data,
+    key = "products",
+    chunkSize = 30,
+    callback
+  ) {
+    if (this.isEnabled()) {
+      const baseObject = omit(data, key);
+      const objectToChunk = get(data, key, []);
+
+      if (objectToChunk.length > chunkSize) {
+        let newPushData = {};
+        forEach(chunk(objectToChunk, chunkSize), (chunk) => {
+          newPushData = clone(baseObject);
+          set(newPushData, key, chunk);
+          this.push(newPushData);
+        });
+      }
+    }
+
+    if (isFunction(callback)) {
+      callback(data);
     }
   },
 };
