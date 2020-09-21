@@ -54,12 +54,14 @@ const useWishlist = () => {
     await mutate(
       await fetch(`/api/lib/v1/wishlist/items/${wishlistItem?.id}`, {
         method: "DELETE",
-      }).then((result) => {
+      })
+      .then((result) => result.json())
+      .then((result) => {
         if (isFunction(callback)) {
           callback(result);
         }
         setIsLoading(false);
-        return result.json();
+        return result;
       }),
       false
     );
@@ -80,12 +82,14 @@ const useWishlist = () => {
       await mutate(
         await fetch(`/api/lib/v1/wishlist/items/${productId}`, {
           method: "POST",
-        }).then((result) => {
+        })
+        .then((result) => result.json())
+        .then((result) => {
           if (isFunction(callback)) {
             callback(result);
           }
           setIsLoading(false);
-          return result.json();
+          return result;
         }),
         false
       );
