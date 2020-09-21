@@ -1,6 +1,12 @@
-import { get, first, isFunction } from "lodash";
+import { get, map, first, isFunction } from "lodash";
 const EnhancedEcommerce = {
-  impressions: (products, list = undefined) => {
+  impressions: (products, list = undefined, options = { page: 1, perPage: 1}) => {
+    let positionConstant = 0;
+    const page = options?.page;
+    const perPage = options?.perPage;
+    if (page && perPage) {
+      positionConstant = (parseInt(page) - 1) * parseInt(perPage); 
+    }
     const data = {
       impressions: products.map((product, index) => ({
         name: product?.name,
@@ -9,7 +15,7 @@ const EnhancedEcommerce = {
         brand: product?.brand?.name,
         category: get(getProductCategory(product), "name", undefined),
         list: list,
-        position: index + 1,
+        position: positionConstant + index + 1,
       })),
     };
     return prepareData(data, null);
@@ -28,7 +34,13 @@ const EnhancedEcommerce = {
     };
     return prepareData(data, null);
   },
-  productClick: (product, list = undefined, callback) => {
+  productClick: (product, list = undefined, options = { page: 1, perPage: 1}) => {
+    let positionConstant = 0;
+    const page = options?.page;
+    const perPage = options?.perPage;
+    if (page && perPage) {
+      positionConstant = (parseInt(page) - 1) * parseInt(perPage); 
+    }
     const data = {
       click: {
         actionField: { list: list }, // Optional list property.
@@ -40,7 +52,7 @@ const EnhancedEcommerce = {
             brand: product?.brand?.name,
             category: get(getProductCategory(product), "name", undefined),
             list: list,
-            position: product?.position
+            position: product?.position + positionConstant
           },
         ],
       },
@@ -102,6 +114,37 @@ const EnhancedEcommerce = {
     }
 
     return prepareData(data, "checkout");
+  },
+  purchase: (order) => {
+    const items = get(order, 'orderItems', []);
+    const couponsString = map(get(order, 'coupons'), coupon => get(coupon, 'hash')).join('|');
+    const data = {
+      purchase: {
+        actionField: {
+          id: get(order, 'orderNumber'), // Transaction ID. Required for purchases and refunds.
+          affiliation: '',
+          revenue: parseFloat(_.get(order, 'totalSumData.price', 0)), // Total transaction value (incl. tax and shipping)
+          tax: get(order, 'totalSumData.vatFraction', 0),
+          shipping: (parseFloat(get(order, 'deliveryPrice', 0)) + parseFloat(get(order, 'paymentPrice', 0))),
+          coupon: couponsString
+        },
+        products: items.map((item, index) => ({
+          name: item?.name,
+          id: item?.productId,
+          price: item?.totalPriceData?.price,
+          brand: item?.product?.brand?.name,
+          category: get(getProductCategory(item?.product), "name", undefined),
+          quantity: item?.count,
+          coupon: couponsString
+        })),
+      },
+    };
+
+    if (step) {
+      data.checkout.actionField = { step };
+    }
+
+    return prepareData(data);
   },
 };
 
