@@ -1,5 +1,5 @@
 import { get } from "lodash";
-import { reqGetHost } from "grandus-lib/utils";
+import { reqGetHost, reqGetHeadersFront } from "grandus-lib/utils";
 import { arrayToPath, queryToQueryString } from "grandus-lib/hooks/useFilter";
 
 const indexPage = {
@@ -13,7 +13,10 @@ const indexPage = {
   // },
   serverSideProps: async (context) => {
     const homepageData = await fetch(
-      `${reqGetHost(context?.req)}/api/pages/homepage`
+      `${reqGetHost(context?.req)}/api/pages/homepage`,
+      {
+        headers: reqGetHeadersFront(context?.req),
+      }
     );
     const data = await homepageData.json();
     return {
@@ -27,7 +30,10 @@ const productPage = {
     const data = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/products/${
         context?.params?.id
-      }?initial=1`
+      }?initial=1`,
+      {
+        headers: reqGetHeadersFront(context?.req),
+      }
     ).then((result) => result.json());
     return {
       props: { product: data },
@@ -46,7 +52,9 @@ const categoryPage = {
       parameters
     )}&${uri}`;
 
-    const data = await fetch(url).then((result) => {
+    const data = await fetch(url, {
+      headers: reqGetHeadersFront(context?.req),
+    }).then((result) => {
       return result.json();
     });
 
