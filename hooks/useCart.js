@@ -64,16 +64,20 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(false);
   };
 
-  const cartDestroy = async (data, callback) => {
+  const cartDestroy = async (callback) => {
     setIsLoading(true);
     try {
       await mutate(
         await fetch(`/api/lib/v1/cart`, {
           method: "DELETE",
         }).then((result) => {
-          if (isFunction(callback)) {
-            callback(result);
-          }
+          result.json().then((data) => {
+            if (isFunction(callback)) {
+              callback(data);
+            }
+
+            return data;
+          });
         }),
         false
       );
@@ -82,7 +86,6 @@ export default function useCart(initialCart = false, options = {}) {
     }
     setIsLoading(false);
   };
-
 
   const itemAdd = async (count, store, productId, callback) => {
     try {
@@ -150,9 +153,13 @@ export default function useCart(initialCart = false, options = {}) {
       await fetch(`/api/lib/v1/cart/contact`, {
         method: "DELETE",
       }).then((result) => {
-        if (isFunction(callback)) {
-          callback(result);
-        }
+        result.json().then((data) => {
+          if (isFunction(callback)) {
+            callback(data);
+          }
+
+          return data;
+        });
       });
     } catch (error) {
       console.error("An unexpected error happened:", error);
@@ -163,16 +170,16 @@ export default function useCart(initialCart = false, options = {}) {
   const createOrder = async (values, callback) => {
     setIsLoading(true);
     try {
-        await fetch(`/api/lib/v1/order/create`, {
-          method: "POST",
-          body: JSON.stringify(values),
-        }).then((result) => {
-          const data = result.json();
-          if (isFunction(callback)) {
-            callback(data);
-          }
-          return data;
-        })
+      await fetch(`/api/lib/v1/order/create`, {
+        method: "POST",
+        body: JSON.stringify(values),
+      }).then((result) => {
+        const data = result.json();
+        if (isFunction(callback)) {
+          callback(data);
+        }
+        return data;
+      });
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
