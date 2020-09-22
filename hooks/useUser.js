@@ -37,6 +37,8 @@ export default function useUser({
     try {
       const reqBody = {
         user: {
+          name: get(values, "user.firstname"),
+          surname: get(values, "user.surname"),
           email: get(values, "user.email"),
           password: get(values, "user.password"),
           passwordRepeat: get(values, "user.passwordRepeat"),
