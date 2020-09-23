@@ -21,7 +21,7 @@ const replaceKeyForUrlTitle = (key) =>
 const replaceUrlTitleForKey = (urlTitle) =>
   get(find(RESERVED_URI_PARTS, ["urlTitle", urlTitle]), "key", urlTitle);
 
-const sortChunks = (chunks) => sortBy(chunks, (pair) => pair[0]);
+const sortChunks = (chunks) => chunks; // temporary disabled sortingsortBy(chunks, (pair) => pair[0]);
 
 export const getApiBodyFromParams = (params = []) => {
   if (!params) {

@@ -64,6 +64,29 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(false);
   };
 
+  const cartDestroy = async (callback) => {
+    setIsLoading(true);
+    try {
+      await mutate(
+        await fetch(`/api/lib/v1/cart`, {
+          method: "DELETE",
+        }).then((result) => {
+          result.json().then((data) => {
+            if (isFunction(callback)) {
+              callback(data);
+            }
+
+            return data;
+          });
+        }),
+        false
+      );
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    }
+    setIsLoading(false);
+  };
+
   const itemAdd = async (count, store, productId, callback) => {
     try {
       await mutate(
@@ -124,22 +147,39 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(false);
   };
 
-  const createOrder = async (values, callback) => {
+  const removeContact = async (callback) => {
     setIsLoading(true);
     try {
-      await mutate(
-        await fetch(`/api/lib/v1/order/create`, {
-          method: "POST",
-          body: JSON.stringify(values),
-        }).then((result) => {
-          const data = result.json();
+      await fetch(`/api/lib/v1/cart/contact`, {
+        method: "DELETE",
+      }).then((result) => {
+        result.json().then((data) => {
           if (isFunction(callback)) {
             callback(data);
           }
+
           return data;
-        }),
-        false
-      );
+        });
+      });
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    }
+    setIsLoading(false);
+  };
+
+  const createOrder = async (values, callback) => {
+    setIsLoading(true);
+    try {
+      await fetch(`/api/lib/v1/order/create`, {
+        method: "POST",
+        body: JSON.stringify(values),
+      }).then((result) => {
+        const data = result.json();
+        if (isFunction(callback)) {
+          callback(data);
+        }
+        return data;
+      });
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
@@ -194,7 +234,9 @@ export default function useCart(initialCart = false, options = {}) {
     itemRemove,
     itemUpdate,
     cartUpdate,
+    cartDestroy,
     saveContact,
+    removeContact,
     createOrder,
     applyCoupon,
     removeCoupon,

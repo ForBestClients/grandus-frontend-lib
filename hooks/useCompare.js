@@ -27,11 +27,13 @@ const useCompare = () => {
     await mutate(
       await fetch(`/api/lib/v1/compare/items/${productId}`, {
         method: "DELETE",
-      }).then((result) => {
+      })
+      .then((result) => result.json())
+      .then((result) => {
         if (isFunction(callback)) {
           callback(result);
         }
-        return result.json();
+        return result;
       }),
       false
     );
@@ -44,11 +46,13 @@ const useCompare = () => {
       await mutate(
         await fetch(`/api/lib/v1/compare/items/${productId}`, {
           method: "PUT",
-        }).then((result) => {
+        })
+        .then((result) => result.json())
+        .then((result) => {
           if (isFunction(callback)) {
             callback(result);
           }
-          return result.json();
+          return result;
         }),
         false
       );

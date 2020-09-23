@@ -5,7 +5,14 @@ import {
   ESHOP_TYPE_B2B_LOCKED,
   ESHOP_TYPE_MIXED,
 } from "grandus-lib/constants/AppConstants";
-import { get, parseInt, toNumber, deburr, toLower } from "lodash";
+import {
+  get,
+  parseInt,
+  toNumber,
+  deburr,
+  toLower,
+  replace,
+} from "lodash";
 
 export const reqExtractUri = (url) => {
   const uriPosition = url.indexOf("?");
@@ -56,12 +63,45 @@ export const getProductCardFields = (asUriPart = false) => {
       }id,name,urlTitle,storeStatus,finalPriceData,photo`;
 };
 
+export const reqGetHeadersFront = (req, options = {}) => {
+  return {
+    ...get(req, "headers"),
+    host: get(req, "headers.host"),
+    "grandus-frontend-url": get(
+      options,
+      "forwardUrl",
+      get(req, "url")
+    ),
+  };
+};
+
+export const getFrontendUrlFromHeaders = (headers) => {
+  return get(
+    headers,
+    "Grandus-Frontend-Url",
+    get(headers, "grandus-frontend-url")
+  );
+};
+
 export const reqGetHeaders = (req) => {
   const result = {
     "Content-Type": "application/json",
     "Owner-Token": process.env.GRANDUS_TOKEN_OWNER,
     "Webinstance-Token": process.env.GRANDUS_TOKEN_WEBINSTANCE,
   };
+
+  const uriToForward = getFrontendUrlFromHeaders(req?.headers);
+  if (uriToForward) {
+    const removedProtocol = replace(
+      replace(uriToForward, "http://", ""),
+      "https://",
+      ""
+    );
+
+    Object.assign(result, {
+      URI: replace(removedProtocol, get(req, "headers.host"), ""),
+    });
+  }
 
   if (!get(req, "session")) return result;
 
