@@ -149,6 +149,9 @@ const EnhancedEcommerce = {
 };
 
 const getProductCategory = (product) => {
+  if (!product) {
+    return null;
+  }
   const { categories } = product;
   let category = first(categories);
   if (!get(category, "name", null)) {
