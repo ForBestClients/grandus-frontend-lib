@@ -140,10 +140,6 @@ const EnhancedEcommerce = {
       },
     };
 
-    if (step) {
-      data.checkout.actionField = { step };
-    }
-
     return prepareData(data);
   },
 };
