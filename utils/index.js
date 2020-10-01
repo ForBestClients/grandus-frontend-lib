@@ -179,6 +179,17 @@ export const deburredSearch = (string, value) => {
   return deburr(toLower(string)).indexOf(deburr(toLower(value))) >= 0;
 };
 
+export const rotateArray = (arrayToRotate, timesToRotate) => {
+  var arr = [];
+  for (var i = 0; i < arrayToRotate.length; i++) {
+      arr.push(arrayToRotate[i]);
+  };
+  for (var j = 1; j <= timesToRotate; j++) {
+      arr.shift(arr.push(arr[0]));
+  }
+  return arr;
+}
+
 /**
  *
  * Headers pagination
