@@ -39,10 +39,15 @@ const TagManager = {
   isEnabled: function () {
     return window !== undefined && window.dataLayer;
   },
+  canSendPageview: function () {
+    return window !== undefined && window.gtag;
+  },
   pageView: function (url) {
-    window.gtag("config", window.gtmTrackingId, {
-      page_path: url,
-    });
+    if (this.canSendPageview()) {
+      window.gtag("config", window.gtmTrackingId, {
+        page_path: url,
+      });
+    }
   },
   push: async function (data, callback) {
     if (this.isEnabled()) {
