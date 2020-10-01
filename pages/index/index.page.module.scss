@@ -1,0 +1,23 @@
+@import "styles/variables";
+
+.wrapper {
+  box-sizing: border-box;
+}
+
+.homepage-banners-section{
+  @media (max-width: $sm) {
+    padding: 0;
+  }  
+  .homepage-banner{
+    display: block;
+    @media (min-width: $sm) {
+      padding: 10px;
+    }
+    picture, img{
+      display: block;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+    }
+  }
+}
