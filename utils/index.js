@@ -5,14 +5,20 @@ import {
   ESHOP_TYPE_B2B_LOCKED,
   ESHOP_TYPE_MIXED,
 } from "grandus-lib/constants/AppConstants";
-import {
-  get,
-  parseInt,
-  toNumber,
-  deburr,
-  toLower,
-  replace,
-} from "lodash";
+import { get, parseInt, toNumber, deburr, toLower, replace } from "lodash";
+
+export const getDevMeta = () => {
+  if (process.env.NODE_ENV !== "development") {
+    return "";
+  }
+
+  return (
+    <>
+      <meta name="robots" content="noindex, nofollow" />
+      <meta name="googlebot" content="noindex" />
+    </>
+  );
+};
 
 export const reqExtractUri = (url) => {
   const uriPosition = url.indexOf("?");
@@ -67,11 +73,7 @@ export const reqGetHeadersFront = (req, options = {}) => {
   return {
     ...get(req, "headers"),
     host: get(req, "headers.host"),
-    "grandus-frontend-url": get(
-      options,
-      "forwardUrl",
-      get(req, "url")
-    ),
+    "grandus-frontend-url": get(options, "forwardUrl", get(req, "url")),
   };
 };
 
@@ -182,13 +184,13 @@ export const deburredSearch = (string, value) => {
 export const rotateArray = (arrayToRotate, timesToRotate) => {
   var arr = [];
   for (var i = 0; i < arrayToRotate.length; i++) {
-      arr.push(arrayToRotate[i]);
-  };
+    arr.push(arrayToRotate[i]);
+  }
   for (var j = 1; j <= timesToRotate; j++) {
-      arr.shift(arr.push(arr[0]));
+    arr.shift(arr.push(arr[0]));
   }
   return arr;
-}
+};
 
 /**
  *
