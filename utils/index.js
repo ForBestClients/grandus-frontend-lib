@@ -8,16 +8,19 @@ import {
 import { get, parseInt, toNumber, deburr, toLower, replace } from "lodash";
 
 export const getDevMeta = () => {
-  if (process.env.NODE_ENV !== "development") {
-    return "";
+  if (
+    process.env.NODE_ENV !== "production" ||
+    process.env.APP_ENV !== "production"
+  ) {
+    return (
+      <>
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="googlebot" content="noindex" />
+      </>
+    );
   }
 
-  return (
-    <>
-      <meta name="robots" content="noindex, nofollow" />
-      <meta name="googlebot" content="noindex" />
-    </>
-  );
+  return "";
 };
 
 export const reqExtractUri = (url) => {
