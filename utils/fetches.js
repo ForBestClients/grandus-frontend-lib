@@ -32,7 +32,9 @@ const productPage = {
         context?.params?.id
       }?initial=1`,
       {
-        headers: reqGetHeadersFront(context?.req),
+        headers: reqGetHeadersFront(context?.req, {
+          forwardUrl: context?.resolvedUrl,
+        }),
       }
     ).then((result) => result.json());
     return {
@@ -53,7 +55,9 @@ const categoryPage = {
     )}&${uri}`;
 
     const data = await fetch(url, {
-      headers: reqGetHeadersFront(context?.req),
+      headers: reqGetHeadersFront(context?.req, {
+        forwardUrl: context?.resolvedUrl,
+      }),
     }).then((result) => {
       return result.json();
     });
