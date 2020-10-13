@@ -33,6 +33,12 @@ export default function useUser({
     }
   }, [user, redirectIfFound, redirectTo]);
 
+  const logoutUser = async () => {
+    await mutate(
+      await fetch(`/api/lib/v1/auth/signout`).then((result) => result.json())
+    );
+  };
+
   const createUser = async (values, callback) => {
     try {
       const reqBody = {
@@ -74,6 +80,7 @@ export default function useUser({
     user: get(user, "accessToken") ? user : null,
     mutateUser: mutate,
     createUser,
+    logoutUser,
     isLoading: isValidating,
   };
 }

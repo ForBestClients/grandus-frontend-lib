@@ -7,15 +7,18 @@ import {
 import { get } from "lodash";
 import { Result, Button } from "antd";
 import useUser from "grandus-lib/hooks/useUser";
+import useCart from "grandus-lib/hooks/useCart";
 import Link from "next/link";
 
 const Signout = ({ user }) => {
-  const { mutateUser } = useUser();
+  const { logoutUser } = useUser();
+  const { mutateCart } = useCart();
   React.useEffect(() => {
-    mutateUser();
+    logoutUser();
+    mutateCart();
   }, []);
 
-  if (!user) {
+  if (!user?.accessToken) {
     return (
       <div className="container guttered">
         <Result
