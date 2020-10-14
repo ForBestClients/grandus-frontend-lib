@@ -89,6 +89,31 @@ const blogListingPage = {
   },
 };
 
+const searchPage = {
+  serverSideProps: async (context) => {
+    const term = get(context, "params.term");
+    const parameters = arrayToPath(get(context, "params.parameters", []));
+    const uri = queryToQueryString(get(context, "query", {}), {});
+    const url = `${reqGetHost(
+      context?.req
+    )}/api/pages/search/${term}?param=${encodeURIComponent(
+      parameters
+    )}&${uri}`;
+
+    const data = await fetch(url, {
+      headers: reqGetHeadersFront(context?.req, {
+        forwardUrl: context?.resolvedUrl,
+      }),
+    }).then((result) => {
+      return result.json();
+    });
+
+    return {
+      props: data,
+    };
+  },
+};
+
 const blogPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
@@ -158,4 +183,5 @@ export {
   checkoutContactPage,
   userProfilePage,
   thanksPage,
+  searchPage
 };

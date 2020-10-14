@@ -140,6 +140,40 @@ export const getCategoryLinkAttributes = (
   };
 };
 
+export const getSearchLinkAttributesFromRouter = (router, options = {}) => {
+  return getSearchLinkAttributes(
+    get(router, "query.term"),
+    arrayToPath(get(router, "query.parameters", [])),
+    router.query,
+    options
+  );
+};
+
+export const getSearchLinkAttributes = (
+  searchTerm,
+  parameters = "",
+  query = {},
+  options = {}
+) => {
+  const newQuery = get(options, "toDelete")
+    ? queryToQuery(
+        query,
+        get(options, "dataToChange", {}),
+        get(options, "toDelete")
+      )
+    : queryToQuery(query, get(options, "dataToChange", {}));
+  return {
+    href: {
+      pathname: `/vyhladavanie/[term]/[[...parameters]]`,
+      query: newQuery,
+    },
+    as: {
+      pathname: `/vyhladavanie/${searchTerm}/${parameters}`,
+      query: newQuery,
+    },
+  };
+};
+
 export const arrayToParams = (array) => {
   if (isEmpty(array)) {
     return {};
