@@ -11,7 +11,7 @@ import {
   isArray,
   omit,
   sortBy,
-  flatten,
+  flatten
 } from "lodash";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
 
@@ -135,6 +135,40 @@ export const getCategoryLinkAttributes = (
     },
     as: {
       pathname: `/kategoria/${category}/${parameters}`,
+      query: newQuery,
+    },
+  };
+};
+
+export const getCampaignLinkAttributesFromRouter = (router, options = {}) => {
+  return getCampaignLinkAttributes(
+    get(router, "query.campaign"),
+    arrayToPath(get(router, "query.parameters", [])),
+    router.query,
+    options
+  );
+};
+
+export const getCampaignLinkAttributes = (
+  campaign,
+  parameters = "",
+  query = {},
+  options = {}
+) => {
+  const newQuery = get(options, "toDelete")
+    ? queryToQuery(
+        query,
+        get(options, "dataToChange", {}),
+        get(options, "toDelete")
+      )
+    : queryToQuery(query, get(options, "dataToChange", {}));
+  return {
+    href: {
+      pathname: `/akcie/[campaign]/[[...parameters]]`,
+      query: newQuery,
+    },
+    as: {
+      pathname: `/akcie/${campaign}/${parameters}`,
       query: newQuery,
     },
   };
