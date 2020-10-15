@@ -11,7 +11,7 @@ import {
   isArray,
   omit,
   sortBy,
-  flatten
+  flatten,
 } from "lodash";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
 
@@ -149,6 +149,15 @@ export const getCampaignLinkAttributesFromRouter = (router, options = {}) => {
   );
 };
 
+export const getSearchLinkAttributesFromRouter = (router, options = {}) => {
+  return getSearchLinkAttributes(
+    get(router, "query.term"),
+    arrayToPath(get(router, "query.parameters", [])),
+    router.query,
+    options
+  );
+};
+
 export const getCampaignLinkAttributes = (
   campaign,
   parameters = "",
@@ -169,6 +178,31 @@ export const getCampaignLinkAttributes = (
     },
     as: {
       pathname: `/akcie/${campaign}/${parameters}`,
+      query: newQuery,
+    },
+  };
+};
+
+export const getSearchLinkAttributes = (
+  searchTerm,
+  parameters = "",
+  query = {},
+  options = {}
+) => {
+  const newQuery = get(options, "toDelete")
+    ? queryToQuery(
+        query,
+        get(options, "dataToChange", {}),
+        get(options, "toDelete")
+      )
+    : queryToQuery(query, get(options, "dataToChange", {}));
+  return {
+    href: {
+      pathname: `/vyhladavanie/[term]/[[...parameters]]`,
+      query: newQuery,
+    },
+    as: {
+      pathname: `/vyhladavanie/${searchTerm}/${parameters}`,
       query: newQuery,
     },
   };
@@ -234,7 +268,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
 
   return {
     filter,
-    hasActiveFilters: !isEmpty(omit(get(filter, 'selected', []), 'category')),
+    hasActiveFilters: !isEmpty(omit(get(filter, "selected", []), "category")),
     mutateFilter: mutate,
     isLoading: isValidating,
   };
