@@ -160,8 +160,11 @@ const checkoutContactPage = {
     const countries = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/countries`
     ).then((result) => result.json());
+    const towns = await fetch(
+      `${reqGetHost(context?.req)}/api/lib/v1/towns`
+    ).then((result) => result.json());
     return {
-      props: { countries },
+      props: { countries, towns },
     };
   },
 };
