@@ -73,30 +73,40 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                 x
               </a>
             </li>
-            <li>
-              <Link href="/porovnanie" as={`/porovnanie`}>
-                <a
-                  className={styles.mobile}
-                  onClick={() => {
-                    updateOpenedMenu(false);
-                  }}
-                >
-                  Porovnanie
-                </a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/wishlist" as={`/wishlist`}>
-                <a
-                  className={styles.mobile}
-                  onClick={() => {
-                    updateOpenedMenu(false);
-                  }}
-                >
-                  Wishlist
-                </a>
-              </Link>
-            </li>
+            {get(options, "disables.compare") ? (
+              ""
+            ) : (
+              <li>
+                <Link href="/porovnanie" as={`/porovnanie`}>
+                  <a
+                    className={styles.mobile}
+                    onClick={() => {
+                      updateOpenedMenu(false);
+                    }}
+                  >
+                    Porovnanie
+                  </a>
+                </Link>
+              </li>
+            )}
+
+            {get(options, "disables.wishlist") ? (
+              ""
+            ) : (
+              <li>
+                <Link href="/wishlist" as={`/wishlist`}>
+                  <a
+                    className={styles.mobile}
+                    onClick={() => {
+                      updateOpenedMenu(false);
+                    }}
+                  >
+                    Zoznam obľúbených produktov
+                  </a>
+                </Link>
+              </li>
+            )}
+
             <li className={styles.separator}></li>
             {data.map((item, index) => {
               const submenuItemsCount = get(item, "children", []).length;
