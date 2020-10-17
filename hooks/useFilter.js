@@ -121,6 +121,10 @@ export const getCategoryLinkAttributes = (
   query = {},
   options = {}
 ) => {
+  if (get(options, "absoluteHref")) {
+    return { href: options.absoluteHref };
+  }
+
   const newQuery = get(options, "toDelete")
     ? queryToQuery(
         query,
