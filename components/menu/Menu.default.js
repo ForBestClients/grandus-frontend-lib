@@ -2,6 +2,7 @@ import useSWR from "swr";
 import { get, indexOf, remove, uniq } from "lodash";
 import Link from "next/link";
 import { getCategoryLinkAttributes } from "grandus-lib/hooks/useFilter";
+import { getImageUrl } from "grandus-lib/utils";
 import { useState } from "react";
 
 import styles from "./Menu.default.module.scss";
@@ -81,10 +82,9 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
           </ul>
         ) : (
           <ul className={`${styles.main} ${isOpen ? styles.open : ""}`}>
-            <li className={styles.logo}>
+            <li className={styles.logo + " " + styles.mobile}>
               <Link href="/" as={`/`}>
                 <a
-                  className={styles.mobile}
                   onClick={() => {
                     updateOpenedMenu(false);
                   }}
@@ -111,7 +111,6 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                   updateOpenedMenu(false);
                   return false;
                 }}
-                className={styles.mobile}
               >
                 x
               </a>
@@ -119,10 +118,9 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
             {get(options, "disables.login") ? (
               ""
             ) : (
-              <li>
+              <li className={styles.mobile}>
                 <Link href="/prihlasenie" as={`/prihlasenie`}>
                   <a
-                    className={styles.mobile}
                     onClick={() => {
                       updateOpenedMenu(false);
                     }}
@@ -135,10 +133,9 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
             {get(options, "disables.compare") ? (
               ""
             ) : (
-              <li>
+              <li className={styles.mobile}>
                 <Link href="/porovnanie" as={`/porovnanie`}>
                   <a
-                    className={styles.mobile}
                     onClick={() => {
                       updateOpenedMenu(false);
                     }}
@@ -152,10 +149,9 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
             {get(options, "disables.wishlist") ? (
               ""
             ) : (
-              <li>
+              <li className={styles.mobile}>
                 <Link href="/wishlist" as={`/wishlist`}>
                   <a
-                    className={styles.mobile}
                     onClick={() => {
                       updateOpenedMenu(false);
                     }}
@@ -167,6 +163,7 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
             )}
 
             <li className={styles.separator}></li>
+
             {data.map((item, index) => {
               const submenuItemsCount = get(item, "children", []).length;
               return (
@@ -203,15 +200,30 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                       {get(item, "children", []).map((subItem, index) => {
                         const hasSubSubmenu = get(subItem, "children", [])
                           .length;
+                        let divStyle = {};
+                        if (get(subItem, "alternativePhoto.path")) {
+                          divStyle = {
+                            backgroundImage: `url("${getImageUrl(
+                              subItem?.alternativePhoto,
+                              "150x150",
+                              "jpg"
+                            )}")`,
+                          };
+                        }
                         return (
                           <div
+                            style={divStyle}
                             key={generateKey(1, subItem?.id, index)}
                             className={`${styles["column"]} ${
-                              styles[
-                                `menu-col-${
-                                  submenuItemsCount > 5 ? 5 : submenuItemsCount
-                                }`
-                              ]
+                              get(options, "megamenu.type") == "auto"
+                                ? styles["menu-col-auto"]
+                                : styles[
+                                    `menu-col-${
+                                      submenuItemsCount > 5
+                                        ? 5
+                                        : submenuItemsCount
+                                    }`
+                                  ]
                             }`}
                           >
                             {index == 0 ? (
@@ -234,11 +246,11 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                   hasSubSubmenu ? styles["has-submenu"] : ""
                                 }`}
                               >
-                                <Image
+                                {/* <Image
                                   photo={get(subItem, "alternativePhoto", {})}
                                   size={"20x28"}
                                   type={"png"}
-                                />
+                                /> */}
                                 {get(subItem, "name")}
                               </a>
                             </Link>
