@@ -35,7 +35,7 @@
       li.separator {
         width: 100%;
         height: 1px;
-        border-bottom: 1px solid #eee;
+        border-bottom: 1px solid $grey-light-color;
         display: none;
       }
       a {
@@ -207,6 +207,9 @@
   .megamenu {
     nav {
       ul.main {
+        &.open {
+          display: block;
+        }        
         z-index: 4;
         box-shadow: $general-shadow;
         position: fixed;
@@ -214,7 +217,7 @@
         top: 0;
         bottom: 0;
         right: 0;
-        padding: $general-gutter;
+        padding: 0;
         background: white;
         flex-direction: column;
         display: none;
@@ -224,6 +227,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: $general-gutter;
           }
           &.separator {
             display: block;
@@ -236,6 +240,7 @@
             // height: 50px;
             align-items: center;
             font-size: 14px;
+            margin: 0;
             &:focus {
               color: $primary-color;
               text-decoration: underline;
@@ -251,12 +256,9 @@
             font-size: 16px;
             font-weight: bolder;
             height: auto;
-            padding: $general-gutter;
+            padding: $general-gutter / 1.5;
           }
         }
-      }
-      ul.main.open {
-        display: block;
       }
     }
     a.active {
@@ -265,6 +267,7 @@
     .megamenu-item {
       a {
         padding-left: $general-gutter !important;
+        border-bottom: 1px solid $grey-light-color;
       }
     }
     // a.active.has-submenu {
@@ -300,7 +303,7 @@
   .megamenu-item {
     position: static;
     box-shadow: none;
-    padding: $general-gutter 0;
+    padding: 0;
   }
   .megamenu-title {
     img {
