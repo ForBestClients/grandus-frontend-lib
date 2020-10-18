@@ -87,11 +87,12 @@
   width: 100%;
   position: relative;
   padding-right: $general-gutter;
+
+  // background-image: SET INLINE ON ELEMENT
+  background-repeat: no-repeat;
+  background-size: 75px 75px;
+  background-position: right;
   &.menu-col-auto {
-    // background-image: SET INLINE ON ELEMENT
-    background-repeat: no-repeat;
-    background-size: 75px 75px;
-    background-position: right;
     padding: $general-gutter;
     border: 1px solid $grey-light-color;
 
@@ -182,7 +183,7 @@
     width: 100%;
     height: auto;
     min-height: auto;
-    background-size: 100px 100px;
+    background-size: 75px 75px;
     background-position: right top;
   }
   .megamenu {
@@ -231,6 +232,7 @@
             display: none !important;
           }
           .megamenu-item {
+            padding: 0;
             position: static;
             box-shadow: none;
             &.open {
@@ -249,6 +251,7 @@
             }
             .column.menu-col-auto {
               padding: 0;
+              margin-top: $general-gutter / 2;
               a {
                 border-bottom: none;
               }

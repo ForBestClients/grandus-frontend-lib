@@ -197,6 +197,20 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                           : ""
                       }`}
                     >
+                      <div
+                        className={`${styles["column"]} ${
+                          get(options, "megamenu.type") == "auto"
+                            ? styles["menu-col-auto"]
+                            : ""
+                        } ${styles.mobile}`}
+                      >
+                        <LinkMobileAll
+                          name={get(item, "name")}
+                          urlName={get(item, "urlName")}
+                          onClickMethod={updateOpenedMenu}
+                        />
+                      </div>
+
                       {get(item, "children", []).map((subItem, index) => {
                         const hasSubSubmenu = get(subItem, "children", [])
                           .length;
@@ -226,15 +240,6 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                   ]
                             }`}
                           >
-                            {index == 0 ? (
-                              <LinkMobileAll
-                                name={get(item, "name")}
-                                urlName={get(item, "urlName")}
-                                onClickMethod={updateOpenedMenu}
-                              />
-                            ) : (
-                              ""
-                            )}
                             <Link
                               {...getCategoryLinkAttributes(
                                 get(subItem, "urlName")
