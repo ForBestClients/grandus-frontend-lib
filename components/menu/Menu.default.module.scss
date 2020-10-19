@@ -94,7 +94,15 @@
   background-position: right;
   &.menu-col-auto {
     padding: $general-gutter;
-    border: 1px solid $grey-light-color;
+
+    border-left: 1px solid $grey-light-color;
+    border-bottom: 1px solid $grey-light-color;
+
+    &:nth-child(4n),
+    &:last-child {
+      padding-right: 1px;
+      border-right: 1px solid $grey-light-color;
+    }
 
     width: 25%;
 
@@ -120,10 +128,13 @@
 
     &:first-child,
     &:nth-child(2),
-    &:nth-child(3) {
+    &:nth-child(3),
+    &:nth-child(4) {
       width: 33.33%;
       background-size: 150px 150px;
       background-position: right top;
+      border-top: 1px solid $grey-light-color;
+
       .megamenu-wrap {
         width: calc(100% - 150px);
         ul li a {
@@ -132,6 +143,10 @@
           padding-bottom: 4px;
         }
       }
+    }
+
+    &:nth-child(4) {
+      border-right: 1px solid $grey-light-color;
     }
   }
 }
