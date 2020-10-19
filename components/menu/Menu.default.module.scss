@@ -91,7 +91,7 @@
   // background-image: SET INLINE ON ELEMENT
   background-repeat: no-repeat;
   background-size: 75px 75px;
-  background-position: right;
+  background-position: right top;
   &.menu-col-auto {
     padding: $general-gutter;
     border: 1px solid $grey-light-color;
@@ -118,9 +118,9 @@
       }
     }
 
-    &:first-child,
     &:nth-child(2),
-    &:nth-child(3) {
+    &:nth-child(3),
+    &:nth-child(4) {
       width: 33.33%;
       background-size: 150px 150px;
       background-position: right top;
