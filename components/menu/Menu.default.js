@@ -2,6 +2,7 @@ import useSWR from "swr";
 import { get, indexOf, remove, uniq } from "lodash";
 import Link from "next/link";
 import { getCategoryLinkAttributes } from "grandus-lib/hooks/useFilter";
+import { getImageUrl } from "grandus-lib/utils";
 import { useState } from "react";
 
 import styles from "./Menu.default.module.scss";
@@ -10,6 +11,49 @@ import dynamic from "next/dynamic";
 const Image = dynamic(() =>
   import("grandus-lib/components-atomic/image/Image")
 );
+
+const generateKey = (level = 0, id, key, suffix = "") =>
+  `category-menu-level-${level}-${id}-${key}${suffix}`;
+
+const LinkMobileAll = ({ name, urlName, onClickMethod }) => {
+  return (
+    <Link {...getCategoryLinkAttributes(urlName)} scroll={true}>
+      <a className={styles.mobile} onClick={() => onClickMethod(false)}>
+        {`Všetko z kategórie ${name}`}
+      </a>
+    </Link>
+  );
+};
+
+const LinkMobile = ({ item, onClickMethod, onClickMethod2 }) => {
+  const hasSubmenu = get(item, "children", []).length > 0;
+  const hasSubmenuCssClass = hasSubmenu ? styles["has-submenu"] : "";
+  return (
+    <Link
+      {...getCategoryLinkAttributes(
+        item?.urlName,
+        "",
+        {},
+        { absoluteHref: get(item, "externalUrl") }
+      )}
+      scroll={true}
+    >
+      <a
+        className={hasSubmenuCssClass + " " + styles.mobile}
+        onClick={(e) => {
+          if (hasSubmenu) {
+            e.preventDefault();
+            onClickMethod(item?.id);
+          } else {
+            onClickMethod2(false);
+          }
+        }}
+      >
+        {item?.name}
+      </a>
+    </Link>
+  );
+};
 
 const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
   const { data, error } = useSWR(
@@ -38,10 +82,9 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
           </ul>
         ) : (
           <ul className={`${styles.main} ${isOpen ? styles.open : ""}`}>
-            <li className={styles.logo}>
+            <li className={styles.logo + " " + styles.mobile}>
               <Link href="/" as={`/`}>
                 <a
-                  className={styles.mobile}
                   onClick={() => {
                     updateOpenedMenu(false);
                   }}
@@ -68,91 +111,83 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                   updateOpenedMenu(false);
                   return false;
                 }}
-                className={styles.mobile}
               >
                 x
               </a>
             </li>
-            <li>
-              <Link href="/porovnanie" as={`/porovnanie`}>
-                <a
-                  className={styles.mobile}
-                  onClick={() => {
-                    updateOpenedMenu(false);
-                  }}
-                >
-                  Porovnanie
-                </a>
-              </Link>
-            </li>
-            <li>
-              <Link href="/wishlist" as={`/wishlist`}>
-                <a
-                  className={styles.mobile}
-                  onClick={() => {
-                    updateOpenedMenu(false);
-                  }}
-                >
-                  Wishlist
-                </a>
-              </Link>
-            </li>
+            {get(options, "disables.login") ? (
+              ""
+            ) : (
+              <li className={styles.mobile}>
+                <Link href="/prihlasenie" as={`/prihlasenie`}>
+                  <a
+                    onClick={() => {
+                      updateOpenedMenu(false);
+                    }}
+                  >
+                    Prihlásenie
+                  </a>
+                </Link>
+              </li>
+            )}
+            {get(options, "disables.compare") ? (
+              ""
+            ) : (
+              <li className={styles.mobile}>
+                <Link href="/porovnanie" as={`/porovnanie`}>
+                  <a
+                    onClick={() => {
+                      updateOpenedMenu(false);
+                    }}
+                  >
+                    Porovnanie
+                  </a>
+                </Link>
+              </li>
+            )}
+
+            {get(options, "disables.wishlist") ? (
+              ""
+            ) : (
+              <li className={styles.mobile}>
+                <Link href="/wishlist" as={`/wishlist`}>
+                  <a
+                    onClick={() => {
+                      updateOpenedMenu(false);
+                    }}
+                  >
+                    Zoznam obľúbených produktov
+                  </a>
+                </Link>
+              </li>
+            )}
+
             <li className={styles.separator}></li>
+
             {data.map((item, index) => {
               const submenuItemsCount = get(item, "children", []).length;
               return (
-                <li key={`menu-item-${get(item, "id")}-${index}`}>
-                  {get(item, "externalUrl") ? (
-                    <>
-                      <a
-                        className={
-                          submenuItemsCount ? styles["has-submenu"] : ""
-                        }
-                        href={get(item, "externalUrl")}
-                      >
-                        {get(item, "name")}
-                      </a>
-                      <a
-                        className={`${
-                          submenuItemsCount ? styles["has-submenu"] : ""
-                        } ${styles.mobile}`}
-                        href={get(item, "externalUrl")}
-                        onClick={function (e) {
-                          if (submenuItemsCount) {
-                            e.preventDefault();
-                            onClickToggleOpenCategory(get(item, "id"));
-                          }
-                        }}
-                      >
-                        {get(item, "name")}
-                      </a>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        {...getCategoryLinkAttributes(get(item, "urlName"))}
-                        scroll={true}
-                      >
-                        <a
-                          className={
-                            submenuItemsCount ? styles["has-submenu"] : ""
-                          }
-                        >
-                          {get(item, "name")}
-                        </a>
-                      </Link>
-                      <a
-                        className={`${
-                          submenuItemsCount ? styles["has-submenu"] : ""
-                        } ${styles.mobile}`}
-                        onClick={function () {
-                          onClickToggleOpenCategory(get(item, "id"));
-                        }}
-                      >
-                        {get(item, "name")}
-                      </a>
-                    </>
-                  )}
+                <li key={generateKey(0, item?.id, index)}>
+                  <Link
+                    {...getCategoryLinkAttributes(
+                      item?.urlName,
+                      "",
+                      {},
+                      { absoluteHref: get(item, "externalUrl") }
+                    )}
+                    scroll={true}
+                  >
+                    <a
+                      className={submenuItemsCount ? styles["has-submenu"] : ""}
+                    >
+                      {get(item, "name")}
+                    </a>
+                  </Link>
+                  <LinkMobile
+                    item={item}
+                    onClickMethod={onClickToggleOpenCategory}
+                    onClickMethod2={updateOpenedMenu}
+                  />
 
                   {submenuItemsCount ? (
                     <div
@@ -162,42 +197,49 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                           : ""
                       }`}
                     >
+                      <div
+                        className={`${styles["column"]} ${
+                          get(options, "megamenu.type") == "auto"
+                            ? styles["menu-col-auto"]
+                            : ""
+                        } ${styles.mobile}`}
+                      >
+                        <LinkMobileAll
+                          name={get(item, "name")}
+                          urlName={get(item, "urlName")}
+                          onClickMethod={updateOpenedMenu}
+                        />
+                      </div>
+
                       {get(item, "children", []).map((subItem, index) => {
                         const hasSubSubmenu = get(subItem, "children", [])
                           .length;
+                        let divStyle = {};
+                        if (get(subItem, "alternativePhoto.path")) {
+                          divStyle = {
+                            backgroundImage: `url("${getImageUrl(
+                              subItem?.alternativePhoto,
+                              "150x150",
+                              "jpg"
+                            )}")`,
+                          };
+                        }
                         return (
                           <div
-                            key={`menu-sub-item-${get(item, "id")}-${get(
-                              subItem,
-                              "id"
-                            )}-${index}`}
-                            className={`${styles["mo-column"]} ${
-                              styles[
-                                `mo-col-${
-                                  submenuItemsCount > 5 ? 5 : submenuItemsCount
-                                }`
-                              ]
+                            style={divStyle}
+                            key={generateKey(1, subItem?.id, index)}
+                            className={`${styles["column"]} ${
+                              get(options, "megamenu.type") == "auto"
+                                ? styles["menu-col-auto"]
+                                : styles[
+                                    `menu-col-${
+                                      submenuItemsCount > 5
+                                        ? 5
+                                        : submenuItemsCount
+                                    }`
+                                  ]
                             }`}
                           >
-                            {index == 0 ? (
-                              <Link
-                                {...getCategoryLinkAttributes(
-                                  get(item, "urlName")
-                                )}
-                                scroll={true}
-                              >
-                                <a
-                                  className={`${styles["megamenu-title"]} ${styles.mobile}`}
-                                  onClick={() => {
-                                    updateOpenedMenu(false);
-                                  }}
-                                >
-                                  Všetko z kategórie {get(item, "name")}
-                                </a>
-                              </Link>
-                            ) : (
-                              ""
-                            )}
                             <Link
                               {...getCategoryLinkAttributes(
                                 get(subItem, "urlName")
@@ -209,24 +251,19 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                   hasSubSubmenu ? styles["has-submenu"] : ""
                                 }`}
                               >
-                                <Image
+                                {/* <Image
                                   photo={get(subItem, "alternativePhoto", {})}
                                   size={"20x28"}
                                   type={"png"}
-                                />
+                                /> */}
                                 {get(subItem, "name")}
                               </a>
                             </Link>
-                            <a
-                              className={`${
-                                hasSubSubmenu ? styles["has-submenu"] : ""
-                              } ${styles.mobile}`}
-                              onClick={function () {
-                                onClickToggleOpenCategory(get(subItem, "id"));
-                              }}
-                            >
-                              {get(subItem, "name")}
-                            </a>
+                            <LinkMobile
+                              item={subItem}
+                              onClickMethod={onClickToggleOpenCategory}
+                              onClickMethod2={updateOpenedMenu}
+                            />
                             {hasSubSubmenu ? (
                               <div
                                 className={`${styles["megamenu-wrap"]} ${
@@ -240,35 +277,22 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                               >
                                 <ul>
                                   <li>
-                                    <Link
-                                      {...getCategoryLinkAttributes(
-                                        get(subItem, "urlName")
-                                      )}
-                                      scroll={true}
-                                    >
-                                      <a
-                                        className={`${styles.mobile}`}
-                                        onClick={() => {
-                                          updateOpenedMenu(false);
-                                        }}
-                                      >
-                                        Všetko z kategórie{" "}
-                                        {get(subItem, "name")}
-                                      </a>
-                                    </Link>
+                                    <LinkMobileAll
+                                      name={get(subItem, "name")}
+                                      urlName={get(subItem, "urlName")}
+                                      onClickMethod={updateOpenedMenu}
+                                    />
                                   </li>
                                   {subItem.children.map((subSubItem, index) => {
                                     if (index == 6 && hasSubSubmenu !== index) {
                                       return (
                                         <li
-                                          key={`menu-sub-item-${get(
-                                            item,
-                                            "id"
-                                          )}-${get(subItem, "id")}-${get(
-                                            subSubItem,
-                                            "id",
-                                            "000"
-                                          )}-${index}`}
+                                          key={generateKey(
+                                            2,
+                                            subSubItem?.id,
+                                            index,
+                                            "-show-more"
+                                          )}
                                         >
                                           <Link
                                             {...getCategoryLinkAttributes(
@@ -288,13 +312,11 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                     }
                                     return (
                                       <li
-                                        key={`menu-sub-item-${get(
-                                          item,
-                                          "id"
-                                        )}-${get(subItem, "id")}-${get(
-                                          subSubItem,
-                                          "id"
-                                        )}-${index}`}
+                                        key={generateKey(
+                                          2,
+                                          subSubItem?.id,
+                                          index
+                                        )}
                                       >
                                         <Link
                                           {...getCategoryLinkAttributes(

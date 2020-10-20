@@ -121,6 +121,10 @@ export const getCategoryLinkAttributes = (
   query = {},
   options = {}
 ) => {
+  if (get(options, "absoluteHref")) {
+    return { href: options.absoluteHref };
+  }
+
   const newQuery = get(options, "toDelete")
     ? queryToQuery(
         query,
@@ -135,6 +139,74 @@ export const getCategoryLinkAttributes = (
     },
     as: {
       pathname: `/kategoria/${category}/${parameters}`,
+      query: newQuery,
+    },
+  };
+};
+
+export const getCampaignLinkAttributesFromRouter = (router, options = {}) => {
+  return getCampaignLinkAttributes(
+    get(router, "query.campaign"),
+    arrayToPath(get(router, "query.parameters", [])),
+    router.query,
+    options
+  );
+};
+
+export const getSearchLinkAttributesFromRouter = (router, options = {}) => {
+  return getSearchLinkAttributes(
+    get(router, "query.term"),
+    arrayToPath(get(router, "query.parameters", [])),
+    router.query,
+    options
+  );
+};
+
+export const getCampaignLinkAttributes = (
+  campaign,
+  parameters = "",
+  query = {},
+  options = {}
+) => {
+  const newQuery = get(options, "toDelete")
+    ? queryToQuery(
+        query,
+        get(options, "dataToChange", {}),
+        get(options, "toDelete")
+      )
+    : queryToQuery(query, get(options, "dataToChange", {}));
+  return {
+    href: {
+      pathname: `/akcie/[campaign]/[[...parameters]]`,
+      query: newQuery,
+    },
+    as: {
+      pathname: `/akcie/${campaign}/${parameters}`,
+      query: newQuery,
+    },
+  };
+};
+
+export const getSearchLinkAttributes = (
+  searchTerm,
+  parameters = "",
+  query = {},
+  options = {}
+) => {
+  const newQuery = get(options, "toDelete")
+    ? queryToQuery(
+        query,
+        get(options, "dataToChange", {}),
+        get(options, "toDelete")
+      )
+    : queryToQuery(query, get(options, "dataToChange", {}));
+  return {
+    href: {
+      pathname: `/vyhladavanie/[term]/[[...parameters]]`,
+      query: newQuery,
+    },
+    as: {
+      pathname: `/vyhladavanie/${searchTerm}/${parameters}`,
       query: newQuery,
     },
   };
@@ -200,7 +272,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
 
   return {
     filter,
-    hasActiveFilters: !isEmpty(omit(get(filter, 'selected', []), 'category')),
+    hasActiveFilters: !isEmpty(omit(get(filter, "selected", []), "category")),
     mutateFilter: mutate,
     isLoading: isValidating,
   };

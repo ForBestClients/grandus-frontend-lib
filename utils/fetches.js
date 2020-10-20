@@ -89,6 +89,31 @@ const blogListingPage = {
   },
 };
 
+const searchPage = {
+  serverSideProps: async (context) => {
+    const term = encodeURIComponent(get(context, "params.term"));
+    const parameters = arrayToPath(get(context, "params.parameters", []));
+    const uri = queryToQueryString(get(context, "query", {}), {}, ['term']);
+    const url = `${reqGetHost(
+      context?.req
+    )}/api/pages/search/${term}?param=${encodeURIComponent(
+      parameters
+    )}&${uri}`;
+
+    const data = await fetch(url, {
+      headers: reqGetHeadersFront(context?.req, {
+        forwardUrl: context?.resolvedUrl,
+      }),
+    }).then((result) => {
+      return result.json();
+    });
+
+    return {
+      props: data,
+    };
+  },
+};
+
 const blogPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
@@ -99,6 +124,50 @@ const blogPage = {
     };
   },
 };
+
+const campaignListingPage = {
+  serverSideProps: async (context) => {
+    const uri = [];
+    if (context?.query.page) {
+      uri.push(`page=${get(context, "query.page", 1)}`);
+    }
+    if (context?.query.perPage) {
+      uri.push(`perPage=${get(context, "query.perPage", "")}`);
+    }
+    const data = await fetch(
+      `${reqGetHost(context?.req)}/api/lib/v1/campaigns?${uri.join("&")}`
+    ).then((result) => result.json());
+    return {
+      props: data,
+    };
+  },
+};
+
+const campaignPage = {
+  serverSideProps: async (context) => {
+    const campaign = get(context, "params.campaign");
+    const parameters = arrayToPath(get(context, "params.parameters", []));
+    const uri = queryToQueryString(get(context, "query", {}), {});
+    const url = `${reqGetHost(
+      context?.req
+    )}/api/pages/campaign/${campaign}?param=${encodeURIComponent(
+      parameters
+    )}&${uri}`;
+
+    const data = await fetch(url, {
+      headers: reqGetHeadersFront(context?.req, {
+        forwardUrl: context?.resolvedUrl,
+      }),
+    }).then((result) => {
+      return result.json();
+    });
+
+    return {
+      props: data,
+    };
+  },
+};
+
 
 const staticPage = {
   serverSideProps: async (context) => {
@@ -116,8 +185,11 @@ const checkoutContactPage = {
     const countries = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/countries`
     ).then((result) => result.json());
+    const towns = await fetch(
+      `${reqGetHost(context?.req)}/api/lib/v1/towns`
+    ).then((result) => result.json());
     return {
-      props: { countries },
+      props: { countries, towns },
     };
   },
 };
@@ -155,7 +227,10 @@ export {
   staticPage,
   blogListingPage,
   blogPage,
+  campaignListingPage,
+  campaignPage,
   checkoutContactPage,
   userProfilePage,
   thanksPage,
+  searchPage
 };
