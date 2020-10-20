@@ -10,7 +10,7 @@ const Analytics = {
       <>
         {/* Global Site Tag (gtag.js) - Google Analytics */}
         <script
-          async
+          async defer
           src={'https://www.googletagmanager.com/gtag/js?id=' + googleAnalyticsCode}
         />
         <script
