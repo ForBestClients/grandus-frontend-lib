@@ -91,9 +91,9 @@ const blogListingPage = {
 
 const searchPage = {
   serverSideProps: async (context) => {
-    const term = get(context, "params.term");
+    const term = encodeURIComponent(get(context, "params.term"));
     const parameters = arrayToPath(get(context, "params.parameters", []));
-    const uri = queryToQueryString(get(context, "query", {}), {});
+    const uri = queryToQueryString(get(context, "query", {}), {}, ['term']);
     const url = `${reqGetHost(
       context?.req
     )}/api/pages/search/${term}?param=${encodeURIComponent(
