@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import parsePhoneNumberFromString from 'libphonenumber-js';
-import { get } from 'lodash';
+import { get, isEmpty } from 'lodash';
 
 const PhoneInput = (props) => {
     const {
@@ -21,7 +21,7 @@ const PhoneInput = (props) => {
       setFieldValue
     } = props;
 
-    const phoneNumber = parsePhoneNumberFromString(values[fieldName]);
+    const phoneNumber = parsePhoneNumberFromString(!isEmpty(values[fieldName]) ? values[fieldName] : '');
     const value = phoneNumber ? phoneNumber.number : values[fieldName];
 
     const onPhoneNumberChange = (e) => {
