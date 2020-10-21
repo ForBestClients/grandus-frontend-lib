@@ -46,6 +46,22 @@ export const reqApiHost = (req) => {
   return process.env.HOST_API;
 };
 
+export const getCartExpand = (asUriPart = false) => {
+  return process.env.NEXT_PUBLIC_CART_EXPAND
+    ? `${asUriPart ? `expand=` : ""}${
+        process.env.NEXT_PUBLIC_CART_EXPAND
+      }`
+    : "";
+};
+
+export const getCartFields = (asUriPart = false) => {
+  return process.env.NEXT_PUBLIC_CART_FIELDS
+    ? `${asUriPart ? `fields=` : ""}${
+        process.env.NEXT_PUBLIC_CART_FIELDS
+      }`
+    : "";
+};
+
 export const getProductDetailExpand = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_DETAIL_EXPAND
     ? `${asUriPart ? `expand=` : ""}${
