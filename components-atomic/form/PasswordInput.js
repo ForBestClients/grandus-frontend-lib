@@ -1,5 +1,6 @@
 import { Form, Input } from 'antd';
 import { get } from 'lodash';
+import FloatLabel from "./label/FloatLabel";
 
 const PasswordInput = (props) => {
     const {
@@ -27,14 +28,15 @@ const PasswordInput = (props) => {
             : null
         }
       >
-        <Input.Password
-          id={fieldName}
-          name={fieldName}
-          value={values[fieldName]}
-          placeholder={label}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <FloatLabel label={label} name={fieldName} value={values[fieldName]}>
+          <Input.Password
+            id={fieldName}
+            name={fieldName}
+            value={values[fieldName]}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+        </FloatLabel>
       </Form.Item>
     );
   };
