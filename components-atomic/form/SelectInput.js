@@ -1,22 +1,22 @@
-import { Form, Input } from "antd";
-import { get } from "lodash";
+import { Form, Select } from "antd";
+import { get, map } from "lodash";
 import FloatLabel from "./label/FloatLabel";
 
-const TextInput = (props) => {
+const SelectInput = (props) => {
   const {
     name: fieldName,
     label,
     touched,
     values,
     errors,
-    handleBlur,
-    handleChange,
-    addonAfter,
-    addonBefore,
+    onBlur,
+    onChange,
+    options = [],
     allowClear = false,
     disabled = false,
     validateStatus = "",
     help = null,
+    showSearch,
   } = props;
   return (
     <Form.Item
@@ -35,20 +35,35 @@ const TextInput = (props) => {
       }
     >
       <FloatLabel label={label} name={fieldName} value={values[fieldName]}>
-        <Input
+        <Select
+          showSearch={showSearch}
           id={fieldName}
           name={fieldName}
           value={values[fieldName]}
-          onChange={handleChange}
-          onBlur={handleBlur}
-          addonAfter={addonAfter}
-          addonBefore={addonBefore}
-          allowClear={allowClear}
           disabled={disabled}
-        />
+          allowClear={allowClear}
+          onChange={(val) => {
+            onChange(val);
+          }}
+          onBlur={() => {
+            onBlur();
+          }}
+          filterOption={(input, option) =>
+            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+          }
+        >
+          {map(options, (option, index) => (
+            <Select.Option
+              value={get(option, "value")}
+              key={`${fieldName}-option-${index}`}
+            >
+              {get(option, "label")}
+            </Select.Option>
+          ))}
+        </Select>
       </FloatLabel>
     </Form.Item>
   );
 };
 
-export default TextInput;
+export default SelectInput;

@@ -4,7 +4,7 @@ import { isB2B } from "grandus-lib/utils/index";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import useUser from "grandus-lib/hooks/useUser";
 
-const Price = ({ priceData, className, microData = true, options = {} }) => {
+const Price = ({ priceData, measureUnit, className, microData = true, options = {} }) => {
   if (isEmpty(priceData)) {
     return null;
   }
@@ -29,6 +29,7 @@ const Price = ({ priceData, className, microData = true, options = {} }) => {
         {priceData?.priceFormatted
           ? priceData?.priceFormatted
           : `${priceData?.price} ${priceData.currencySymbol}`}
+          {measureUnit ? ` / ${measureUnit}` : null}
       </span>
       {!options?.hideVatPrice ? (
         <span
@@ -40,7 +41,8 @@ const Price = ({ priceData, className, microData = true, options = {} }) => {
         >
           {priceData?.priceWithoutVatFormatted
             ? priceData.priceWithoutVatFormatted
-            : `${priceData.priceWithoutVat} ${priceData.currencySymbol}`}
+            : `${priceData.priceWithoutVat} ${priceData.currencySymbol}`} 
+            {measureUnit ? ` / ${measureUnit}` : null}
         </span>
       ) : (
         ""
