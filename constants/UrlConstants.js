@@ -37,4 +37,10 @@ export const RESERVED_URI_PARTS = [
     title: "Veľkosť", //@todo translation
     priority: 6,
   },
+  {
+    key: "tags",
+    urlTitle: "tag",
+    title: "Tag", //@todo translations
+    priority: 7
+  },
 ];
