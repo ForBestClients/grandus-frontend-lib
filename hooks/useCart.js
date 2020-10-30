@@ -226,6 +226,26 @@ export default function useCart(initialCart = false, options = {}) {
     }
   };
 
+  const applyCredits = async (value, callback) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/lib/v1/cart/credits`, {
+        method: "POST",
+        body: JSON.stringify({ credit: value }),
+      }).then((result) => {
+        if (isFunction(callback)) {
+          callback(result);
+        }
+        return result.json();
+      });
+      return response;
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     cart: get(cart, "accessToken") ? cart : null,
     mutateCart: mutate,
@@ -240,5 +260,6 @@ export default function useCart(initialCart = false, options = {}) {
     createOrder,
     applyCoupon,
     removeCoupon,
+    applyCredits
   };
 }
