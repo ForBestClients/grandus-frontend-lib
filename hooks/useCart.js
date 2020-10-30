@@ -3,7 +3,10 @@ import useSWR from "swr";
 import { get, isFunction, filter } from "lodash";
 
 export default function useCart(initialCart = false, options = {}) {
-  const swrOptions = {};
+  const swrOptions = {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false
+  };
   if (initialCart) {
     swrOptions.initialData = initialCart;
     swrOptions.revalidateOnMount = true;
