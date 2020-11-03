@@ -251,6 +251,34 @@ export default function useCart(initialCart = false, options = {}) {
     }
   };
 
+  const applyIsic = async (surname, code, callback) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/lib/v1/cart/isic`, {
+        method: "POST",
+        body: JSON.stringify({
+          isic: {
+            surname,
+            code,
+          },
+        }),
+      })
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
+        });
+
+      return response;
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     cart: get(cart, "accessToken") ? cart : null,
     mutateCart: mutate,
@@ -266,5 +294,6 @@ export default function useCart(initialCart = false, options = {}) {
     applyCoupon,
     removeCoupon,
     applyCredits,
+    applyIsic,
   };
 }
