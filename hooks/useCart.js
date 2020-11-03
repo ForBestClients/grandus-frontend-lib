@@ -262,12 +262,15 @@ export default function useCart(initialCart = false, options = {}) {
             code,
           },
         }),
-      }).then((result) => {
-        if (isFunction(callback)) {
-          callback(result);
-        }
-        return result.json();
-      });
+      })
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
+        });
+
       return response;
     } catch (error) {
       console.error("An unexpected error happened:", error);
