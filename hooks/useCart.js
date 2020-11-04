@@ -90,14 +90,16 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(false);
   };
 
-  const itemAdd = async (count, store, productId, callback) => {
+  const itemAdd = async (count, store, productId, callback, options = {}) => {
+    const reqBody = { items: { count: count, sizeId: store, productId: productId } };
+    if (options?.hash) {
+      reqBody.items.hash = get(options, 'hash', '');
+    }
     try {
       await mutate(
         await fetch(`/api/lib/v1/cart`, {
           method: "POST",
-          body: JSON.stringify({
-            items: { count: count, sizeId: store, productId: productId },
-          }),
+          body: JSON.stringify(reqBody),
         }).then((result) => {
           if (isFunction(callback)) {
             callback(result);
