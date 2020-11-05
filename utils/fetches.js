@@ -27,16 +27,19 @@ const indexPage = {
 
 const productPage = {
   serverSideProps: async (context) => {
-    const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/products/${
-        context?.params?.id
-      }?initial=1`,
-      {
-        headers: reqGetHeadersFront(context?.req, {
-          forwardUrl: context?.resolvedUrl,
-        }),
-      }
-    ).then((result) => result.json());
+    let uri = `${reqGetHost(context?.req)}/api/lib/v1/products/${
+      context?.params?.id
+    }?initial=1`;
+
+    if (context?.query?.hash) {
+      uri += `&hash=${context?.query?.hash}`;
+    }
+
+    const data = await fetch(uri, {
+      headers: reqGetHeadersFront(context?.req, {
+        forwardUrl: context?.resolvedUrl,
+      }),
+    }).then((result) => result.json());
     return {
       props: { product: data },
     };
@@ -93,12 +96,10 @@ const searchPage = {
   serverSideProps: async (context) => {
     const term = encodeURIComponent(get(context, "params.term"));
     const parameters = arrayToPath(get(context, "params.parameters", []));
-    const uri = queryToQueryString(get(context, "query", {}), {}, ['term']);
+    const uri = queryToQueryString(get(context, "query", {}), {}, ["term"]);
     const url = `${reqGetHost(
       context?.req
-    )}/api/pages/search/${term}?param=${encodeURIComponent(
-      parameters
-    )}&${uri}`;
+    )}/api/pages/search/${term}?param=${encodeURIComponent(parameters)}&${uri}`;
 
     const data = await fetch(url, {
       headers: reqGetHeadersFront(context?.req, {
@@ -168,7 +169,6 @@ const campaignPage = {
   },
 };
 
-
 const staticPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
@@ -232,5 +232,5 @@ export {
   checkoutContactPage,
   userProfilePage,
   thanksPage,
-  searchPage
+  searchPage,
 };

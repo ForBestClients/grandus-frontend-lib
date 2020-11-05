@@ -5,7 +5,7 @@ import { get, isFunction, filter } from "lodash";
 export default function useCart(initialCart = false, options = {}) {
   const swrOptions = {
     revalidateOnFocus: false,
-    revalidateOnReconnect: false
+    revalidateOnReconnect: false,
   };
   if (initialCart) {
     swrOptions.initialData = initialCart;
@@ -90,14 +90,16 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(false);
   };
 
-  const itemAdd = async (count, store, productId, callback) => {
+  const itemAdd = async (count, store, productId, callback, options = {}) => {
+    const reqBody = { items: { count: count, sizeId: store, productId: productId } };
+    if (options?.hash) {
+      reqBody.items.hash = get(options, 'hash', '');
+    }
     try {
       await mutate(
         await fetch(`/api/lib/v1/cart`, {
           method: "POST",
-          body: JSON.stringify({
-            items: { count: count, sizeId: store, productId: productId },
-          }),
+          body: JSON.stringify(reqBody),
         }).then((result) => {
           if (isFunction(callback)) {
             callback(result);
@@ -229,6 +231,56 @@ export default function useCart(initialCart = false, options = {}) {
     }
   };
 
+  const applyCredits = async (value, callback) => {
+    setIsLoading(true);
+    try {
+      const response = fetch(`/api/lib/v1/cart/credits`, {
+        method: "POST",
+        body: JSON.stringify({ credit: value }),
+      })
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
+        });
+      return response;
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const applyIsic = async (surname, code, callback) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/lib/v1/cart/isic`, {
+        method: "POST",
+        body: JSON.stringify({
+          isic: {
+            surname,
+            code,
+          },
+        }),
+      })
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
+        });
+
+      return response;
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return {
     cart: get(cart, "accessToken") ? cart : null,
     mutateCart: mutate,
@@ -243,5 +295,7 @@ export default function useCart(initialCart = false, options = {}) {
     createOrder,
     applyCoupon,
     removeCoupon,
+    applyCredits,
+    applyIsic,
   };
 }
