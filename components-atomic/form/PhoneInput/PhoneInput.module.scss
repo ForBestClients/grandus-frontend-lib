@@ -1,0 +1,44 @@
+.phoneInput {
+  :global {
+    .ant-form-item-control-input-content {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      position: relative;
+      display: inline-block;
+      width: 100%;
+      min-width: 0;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 14px;
+      line-height: 1.5715;
+      background-color: #fff;
+      background-image: none;
+      border: 1px solid #d9d9d9;
+      border-radius: 2px;
+      transition: all 0.3s;
+
+      label {
+        padding: 0px 5px;
+      }
+
+      .PhoneInput {
+        width: 100%;
+        padding: 1px 10px;
+
+        .PhoneInputCountryIcon {
+            width: 18px;
+        }
+
+        .PhoneInputInput {
+          border: none;
+          padding: 3px 0 3px 10px;
+
+          &:focus {
+            outline: none;
+          }
+        }
+      }
+    }
+  }
+}
