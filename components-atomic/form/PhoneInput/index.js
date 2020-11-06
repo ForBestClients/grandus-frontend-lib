@@ -40,7 +40,7 @@ const PhoneInput = (props) => {
   };
 
   return (
-    <div className={styles?.phoneInput}>
+    <div className={`${styles?.phoneInput} phone-input-component `}>
       <Form.Item
         validateStatus={
           get(touched, fieldName)
@@ -58,12 +58,6 @@ const PhoneInput = (props) => {
       >
         <FloatLabel label={label} name={fieldName} value={values[fieldName]}>
           <PhoneInputComponent
-            // countrySelectProps={{
-            //   onChange: () => {
-            //     setFieldValue(fieldName, "");
-            //     if (!touched[fieldName]) setFieldTouched(fieldName);
-            //   },
-            // }}
             id={fieldName}
             name={fieldName}
             country={defaultCountry}
