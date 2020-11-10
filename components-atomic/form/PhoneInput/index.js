@@ -60,7 +60,7 @@ const PhoneInput = (props) => {
           <PhoneInputComponent
             id={fieldName}
             name={fieldName}
-            country={defaultCountry}
+            defaultCountry={defaultCountry}
             value={value}
             withCountryCallingCode
             onChange={onPhoneNumberChange}
