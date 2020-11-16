@@ -9,3 +9,6 @@ export const ATTACHMENT_EXTENSION_PDF = 'pdf';
 
 export const ADDITIONAL_INFOS_TYPE_PERSON = 2;
 export const ADDITIONAL_INFOS_STORE_MANAGER_HASH = 'store_manager';
+
+export const GRID_ROWS = "rows";
+export const GRID_COLS = "cols";
