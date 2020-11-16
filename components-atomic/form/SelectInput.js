@@ -1,4 +1,5 @@
 import { Form, Select } from "antd";
+import { deburredSearch } from "grandus-lib/utils";
 import { get, map } from "lodash";
 import FloatLabel from "./label/FloatLabel";
 
@@ -48,9 +49,9 @@ const SelectInput = (props) => {
           onBlur={() => {
             onBlur();
           }}
-          filterOption={(input, option) =>
-            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-          }
+          filterOption={(inputValue, option) => {
+            return deburredSearch(get(option, "children"), inputValue);
+          }}
         >
           {map(options, (option, index) => (
             <Select.Option
