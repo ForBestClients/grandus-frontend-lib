@@ -4,7 +4,7 @@ import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
 import { Row, Col, Divider, Carousel } from "antd";
-import { get } from "lodash";
+import { get, isEmpty, map } from "lodash";
 import Link from "next/link";
 
 import dynamic from "next/dynamic";
@@ -47,6 +47,7 @@ const Homepage = (props) => {
     meta = {},
     banners = [],
     banners01 = [],
+    banners02 = [],
     products = [],
     productsNew = [],
     blogs = [],
@@ -151,7 +152,7 @@ const Homepage = (props) => {
               </Carousel>
             </Col>
 
-            {banners01.map((banner, index) => {
+            {map(banners01, (banner, index) => {
               const { id, url, photo } = banner;
               return (
                 <Col xs={12} md={6} key={`banners-location-01-${id}-${index}`}>
@@ -216,6 +217,45 @@ const Homepage = (props) => {
             );
           })}
         </Row>
+
+        {!isEmpty(banners02) ? (
+          <div className={styles["homepage-banners-section"]}>
+            <Row gutter={[0, 0]}>
+              {map(banners02, (banner, index) => {
+                const { id, url, photo } = banner;
+                return (
+                  <Col
+                    xs={12}
+                    md={12}
+                    key={`banners-location-02-${id}-${index}`}
+                  >
+                    <div className={styles["homepage-banner"]}>
+                      {url ? (
+                        <Link href={url} scroll={true}>
+                          <a>
+                            <Image
+                              photo={photo}
+                              size={"700x200__cropped"}
+                              type={"jpg"}
+                            />
+                          </a>
+                        </Link>
+                      ) : (
+                        <Image
+                          photo={photo}
+                          size={"700x200__cropped"}
+                          type={"jpg"}
+                        />
+                      )}
+                    </div>
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
+        ) : (
+          ""
+        )}
       </main>
 
       {/* STATIC PAGES LOCATION 04 */}
