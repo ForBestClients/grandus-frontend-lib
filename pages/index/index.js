@@ -4,7 +4,7 @@ import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
 import { Row, Col, Divider, Carousel } from "antd";
-import { get } from "lodash";
+import { get, isEmpty, map } from "lodash";
 import Link from "next/link";
 
 import dynamic from "next/dynamic";
@@ -47,6 +47,7 @@ const Homepage = (props) => {
     meta = {},
     banners = [],
     banners01 = [],
+    banners02 = [],
     products = [],
     productsNew = [],
     blogs = [],
@@ -118,118 +119,65 @@ const Homepage = (props) => {
 
         {/* BANNERS */}
         <div className={styles["homepage-banners-section"]}>
-          <Row gutter={[{ xs: 0, sm: 10 }, 10]}>
-            <Col xs={24} md={18}>
+          <Row gutter={[0, 0]}>
+            <Col xs={24}>
               <Carousel autoplay>
                 {banners.map((banner, index) => {
                   const { id, url, photo } = banner;
-                  if (!url) {
-                    return (
-                      <div
-                        key={`banners-${id}-${index}`}
-                        className={styles["homepage-banner"]}
-                      >
-                        <Image
-                          photo={photo}
-                          size={"1078x426__cropped"}
-                          type={"jpg"}
-                        />
-                      </div>
-                    );
-                  }
-
-                  if (url.startsWith("/")) {
-                    return (
-                      <div
-                        key={`banners-${id}-${index}`}
-                        className={styles["homepage-banner"]}
-                      >
-                        <Link href={url}>
+                  return (
+                    <div
+                      key={`banners-main-${id}-${index}`}
+                      className={styles["homepage-banner"]}
+                    >
+                      {url ? (
+                        <Link href={url} scroll={true}>
                           <a>
                             <Image
                               photo={photo}
-                              size={"1078x426__cropped"}
+                              size={"1420x400__cropped"}
                               type={"jpg"}
                             />
                           </a>
                         </Link>
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <div
-                        key={`banners-${id}-${index}`}
-                        className={styles["homepage-banner"]}
-                      >
-                        <a href={url}>
+                      ) : (
+                        <Image
+                          photo={photo}
+                          size={"1420x400__cropped"}
+                          type={"jpg"}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </Carousel>
+            </Col>
+
+            {map(banners01, (banner, index) => {
+              const { id, url, photo } = banner;
+              return (
+                <Col xs={12} md={6} key={`banners-location-01-${id}-${index}`}>
+                  <div className={styles["homepage-banner"]}>
+                    {url ? (
+                      <Link href={url} scroll={true}>
+                        <a>
                           <Image
                             photo={photo}
-                            size={"1078x426__cropped"}
+                            size={"340x100__cropped"}
                             type={"jpg"}
                           />
                         </a>
-                      </div>
-                    );
-                  }
-                })}
-              </Carousel>
-            </Col>
-
-            <Col xs={24} md={6}>
-              <Carousel autoplay>
-                {banners01.map((banner, index) => {
-                  const { id, url, photo } = banner;
-
-                  if (!url) {
-                    return (
-                      <div
-                        key={`banners-custom-${id}-${index}`}
-                        className={styles["homepage-banner"]}
-                      >
-                        <Image
-                          photo={photo}
-                          size={"360x432__cropped"}
-                          type={"jpg"}
-                        />
-                      </div>
-                    );
-                  }
-
-                  if (url.startsWith("/")) {
-                    return (
-                      <div
-                        key={`banners-custom-${id}-${index}`}
-                        className={styles["homepage-banner"]}
-                      >
-                        <Link href={url}>
-                          <a>
-                            <Image
-                              photo={photo}
-                              size={"360x432__cropped"}
-                              type={"jpg"}
-                            />
-                          </a>
-                        </Link>
-                      </div>
-                    );
-                  } else {
-                    return (
-                      <a
-                        href={url}
-                        key={`banners-custom-${id}-${index}`}
-                        className={styles["homepage-banner"]}
-                      >
-                        <Image
-                          photo={photo}
-                          size={"360x432__cropped"}
-                          type={"jpg"}
-                        />
-                      </a>
-                    );
-                  }
-                })}
-              </Carousel>
-            </Col>
+                      </Link>
+                    ) : (
+                      <Image
+                        photo={photo}
+                        size={"340x100__cropped"}
+                        type={"jpg"}
+                      />
+                    )}
+                  </div>
+                </Col>
+              );
+            })}
           </Row>
         </div>
 
@@ -262,7 +210,6 @@ const Homepage = (props) => {
                 sm={8}
                 md={6}
                 lg={4}
-                xxl={3}
                 key={`products-news-${product.id}-${index}`}
               >
                 <ProductCard {...product} />
@@ -270,6 +217,45 @@ const Homepage = (props) => {
             );
           })}
         </Row>
+
+        {!isEmpty(banners02) ? (
+          <div className={styles["homepage-banners-section"]}>
+            <Row gutter={[0, 0]}>
+              {map(banners02, (banner, index) => {
+                const { id, url, photo } = banner;
+                return (
+                  <Col
+                    xs={12}
+                    md={12}
+                    key={`banners-location-02-${id}-${index}`}
+                  >
+                    <div className={styles["homepage-banner"]}>
+                      {url ? (
+                        <Link href={url} scroll={true}>
+                          <a>
+                            <Image
+                              photo={photo}
+                              size={"700x200__cropped"}
+                              type={"jpg"}
+                            />
+                          </a>
+                        </Link>
+                      ) : (
+                        <Image
+                          photo={photo}
+                          size={"700x200__cropped"}
+                          type={"jpg"}
+                        />
+                      )}
+                    </div>
+                  </Col>
+                );
+              })}
+            </Row>
+          </div>
+        ) : (
+          ""
+        )}
       </main>
 
       {/* STATIC PAGES LOCATION 04 */}
