@@ -53,7 +53,7 @@ const Switcher = ({
   return (
     <div className={styles["switcher-wrapper"]}>
       <div
-        class={styles.switcher}
+        className={styles.switcher}
         inputSize={inputSize}
         error={error}
         disabled={disabled}
@@ -73,7 +73,7 @@ const Switcher = ({
           );
         })}
       </div>
-      {error ? <span class={styles["switcher__error"]}>{error}</span> : ""}
+      {error ? <span className={styles["switcher__error"]}>{error}</span> : ""}
     </div>
   );
 };
