@@ -174,6 +174,9 @@ const staticPage = {
     const data = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/statics/${context?.params?.id}`
     ).then((result) => result.json());
+    if (!data?.id) {
+      context.res.statusCode = 404;
+    }
     return {
       props: { page: data },
     };
