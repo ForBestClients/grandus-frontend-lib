@@ -26,6 +26,7 @@ const Price = ({ priceData, measureUnit, className, microData = true, options = 
         data-type={isB2BEshop ? "secondary" : "primary"}
         className={`${options?.mainPriceClass ? options?.mainPriceClass : ""}`}
       >
+        {options?.isDiscount ? '-' : ''}
         {priceData?.priceFormatted
           ? priceData?.priceFormatted
           : `${priceData?.price} ${priceData.currencySymbol}`}
@@ -39,6 +40,7 @@ const Price = ({ priceData, measureUnit, className, microData = true, options = 
             options?.withoutVatPriceClass ? options?.withoutVatPriceClass : ""
           }`}
         >
+          {options?.isDiscount ? '-' : ''}
           {priceData?.priceWithoutVatFormatted
             ? priceData.priceWithoutVatFormatted
             : `${priceData.priceWithoutVat} ${priceData.currencySymbol}`} 
