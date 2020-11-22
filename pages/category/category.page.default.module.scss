@@ -1,6 +1,45 @@
 @import "styles/variables";
 
-//default styles
+.filter {
+  display: none;
+  position: fixed;
+  top: 0;
+  height: 100%;
+  left: 0;
+  width: 100%;
+  background-color: white;
+  z-index: 2;
+  padding: $general-gutter;
+  overflow: auto;
+  &.open {
+    display: block;
+  }
+  @media (min-width: $sm) {
+    display: block;
+    position: relative;
+    z-index: auto;
+    height: auto;
+    width: auto;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+  }
+  .filterToggleFixed {
+    z-index: 3;
+    position: fixed;
+    bottom: $general-gutter;
+    right: $general-gutter;
+    @media (min-width: $sm) {
+      display: none;
+    }
+  }
+}
+
+.filterToggle {
+  display: block;
+  @media (min-width: $sm) {
+    display: none;
+  }
+}
 
 @import "pages/kategoria/category.page.module";
-

@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useMemo } from "react";
 import { get, map, isEmpty, isArray } from "lodash";
 import { Result, Button, Row, Col, Divider } from "antd";
 import Link from "next/link";
@@ -28,6 +28,54 @@ const CategoryPromotedProducts = dynamic(
   () => import("components/category/CategoryPromotedProducts"),
   { ssr: false }
 );
+
+export const JSXCategoryParameters = ({ filter }) => {
+  const [openedFilter, setOpenedFilter] = useState(false);
+  const buttonText = openedFilter ? "Zatvoriť filter" : "Otvoriť filter";
+  const toggleFilter = () => {
+    if (openedFilter) {
+      setOpenedFilter(false);
+    } else {
+      setOpenedFilter(true);
+    }
+  };
+  return (
+    <>
+      <Button
+        onClick={toggleFilter}
+        size={"large"}
+        block
+        className={styles.filterToggle}
+      >
+        {buttonText}
+      </Button>
+      <div className={`${styles.filter} ${openedFilter ? styles.open : ""}`}>
+        <Button
+          onClick={toggleFilter}
+          type={"danger"}
+          size={"large"}
+          className={styles.filterToggleFixed}
+        >
+          {buttonText}
+        </Button>
+        <Button
+          onClick={toggleFilter}
+          size={"large"}
+          block
+          className={styles.filterToggle}
+        >
+          {buttonText}
+        </Button>
+        {useMemo(
+          () => (
+            <CategoryParameters initialData={filter} />
+          ),
+          [filter]
+        )}
+      </div>
+    </>
+  );
+};
 
 const Category = (props) => {
   const { category, products, pagination, filter, meta, breadcrumbs } = props;
@@ -120,12 +168,7 @@ const Category = (props) => {
 
       <Row gutter={[15, 15]} justify="space-around">
         <Col xs={24} md={8} lg={4}>
-          {useMemo(
-            () => (
-              <CategoryParameters initialData={filter} />
-            ),
-            [filter]
-          )}
+          <JSXCategoryParameters />
         </Col>
         <Col xs={24} md={16} lg={20}>
           {isArray(products) && !isEmpty(products) ? (
