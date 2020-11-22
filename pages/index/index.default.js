@@ -1,4 +1,4 @@
-import styles from "./index.page.module.scss";
+import styles from "./index.page.default.module.scss";
 import { indexPage } from "grandus-lib/utils/fetches";
 import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
