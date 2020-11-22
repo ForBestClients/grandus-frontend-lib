@@ -23,6 +23,36 @@ const replaceUrlTitleForKey = (urlTitle) =>
 
 const sortChunks = (chunks) => chunks; // temporary disabled sortingsortBy(chunks, (pair) => pair[0]);
 
+export const getSeoTitleData = (filter = {}) => {
+  const titleData = [];
+
+  map(get(filter, "selected.storeLocations.data", []), (store) => {
+    if (get(store, "name")) {
+      titleData.push(get(store, "name"));
+    }
+  });
+
+  map(get(filter, "selected.statuses.data", []), (status) => {
+    if (get(status, "name")) {
+      titleData.push(get(status, "name"));
+    }
+  });
+
+  map(get(filter, "selected.parameters.data", []), (parameter) => {
+    map(get(parameter, "values", []), (value) => {
+      if (get(value, "value")) {
+        titleData.push(get(value, "value"));
+      }
+    });
+  });
+
+  return titleData;
+};
+
+export const hasActiveFilters = (filter = {}) => {
+  return !isEmpty(omit(get(filter, "selected", []), "category"));
+};
+
 export const getApiBodyFromParams = (params = []) => {
   if (!params) {
     return {};
@@ -272,7 +302,7 @@ const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
 
   return {
     filter,
-    hasActiveFilters: !isEmpty(omit(get(filter, "selected", []), "category")),
+    hasActiveFilters: hasActiveFilters(filter),
     mutateFilter: mutate,
     isLoading: isValidating,
   };
