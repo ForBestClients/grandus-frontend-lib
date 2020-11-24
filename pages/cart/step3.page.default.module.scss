@@ -1,0 +1,40 @@
+.specificPaymentOption {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    img {
+        margin-bottom: 5px;
+        width: 100%;
+        height: auto;
+    }
+
+    label {
+        height: auto;
+        border: none;
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #d9d9d9;
+        font-size: 13px;
+    }
+}
+
+.agreementCheckboxWrapper {
+    margin-bottom: 0 !important;
+
+    :global(.ant-form-item-explain) {
+        min-height: 0 !important;
+    }
+
+    .agreementCheckbox {
+        display: flex;
+        align-items: flex-start;
+        margin-left: 0 !important;
+
+        span:first-child {
+            margin-top: 5px;
+        }
+    }
+}
