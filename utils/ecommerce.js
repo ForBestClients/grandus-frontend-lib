@@ -98,7 +98,7 @@ const EnhancedEcommerce = {
   checkout: (items, step = null) => {
     const data = {
       checkout: {
-        products: items.map((item, index) => ({
+        products: map(items, (item, index) => ({
           name: item?.product?.name,
           id: item?.product?.id,
           price: item?.priceTotalData?.price,
@@ -128,7 +128,7 @@ const EnhancedEcommerce = {
           shipping: (parseFloat(get(order, 'deliveryPrice', 0)) + parseFloat(get(order, 'paymentPrice', 0))),
           coupon: couponsString
         },
-        products: items.map((item, index) => ({
+        products: map(items, (item, index) => ({
           name: item?.name,
           id: item?.productId,
           price: item?.totalPriceData?.price,
