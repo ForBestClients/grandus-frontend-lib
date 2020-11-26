@@ -209,8 +209,17 @@ const userProfilePage = {
     const countries = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/countries`
     ).then((result) => result.json());
+    
+    let towns = [];
+    try {
+      towns = await fetch(
+        `${reqGetHost(context?.req)}/api/lib/v1/towns`
+      ).then((result) => result.json());
+    } catch (error) {
+      towns = [];
+    }
     return {
-      props: { countries },
+      props: { countries, towns },
     };
   },
 };
