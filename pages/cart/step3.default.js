@@ -60,13 +60,26 @@ const DeliveryForm = ({
     touched,
     setFieldTouched,
     setFieldValue,
+    handleBlur,
+    handleChange,
+    isSubmitting
   } = useFormikContext();
+
+  const resetPayment = () => {
+    setFieldValue("payment", null);
+    setFieldTouched("payment", true);
+    setFieldValue("specificPaymentType", null);
+    setFieldTouched("specificPaymentType", true);
+  }
 
   const onGroupChange = (e) => {
     setDeliveryType(null);
     setDeliveryTypeGroup(e.target.value);
     setFieldValue("delivery", null);
     setFieldTouched("delivery", false);
+    setFieldTouched("delivery", true);
+    handleChange(e);
+    resetPayment();
   };
 
   const onChange = (e) => {
@@ -74,7 +87,10 @@ const DeliveryForm = ({
     const val = e?.target?.value;
     setDeliveryType(val);
     setFieldValue("delivery", val);
+    setFieldTouched("delivery", true);
     cartUpdate({ deliveryType: val });
+    handleChange(e);
+    resetPayment();
   };
 
   const deliveryOptionsOrdered = sortBy(deliveryOptions, (groupItem) => {
@@ -93,8 +109,10 @@ const DeliveryForm = ({
     <>
       <Radio.Group
         onChange={onChange}
+        onBlur={handleBlur}
         value={deliveryType}
         style={{ width: "100%" }}
+        disabled={isSubmitting}
       >
         {_.map(nogroup, (option) => (
           <Row gutter={[8, 8]} key={"delivery-radio-" + get(option, "id")}>
@@ -117,8 +135,10 @@ const DeliveryForm = ({
       </Radio.Group>
       <Radio.Group
         onChange={onGroupChange}
+        onBlur={handleBlur}
         value={deliveryTypeGroup}
         style={{ width: "100%" }}
+        disabled={isSubmitting}
       >
         {map(groups, (group, groupName) => (
           <Fragment key={"grouped-delivery-" + groupName}>
@@ -154,6 +174,7 @@ const DeliveryForm = ({
                       name={"delivery"}
                       value={values["delivery"]}
                       placeholder={"Doručenie"}
+                      disabled={isSubmitting}
                       onChange={(val) => {
                         setFieldValue("delivery", val);
                         cartUpdate({ deliveryType: val });
@@ -208,25 +229,37 @@ const PaymentForm = ({
     touched,
     setFieldTouched,
     setFieldValue,
-    isSubmittting,
+    isSubmitting,
+    handleBlur,
+    handleChange
   } = useFormikContext();
   const onChange = (e) => {
     setPaymentType(e.target.value);
     setSpecificPaymentType(null);
+
+    setFieldValue("payment", e.target.value);
+    setFieldTouched("payment", true);
     setFieldValue("specificPaymentType", null);
     setFieldTouched("specificPaymentType", true);
+
     cartUpdate({ paymentType: e.target.value });
+    handleChange(e);
   };
   const onSpecificPaymentTypeChange = (e) => {
+    setFieldValue("payment", e.target.value);
+    setFieldTouched("specificPaymentType", true);
     setSpecificPaymentType(e.target.value);
     cartUpdate({ specificPaymentType: e.target.value });
+    handleChange(e);
   };
   return (
     <Radio.Group
       onChange={onChange}
+      onBlur={handleBlur}
       value={paymentType}
       style={{ width: "100%" }}
       name={"payment"}
+      disabled={isSubmitting}
     >
       {map(paymentOptions, (option, index) => (
         <Fragment key={"payment-" + get(option, "id", index)}>
@@ -247,9 +280,11 @@ const PaymentForm = ({
               <Col span={24}>
                 <Radio.Group
                   onChange={onSpecificPaymentTypeChange}
+                  onBlur={handleBlur}
                   value={specificPaymentType}
                   style={{ width: "100%" }}
                   name={"specificPaymentType"}
+                  disabled={isSubmitting}
                 >
                   <Row gutter={[8, 8]}>
                     {map(
@@ -323,7 +358,6 @@ const CartDeliveryAndPayment = (props) => {
   const [termsAndConditions, setTermsAndConditions] = useState(false);
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
   const formProps = {
-    enableReinitialize: true,
     initialValues: {
       delivery: get(cart, "delivery.id", ""),
       payment: get(cart, "payment.id", ""),
@@ -402,6 +436,7 @@ const CartDeliveryAndPayment = (props) => {
           isValid,
           isSubmitting,
           touched,
+          dirty,
           handleChange,
           handleBlur,
         }) => (
@@ -453,6 +488,7 @@ const CartDeliveryAndPayment = (props) => {
                       name="note"
                       value={get(values, "note")}
                       placeholder={"vložte poznámku"}
+                      disabled={isSubmitting}
                       onBlur={(e) => {
                         setNote(e.target.value);
                         handleBlur(e);
@@ -470,7 +506,7 @@ const CartDeliveryAndPayment = (props) => {
                     <div style={{ display: "flex", flexDirection: "column" }}>
                       <Button
                         loading={isValid && isSubmitting}
-                        disabled={!isValid}
+                        disabled={!dirty || !isValid}
                         size={"large"}
                         type={"primary"}
                         htmlType={"submit"}
@@ -523,6 +559,7 @@ const CartDeliveryAndPayment = (props) => {
                   >
                     <Checkbox
                       className={styles?.agreementCheckbox}
+                      disabled={isSubmitting}
                       onChange={(e) => {
                         handleChange(e);
                         setPrivacyPolicy(e.target.checked);
@@ -548,6 +585,7 @@ const CartDeliveryAndPayment = (props) => {
                   >
                     <Checkbox
                       className={styles?.agreementCheckbox}
+                      disabled={isSubmitting}
                       onChange={(e) => {
                         handleChange(e);
                         setTermsAndConditions(e.target.checked);
