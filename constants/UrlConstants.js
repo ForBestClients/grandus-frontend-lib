@@ -19,12 +19,12 @@ export const RESERVED_URI_PARTS = [
     title: "Trieda", //@todo translation
     priority: 3,
   },
-  // { //TODO fix bug with undefined
-  //   key: "brand",
-  //   urlTitle: "vyrobca",
-  //   title: "Výrobca", //@todo translation
-  //   priority: 4,
-  // },
+  { //TODO fix bug with undefined
+    key: "brand",
+    urlTitle: "vyrobca",
+    title: "Výrobca", //@todo translation
+    priority: 4,
+  },
   {
     key: "status",
     urlTitle: "stav",
