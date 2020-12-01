@@ -18,6 +18,11 @@
       width: 100%;
       max-width: 100%;
       height: auto;
+      border: 1px solid transparent;
+      border-radius: $general-radius;
+      &:hover {
+        border: 1px solid $primary-color;
+      }
     }
   }
 }

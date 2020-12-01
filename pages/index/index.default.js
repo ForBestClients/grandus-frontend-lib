@@ -7,20 +7,11 @@ import { Row, Col, Divider, Carousel } from "antd";
 import { get, isEmpty, map } from "lodash";
 import Link from "next/link";
 
-import dynamic from "next/dynamic";
-const MetaData = dynamic(() =>
-  import("grandus-lib/components-atomic/MetaData")
-);
-const Content = dynamic(() =>
-  import("grandus-lib/components-atomic/content/Content")
-);
-const ProductCard = dynamic(() =>
-  import("components/product/card/ProductCard")
-);
-const BlogCard = dynamic(() => import("components/blog/card/BlogCard"));
-const Image = dynamic(() =>
-  import("grandus-lib/components-atomic/image/Image")
-);
+import MetaData from "grandus-lib/components-atomic/MetaData";
+import Content from "grandus-lib/components-atomic/content/Content";
+import ProductCard from "components/product/card/ProductCard";
+import BlogCard from "components/blog/card/BlogCard";
+import Image from "grandus-lib/components-atomic/image/Image";
 
 const HomepageContent = ({ pages }) => {
   if (!pages) return null;
@@ -236,7 +227,7 @@ const Homepage = (props) => {
                 const { id, url, photo } = banner;
                 return (
                   <Col
-                    xs={12}
+                    xs={24}
                     md={12}
                     key={`banners-location-02-${id}-${index}`}
                   >
