@@ -184,39 +184,50 @@ const Homepage = (props) => {
         {/* STATIC PAGES LOCATION 02 */}
         <HomepageContent pages={homepageStaticPageLocation2} />
 
-        <Divider>Odporúčané produkty</Divider>
-        <Carousel autoplay {...settings} style={{ padding: "30px 0" }}>
-          {products.map((product, index) => {
-            return (
-              <div
-                style={{ padding: "20px", margin: "20px" }}
-                key={`products-${product.id}-${index}`}
-              >
-                <ProductCard {...product} />
-              </div>
-            );
-          })}
-        </Carousel>
+        {!isEmpty(products) ? (
+          <>
+            <Divider>Odporúčané produkty</Divider>
+            <Carousel autoplay {...settings} style={{ padding: "30px 0" }}>
+              {products.map((product, index) => {
+                return (
+                  <div
+                    style={{ padding: "20px", margin: "20px" }}
+                    key={`products-${product.id}-${index}`}
+                  >
+                    <ProductCard {...product} />
+                  </div>
+                );
+              })}
+            </Carousel>
+          </>
+        ) : (
+          ""
+        )}
 
         {/* STATIC PAGES LOCATION 03 */}
         <HomepageContent pages={homepageStaticPageLocation3} />
-
-        <Divider>Nové na sklade</Divider>
-        <Row gutter={[{ xs: 0, sm: 10 }, 10]}>
-          {productsNew.map((product, index) => {
-            return (
-              <Col
-                xs={12}
-                sm={8}
-                md={6}
-                lg={4}
-                key={`products-news-${product.id}-${index}`}
-              >
-                <ProductCard {...product} />
-              </Col>
-            );
-          })}
-        </Row>
+        {!isEmpty(productsNew) ? (
+          <>
+            <Divider>Nové na sklade</Divider>
+            <Row gutter={[{ xs: 0, sm: 10 }, 10]}>
+              {productsNew.map((product, index) => {
+                return (
+                  <Col
+                    xs={12}
+                    sm={8}
+                    md={6}
+                    lg={4}
+                    key={`products-news-${product.id}-${index}`}
+                  >
+                    <ProductCard {...product} />
+                  </Col>
+                );
+              })}
+            </Row>
+          </>
+        ) : (
+          ""
+        )}
 
         {!isEmpty(banners02) ? (
           <div className={styles["homepage-banners-section"]}>
@@ -262,19 +273,23 @@ const Homepage = (props) => {
       <HomepageContent pages={homepageStaticPageLocation4} />
 
       {/* BLOGS */}
-      <main className={"container guttered"}>
-        <Divider>Posledné z našich blogov</Divider>
-        <Row gutter={[{ xs: 0, sm: 10 }, 10]} justify="space-around">
-          {blogs.map((blog, index) => {
-            const { id } = blog;
-            return (
-              <Col xs={24} md={8} key={`banners-${id}-${index}`}>
-                <BlogCard {...blog} />
-              </Col>
-            );
-          })}
-        </Row>
-      </main>
+      {!isEmpty(blogs) ? (
+        <main className={"container guttered"}>
+          <Divider>Posledné z našich blogov</Divider>
+          <Row gutter={[{ xs: 0, sm: 10 }, 10]} justify="space-around">
+            {blogs.map((blog, index) => {
+              const { id } = blog;
+              return (
+                <Col xs={24} md={8} key={`banners-${id}-${index}`}>
+                  <BlogCard {...blog} />
+                </Col>
+              );
+            })}
+          </Row>
+        </main>
+      ) : (
+        ""
+      )}
 
       {/* STATIC PAGES LOCATION 05 */}
       <HomepageContent pages={homepageStaticPageLocation5} />
