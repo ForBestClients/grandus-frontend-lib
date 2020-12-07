@@ -45,6 +45,7 @@
       }
       //LEVEL 1
       .megamenu-item {
+        box-shadow: $general-shadow;
         display: none; //flex on hover
         flex-wrap: wrap;
         z-index: 4;
