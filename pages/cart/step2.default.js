@@ -942,14 +942,6 @@ const ContactForm = ({ countries, towns = [], user }) => {
           </Col>
         ) : null}
       </Row>
-      <Divider />
-      <Row justify={"end"}>
-        <Col>
-          <Button type="text" loading={isSubmitting} htmlType="submit">
-            Pokračovať
-          </Button>
-        </Col>
-      </Row>
     </Form>
   );
 };
