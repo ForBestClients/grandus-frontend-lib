@@ -246,17 +246,56 @@ const Category = (props) => {
             </>
           ) : (
             <>
-              {useMemo(
-                () => (
-                  <CategorySelected />
-                ),
-                []
-              )}
-              <Result
-                icon={<FrownOutlined />}
-                title="Ľutujeme, nenašli sa produkty"
-                subTitle={`Vášmu výberu nezodpovedaju žiadne produkty. Zmente prosím kategóriu alebo kombináciu filtrov.`}
-              />
+              <Row gutter={[0, 15]}>
+                {JSXtitle}
+
+                {JSXcoverPhoto}
+
+                {JSXdescription}
+
+                {JSXsubcategories}
+
+                {!isEmpty(get(category, "promotedProducts", [])) ? (
+                  <Col xs={24}>
+                    {useMemo(
+                      () => (
+                        <CategoryPromotedProducts
+                          products={get(category, "promotedProducts")}
+                        />
+                      ),
+                      []
+                    )}
+                  </Col>
+                ) : (
+                  ""
+                )}
+
+                {useMemo(
+                  () => (
+                    <Col xs={24}>
+                      <CategoryOrdering />
+                    </Col>
+                  ),
+                  []
+                )}
+
+                {useMemo(
+                  () => (
+                    <Col xs={24}>
+                      <CategorySelected />
+                    </Col>
+                  ),
+                  []
+                )}
+              </Row>
+
+              <Row gutter={[15, 15]}>
+                <Result
+                  icon={<FrownOutlined />}
+                  title="Ľutujeme, nenašli sa produkty"
+                  subTitle={`Vášmu výberu nezodpovedaju žiadne produkty. Zmente prosím kategóriu alebo kombináciu filtrov.`}
+                />
+              </Row>
             </>
           )}
         </Col>
