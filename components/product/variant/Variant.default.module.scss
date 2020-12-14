@@ -1,0 +1,28 @@
+@import "styles/variables";
+
+.wrapper {
+  .headline {
+    display: block;
+    margin-top: $general-gutter;
+  }
+  .item {
+    padding: $general-gutter / 2;
+    display: inline-block;
+    box-sizing: border-box;
+    margin: $general-gutter;
+    margin-left: 0;
+    border: 1px solid transparent;
+    text-align: center;
+    border-radius: $general-radius;
+    &:hover {
+      border: 1px solid $primary-color;
+      z-index: 2;
+      box-shadow: $general-shadow;
+    }
+    span {
+      font-size: 0.7em;
+      display: block;
+      color: $text-color;
+    }
+  }
+}

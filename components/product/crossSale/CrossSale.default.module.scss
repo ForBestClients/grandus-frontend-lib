@@ -1,0 +1,7 @@
+.wrapper {
+  box-sizing: border-box;
+
+  :global(.ant-tabs-content) {
+    padding: 0;
+  }
+}
