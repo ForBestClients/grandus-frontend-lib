@@ -115,6 +115,16 @@ const Homepage = (props) => {
               <Carousel autoplay>
                 {banners.map((banner, index) => {
                   const { id, url, photo } = banner;
+                  const imageProps = { priority: index === 0 ? true : false };
+                  const image = (
+                    <Image
+                      photo={photo}
+                      size={"1420x400__cropped"}
+                      type={"jpg"}
+                      useNextImage={true}
+                      imageProps={imageProps}
+                    />
+                  );
                   return (
                     <div
                       key={`banners-main-${id}-${index}`}
@@ -122,20 +132,10 @@ const Homepage = (props) => {
                     >
                       {url ? (
                         <Link href={url} scroll={true}>
-                          <a>
-                            <Image
-                              photo={photo}
-                              size={"1420x400__cropped"}
-                              type={"jpg"}
-                            />
-                          </a>
+                          <a>{image}</a>
                         </Link>
                       ) : (
-                        <Image
-                          photo={photo}
-                          size={"1420x400__cropped"}
-                          type={"jpg"}
-                        />
+                        image
                       )}
                     </div>
                   );
@@ -145,25 +145,23 @@ const Homepage = (props) => {
 
             {map(banners01, (banner, index) => {
               const { id, url, photo } = banner;
+              const image = (
+                <Image
+                  photo={photo}
+                  size={"340x100__cropped"}
+                  type={"jpg"}
+                  useNextImage={true}
+                />
+              );
               return (
                 <Col xs={12} md={6} key={`banners-location-01-${id}-${index}`}>
                   <div className={styles["homepage-banner"]}>
                     {url ? (
                       <Link href={url} scroll={true}>
-                        <a>
-                          <Image
-                            photo={photo}
-                            size={"340x100__cropped"}
-                            type={"jpg"}
-                          />
-                        </a>
+                        <a>{image}</a>
                       </Link>
                     ) : (
-                      <Image
-                        photo={photo}
-                        size={"340x100__cropped"}
-                        type={"jpg"}
-                      />
+                      image
                     )}
                   </div>
                 </Col>
@@ -225,6 +223,14 @@ const Homepage = (props) => {
             <Row gutter={[0, 0]}>
               {map(banners02, (banner, index) => {
                 const { id, url, photo } = banner;
+                const image = (
+                  <Image
+                    photo={photo}
+                    size={"700x200__cropped"}
+                    type={"jpg"}
+                    useNextImage={true}
+                  />
+                );
                 return (
                   <Col
                     xs={24}
@@ -234,20 +240,10 @@ const Homepage = (props) => {
                     <div className={styles["homepage-banner"]}>
                       {url ? (
                         <Link href={url} scroll={true}>
-                          <a>
-                            <Image
-                              photo={photo}
-                              size={"700x200__cropped"}
-                              type={"jpg"}
-                            />
-                          </a>
+                          <a>{image}</a>
                         </Link>
                       ) : (
-                        <Image
-                          photo={photo}
-                          size={"700x200__cropped"}
-                          type={"jpg"}
-                        />
+                        image
                       )}
                     </div>
                   </Col>
