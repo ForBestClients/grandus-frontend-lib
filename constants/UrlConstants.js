@@ -43,4 +43,16 @@ export const RESERVED_URI_PARTS = [
     title: "Tag", //@todo translations
     priority: 7
   },
+  {
+    key: "storeLocationTown",
+    urlTitle: "mesto",
+    title: "Mesto", //@todo translation
+    priority: 8,
+  },
+  {
+    key: "storeLocationDistrict",
+    urlTitle: "okres",
+    title: "Okres", //@todo translation
+    priority: 9,
+  },
 ];
