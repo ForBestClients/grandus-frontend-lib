@@ -38,6 +38,7 @@ import TagManager from "grandus-lib/utils/gtag";
 import styles from "./step3.page.default.module.scss";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import { deburredSearch } from "grandus-lib/utils";
+import DeliveryProvider from "grandus-lib/components/delivery/provider";
 // import { getClientIdFromCookie } from "utils";
 
 const { Option } = Select;
@@ -128,6 +129,11 @@ const DeliveryForm = ({
                   className={styles.radioDescription}
                   dangerouslySetInnerHTML={{ __html: option?.description }}
                 />
+              ) : null}
+              {option?.serviceProviderType && deliveryType === option?.id ? (
+                <div className={styles.deliveryProviderWrapper}>
+                  <DeliveryProvider deliveryProviderType={option.serviceProviderType} />
+                </div>
               ) : null}
             </Col>
           </Row>
