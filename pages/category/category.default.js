@@ -1,35 +1,30 @@
 import { useState, useMemo } from "react";
-import { get, map, isEmpty, isArray } from "lodash";
-import { Result, Button, Row, Col, Divider } from "antd";
-import Link from "next/link";
 import { categoryPage } from "grandus-lib/utils/fetches";
-import { FrownOutlined } from "@ant-design/icons";
-import {
-  getSeoTitleData,
-  hasActiveFilters,
-  getCategoryLinkAttributes,
-} from "grandus-lib/hooks/useFilter";
+import { get, map, isEmpty, isArray } from "lodash";
+import { Button, Row, Col } from "antd";
+import { getSeoTitleData, hasActiveFilters } from "grandus-lib/hooks/useFilter";
 import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
-import Image from "grandus-lib/components-atomic/image/Image";
 import ProductCard from "components/product/card/ProductCard";
 import MetaData from "grandus-lib/components-atomic/MetaData";
 import Breadcrumbs from "components/breadcrumbs/Breadcrumbs";
 import CategoryParameters from "components/category/CategoryParameters";
 import CategoryOrdering from "components/category/CategoryOrdering";
+import CategoryPromotedProducts from "components/category/CategoryPromotedProducts";
 import CategorySelected from "components/category/CategorySelected";
 import Pagination from "components/pagination/Pagination";
 
 import styles from "./category.page.default.module.scss";
 
-import dynamic from "next/dynamic";
-const CategoryPromotedProducts = dynamic(
-  () => import("components/category/CategoryPromotedProducts"),
-  { ssr: false }
-);
+import {
+  Title,
+  CoverPhoto,
+  Description,
+  SubCategories,
+} from "./category.partials.default";
 
-export const JSXCategoryParameters = ({ filter }) => {
+export const JSXCategoryParameters = ({ filter, handleGetData = null }) => {
   const [openedFilter, setOpenedFilter] = useState(false);
   const buttonText = openedFilter ? "Zatvoriť filter" : "Otvoriť filter";
   const toggleFilter = () => {
@@ -68,7 +63,10 @@ export const JSXCategoryParameters = ({ filter }) => {
         </Button>
         {useMemo(
           () => (
-            <CategoryParameters initialData={filter} />
+            <CategoryParameters
+              initialData={filter}
+              handleGetData={handleGetData}
+            />
           ),
           [filter]
         )}
@@ -92,70 +90,6 @@ const Category = (props) => {
     );
   }, [products]);
 
-  const JSXtitle = (
-    <Col xs={24}>
-      <h1>
-        {get(category, "name")}
-        {!isEmpty(seoTitleData) ? (
-          <small> | {seoTitleData.join(", ")}</small>
-        ) : (
-          ""
-        )}
-      </h1>
-    </Col>
-  );
-
-  let JSXcoverPhoto = "";
-  if (category?.coverPhoto) {
-    JSXcoverPhoto = (
-      <Col xs={24}>
-        <div>
-          <Image
-            className={"image"}
-            photo={category?.coverPhoto}
-            size={"1200x180__cropped"}
-            type={"jpg"}
-          />
-        </div>
-      </Col>
-    );
-  }
-
-  let JSXdescription = "";
-  if (get(category, "description")) {
-    JSXdescription = (
-      <Col xs={24}>
-        <div
-          dangerouslySetInnerHTML={{
-            __html: get(category, "description", ""),
-          }}
-        />
-      </Col>
-    );
-  }
-
-  let JSXsubcategories = "";
-  if (!isEmpty(get(category, "childCategories", []))) {
-    JSXsubcategories = (
-      <Row gutter={[15, 15]}>
-        {map(get(category, "childCategories", []), (subCategory, index) => {
-          const { id, name, urlName, mainPhoto = null } = subCategory;
-          return (
-            <Col key={`subcategory-${id}-${index}`}>
-              <Link {...getCategoryLinkAttributes(urlName)}>
-                <Button
-                  icon={<Image photo={mainPhoto} size={"18x18"} type={"png"} />}
-                >
-                  {name}
-                </Button>
-              </Link>
-            </Col>
-          );
-        })}
-      </Row>
-    );
-  }
-
   return (
     <div className={"container guttered"}>
       <MetaData {...meta} />
@@ -171,51 +105,56 @@ const Category = (props) => {
           <JSXCategoryParameters />
         </Col>
         <Col xs={24} md={16} lg={20}>
+          <Row gutter={[0, 15]}>
+            <Title
+              title={get(category, "name")}
+              subtitle={isEmpty(seoTitleData) ? "" : seoTitleData.join(", ")}
+            />
+
+            <CoverPhoto photo={category?.coverPhoto} />
+
+            <Description description={category?.description} />
+
+            <SubCategories
+              subCategories={get(category, "childCategories", [])}
+            />
+
+            {!isEmpty(get(category, "promotedProducts", [])) ? (
+              <Col xs={24}>
+                {useMemo(
+                  () => (
+                    <CategoryPromotedProducts
+                      products={get(category, "promotedProducts")}
+                    />
+                  ),
+                  [category?.promotedProducts]
+                )}
+              </Col>
+            ) : (
+              ""
+            )}
+
+            {useMemo(
+              () => (
+                <Col xs={24}>
+                  <CategoryOrdering />
+                </Col>
+              ),
+              []
+            )}
+
+            {useMemo(
+              () => (
+                <Col xs={24}>
+                  <CategorySelected />
+                </Col>
+              ),
+              []
+            )}
+          </Row>
+
           {isArray(products) && !isEmpty(products) ? (
             <>
-              <Row gutter={[0, 15]}>
-                {JSXtitle}
-
-                {JSXcoverPhoto}
-
-                {JSXdescription}
-
-                {JSXsubcategories}
-
-                {!isEmpty(get(category, "promotedProducts", [])) ? (
-                  <Col xs={24}>
-                    {useMemo(
-                      () => (
-                        <CategoryPromotedProducts
-                          products={get(category, "promotedProducts")}
-                        />
-                      ),
-                      []
-                    )}
-                  </Col>
-                ) : (
-                  ""
-                )}
-
-                {useMemo(
-                  () => (
-                    <Col xs={24}>
-                      <CategoryOrdering />
-                    </Col>
-                  ),
-                  []
-                )}
-
-                {useMemo(
-                  () => (
-                    <Col xs={24}>
-                      <CategorySelected />
-                    </Col>
-                  ),
-                  []
-                )}
-              </Row>
-
               <Row gutter={[15, 15]}>
                 {map(products, (product, index) => {
                   return (
@@ -224,7 +163,7 @@ const Category = (props) => {
                       sm={8}
                       md={8}
                       lg={6}
-                      key={`products-category-${product.id}-${index}`}
+                      key={`products-category-${product?.id}-${index}`}
                     >
                       <ProductCard
                         {...product}
@@ -241,62 +180,19 @@ const Category = (props) => {
                 })}
               </Row>
 
-              <Divider />
               <Pagination {...pagination} />
             </>
           ) : (
-            <>
-              <Row gutter={[0, 15]}>
-                {JSXtitle}
-
-                {JSXcoverPhoto}
-
-                {JSXdescription}
-
-                {JSXsubcategories}
-
-                {!isEmpty(get(category, "promotedProducts", [])) ? (
-                  <Col xs={24}>
-                    {useMemo(
-                      () => (
-                        <CategoryPromotedProducts
-                          products={get(category, "promotedProducts")}
-                        />
-                      ),
-                      []
-                    )}
-                  </Col>
-                ) : (
-                  ""
-                )}
-
-                {useMemo(
-                  () => (
-                    <Col xs={24}>
-                      <CategoryOrdering />
-                    </Col>
-                  ),
-                  []
-                )}
-
-                {useMemo(
-                  () => (
-                    <Col xs={24}>
-                      <CategorySelected />
-                    </Col>
-                  ),
-                  []
-                )}
-              </Row>
-
-              <Row gutter={[15, 15]}>
-                <Result
-                  icon={<FrownOutlined />}
-                  title="Ľutujeme, nenašli sa produkty"
-                  subTitle={`Vášmu výberu nezodpovedaju žiadne produkty. Zmente prosím kategóriu alebo kombináciu filtrov.`}
+            <Row gutter={[15, 15]}>
+              <Col xs={24}>
+                <Title title={"Ľutujeme, nenašli sa produkty"} />
+                <Description
+                  description={
+                    "Vášmu výberu nezodpovedaju žiadne produkty. Zmente prosím kategóriu alebo kombináciu filtrov."
+                  }
                 />
-              </Row>
-            </>
+              </Col>
+            </Row>
           )}
         </Col>
       </Row>
