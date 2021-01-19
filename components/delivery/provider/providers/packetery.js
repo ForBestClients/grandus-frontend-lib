@@ -11,18 +11,26 @@ import styles from "./packetery.module.scss";
 
 const WIDGET_URL = "https://widget.packeta.com/www/js/library.js";
 
-const Packetery = () => {
-  const { session, itemAdd, itemRemove, isLoading: isSessionStorageLoading } = useSessionStorage();
+const Packetery = ({ customStyles = null }) => {
+  const {
+    session,
+    itemAdd,
+    itemRemove,
+    isLoading: isSessionStorageLoading,
+  } = useSessionStorage();
   const { settings } = useWebInstance();
   const { cart, cartUpdate } = useCart();
   const [isLoading, setIsLoading] = React.useState(false);
-
-  const selectedPickupPoint = get(session, DELIVERY_DATA_SESSION_STORAGE_KEY);
+  const [selectedPickupPoint, setSelectedPickupPoint] = React.useState(
+    get(session, DELIVERY_DATA_SESSION_STORAGE_KEY)
+  );
 
   const apiKey = get(settings, "packetery_merchant_key");
   if (isEmpty(apiKey)) {
     return null;
   }
+
+  const newStyles = customStyles || styles;
 
   const handlePickupPointSelection = async (selected) => {
     const pickupPointId = get(selected, "id") || null;
@@ -32,9 +40,14 @@ const Packetery = () => {
         { specificDeliveryType: toString(pickupPointId) },
         (newCart) => {
           if (newCart?.specificDeliveryType) {
-            itemAdd(DELIVERY_DATA_SESSION_STORAGE_KEY, pick(selected, ['place', 'nameStreet', 'url']));
+            itemAdd(
+              DELIVERY_DATA_SESSION_STORAGE_KEY,
+              pick(selected, ["place", "nameStreet", "url"]),
+              (sessionData) => setSelectedPickupPoint(get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null))
+            );
           } else {
             itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
+            setSelectedPickupPoint(null);
           }
         }
       );
@@ -60,11 +73,11 @@ const Packetery = () => {
         ></script>
         <script src={WIDGET_URL} data-api-key={apiKey}></script>
       </Head>
-      <div className={styles.packetery}>
+      <div className={newStyles.packetery}>
         {isLoading || isSessionStorageLoading ? (
           <LoadingOutlined spin />
         ) : (
-          <div className={styles.selected}>
+          <div className={newStyles.selected}>
             {!isEmpty(selectedPickupPoint) ? (
               <p>
                 <strong>{get(selectedPickupPoint, "nameStreet", "")}</strong>
