@@ -11,7 +11,7 @@ import styles from "./packetery.module.scss";
 
 const WIDGET_URL = "https://widget.packeta.com/www/js/library.js";
 
-const Packetery = ({ customStyles = null }) => {
+const Packetery = () => {
   const {
     session,
     itemAdd,
@@ -29,8 +29,6 @@ const Packetery = ({ customStyles = null }) => {
   if (isEmpty(apiKey)) {
     return null;
   }
-
-  const newStyles = customStyles || styles;
 
   const handlePickupPointSelection = async (selected) => {
     const pickupPointId = get(selected, "id") || null;
@@ -73,11 +71,11 @@ const Packetery = ({ customStyles = null }) => {
         ></script>
         <script src={WIDGET_URL} data-api-key={apiKey}></script>
       </Head>
-      <div className={newStyles.packetery}>
+      <div className={`${styles.packetery} packetery__custom`}>
         {isLoading || isSessionStorageLoading ? (
           <LoadingOutlined spin />
         ) : (
-          <div className={newStyles.selected}>
+          <div className={`${styles.selected} packetery__custom--selected`}>
             {!isEmpty(selectedPickupPoint) ? (
               <p>
                 <strong>{get(selectedPickupPoint, "nameStreet", "")}</strong>
