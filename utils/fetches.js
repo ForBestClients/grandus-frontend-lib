@@ -118,7 +118,9 @@ const searchPage = {
 const blogPage = {
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${context?.params?.id}`
+      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${context?.params?.id}`, {
+        headers: reqGetHeadersFront(context?.req)
+      }
     ).then((result) => result.json());
     return {
       props: { blog: data },
