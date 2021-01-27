@@ -116,9 +116,9 @@ const searchPage = {
 };
 
 const blogPage = {
-  serverSideProps: async (context) => {
+  serverSideProps: async (context, options = {}) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${context?.params?.id}`, {
+      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${context?.params?.id}?${queryToQueryString(options)}`, {
         headers: reqGetHeadersFront(context?.req)
       }
     ).then((result) => result.json());
