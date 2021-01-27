@@ -46,22 +46,27 @@ export const reqApiHost = (req) => {
   return process.env.HOST_API;
 };
 
-export const getCartExpand = (asUriPart = false) => {
-  return process.env.NEXT_PUBLIC_CART_EXPAND
-    ? `${asUriPart ? `expand=` : ""}${
-        process.env.NEXT_PUBLIC_CART_EXPAND
-      }`
-    : "";
+export const getApiExpand = (
+  type = "",
+  asUriPart = false,
+  uriType = "EXPAND"
+) => {
+  if (!type) {
+    return "";
+  }
+
+  const expandPrepend = asUriPart ? `expand=` : "";
+  const expandData =
+    process.env[`NEXT_PUBLIC_${type}_${uriType ? uriType : "EXPAND"}`];
+
+  return expandPrepend + expandData;
 };
 
-export const getCartFields = (asUriPart = false) => {
-  return process.env.NEXT_PUBLIC_CART_FIELDS
-    ? `${asUriPart ? `fields=` : ""}${
-        process.env.NEXT_PUBLIC_CART_FIELDS
-      }`
-    : "";
+export const getApiFields = (type = "", asUriPart = false) => {
+  return getApiExpand(type, asUriPart, "FIELDS");
 };
 
+/* @TODO deprecated */
 export const getProductDetailExpand = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_DETAIL_EXPAND
     ? `${asUriPart ? `expand=` : ""}${
@@ -70,6 +75,7 @@ export const getProductDetailExpand = (asUriPart = false) => {
     : "";
 };
 
+/* @TODO deprecated */
 export const getProductDetailFields = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_DETAIL_FIELDS
     ? `${asUriPart ? `fields=` : ""}${
@@ -78,6 +84,7 @@ export const getProductDetailFields = (asUriPart = false) => {
     : "";
 };
 
+/* @TODO deprecated */
 export const getProductCardFields = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
     ? `${asUriPart ? `fields=` : ""}${
