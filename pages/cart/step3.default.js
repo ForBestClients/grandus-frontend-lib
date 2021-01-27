@@ -339,10 +339,7 @@ const CartDeliveryAndPayment = (props) => {
     createOrder,
     removeContact,
     cartDestroy,
-  } = useCart(false, {
-    revalidateOnMount: false,
-    revalidateOnFocus: false,
-  });
+  } = useCart();
   const [orderErrors, setOrderErrors] = useState(null);
   const [deliveryType, setDeliveryType] = useState(
     get(cart, "delivery.id", "")
