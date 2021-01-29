@@ -246,7 +246,7 @@ const PaymentForm = ({
     handleChange(e);
   };
   const onSpecificPaymentTypeChange = (e) => {
-    setFieldValue("payment", e.target.value);
+    setFieldValue("specificPaymentType", e.target.value);
     setFieldTouched("specificPaymentType", true);
     setSpecificPaymentType(e.target.value);
     cartUpdate({ specificPaymentType: e.target.value });

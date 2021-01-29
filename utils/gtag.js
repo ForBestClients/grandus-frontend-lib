@@ -1,7 +1,9 @@
 import { omit, set, isFunction, chunk, forEach, get, clone } from "lodash";
 
+const NOSCRIPT_STYLE = { display: "none", visibility: "hidden" };
+
 const TagManager = {
-  init: function (googleTagManagerCode = "") {
+  init: function (googleTagManagerCode = "", noscript = true) {
     if (!googleTagManagerCode) {
       return null;
     }
@@ -21,8 +23,33 @@ const TagManager = {
             `,
           }}
         />
-        <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${googleTagManagerCode}`} height="0" width="0" style={{ display:'none', visibility:'hidden'}}></iframe></noscript>
+        {noscript ? (
+          <noscript>
+            <iframe
+              src={`https://www.googletagmanager.com/ns.html?id=${googleTagManagerCode}`}
+              height="0"
+              width="0"
+              style={NOSCRIPT_STYLE}
+            ></iframe>
+          </noscript>
+        ) : (
+          ""
+        )}
       </>
+    );
+  },
+  initNoScript: function (googleTagManagerCode) {
+    if (!googleTagManagerCode) return "";
+
+    return (
+      <noscript>
+        <iframe
+          src={`https://www.googletagmanager.com/ns.html?id=${googleTagManagerCode}`}
+          height="0"
+          width="0"
+          style={NOSCRIPT_STYLE}
+        ></iframe>
+      </noscript>
     );
   },
   registerPageViewTracking: function (router) {

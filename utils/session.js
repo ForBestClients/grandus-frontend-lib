@@ -8,9 +8,7 @@ export default function withSession(handler) {
     password: process.env.SECRET_COOKIE_PASSWORD,
     cookieName: GENERAL_CONSTANT,
     cookieOptions: {
-      // the next line allows to use the session in non-https environments like
-      // Next.js dev mode (http://localhost:3000)
-      secure: false, //process.env.NODE_ENV === 'production' ? true : false, @TODO
+      secure: process.env.NODE_ENV === 'production' ? true : false
     },
   });
 }
