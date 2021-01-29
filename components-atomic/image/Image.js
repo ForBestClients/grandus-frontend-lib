@@ -31,9 +31,13 @@ const ImageComponent = ({
 }) => {
   const { webInstance } = useWebInstance();
   let image = photo;
-  if (!image) {
-    image = webInstance?.placeholder;
-    image.path += '/' + image?.id
+
+  // if photo does not exist, use webinstance placeholder
+  if (!image && webInstance?.placeholder) {
+    image = {...webInstance?.placeholder};
+    image.path += "/" + image?.id;
+
+    console.log(image);
   }
 
   const imageTitle = title ? title : image?.title;
