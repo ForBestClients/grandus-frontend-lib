@@ -38,6 +38,7 @@ import TagManager from "grandus-lib/utils/gtag";
 import styles from "./step3.page.default.module.scss";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import { deburredSearch } from "grandus-lib/utils";
+import Image from "grandus-lib/components-atomic/image/Image";
 // import { getClientIdFromCookie } from "utils";
 
 const { Option } = Select;
@@ -118,6 +119,7 @@ const DeliveryForm = ({
           <Row gutter={[8, 8]} key={"delivery-radio-" + get(option, "id")}>
             <Col span={24}>
               <Radio value={get(option, "id")}>
+                {option?.photo ? <Image photo={option?.photo} size={`${option?.photo?.id}/80`} type={"png"} className={styles?.serviceImage} /> : null}
                 <b>{get(option, "name")}</b>{" "}
                 {option?.priceData?.priceFormatted
                   ? ` - ${option?.priceData?.priceFormatted}`
@@ -266,6 +268,7 @@ const PaymentForm = ({
           <Row gutter={[8, 8]}>
             <Col span={24}>
               <Radio value={get(option, "id")}>
+                {option?.photo ? <Image photo={option?.photo} size={`${option?.photo?.id}/80`} type={"png"} className={styles?.serviceImage} /> : null}
                 <b>{get(option, "name")}</b>{" "}
                 {option?.priceData?.priceFormatted
                   ? ` - ${option?.priceData?.priceFormatted}`

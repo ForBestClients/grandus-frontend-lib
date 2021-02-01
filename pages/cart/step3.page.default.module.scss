@@ -21,6 +21,11 @@
     }
 }
 
+.serviceImage > img {
+    max-height: 40px;
+    width: auto;
+}
+
 .agreementCheckboxWrapper {
     margin-bottom: 0 !important;
     display: block !important;
