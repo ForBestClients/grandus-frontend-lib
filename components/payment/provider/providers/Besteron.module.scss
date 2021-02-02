@@ -5,6 +5,10 @@
     padding: 0px 15px;
     margin-bottom: 25px;
 
+    :global(.ant-radio-group) {
+        width: 100%;
+    }
+
     .specificPaymentOptionHeader {
         font-weight: bolder;
         font-size: 13px;

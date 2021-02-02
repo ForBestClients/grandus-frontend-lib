@@ -37,7 +37,6 @@ const Besteron = ({ payment, handleChange }) => {
             <Radio.Group
               onChange={onChange}
               value={cart?.specificPaymentType}
-              style={{ width: "100%" }}
               name={"specificPaymentType"}
             >
               {!isEmpty(firstDataCardPaymentButton) ? (
