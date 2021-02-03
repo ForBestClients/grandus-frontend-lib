@@ -4,7 +4,7 @@ import { get, map, isEmpty, parseInt, toNumber, first } from "lodash";
 import { deburredSearch, scrollToTop } from "grandus-lib/utils";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import { checkoutContactPage } from "grandus-lib/utils/fetches";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, FrownOutlined, LoadingOutlined } from "@ant-design/icons";
 import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
@@ -26,6 +26,7 @@ import {
   Card,
   Checkbox,
   Alert,
+  Result
 } from "antd";
 import Steps from "components/cart/steps/CartSteps";
 import useCart from "grandus-lib/hooks/useCart";
@@ -345,6 +346,36 @@ const CartContact = (props) => {
   React.useEffect(() => {
     TagManager.push(EnhancedEcommerce.checkout(cart, 2));
   }, []);
+
+  if (isEmpty(get(cart, "items", [])) && isLoading) {
+    return (
+      <div className={"container guttered"}>
+        <Result
+          icon={<LoadingOutlined />}
+          title="Nákupný košík"
+          subTitle="Nahrávam nákupný košík"
+        />
+      </div>
+    );
+  }
+
+  if (isEmpty(get(cart, "items", [])) && !isLoading) {
+    return (
+      <div className={"container guttered"}>
+        <Result
+          icon={<FrownOutlined />}
+          title="Prázdny nákupný košík"
+          subTitle="Vo Vašom nákupnom košíku sa nenachádzajú žiadne produkty. V prípade, že ste sa sem vrátili z platobnej brány, tak vaša objednavka už bola úspešne zaznamenaná a bude Vám doručný potvrdzujúci email."
+          extra={
+            <Link href="/" as="/">
+              <Button type="primary">Pokračovať na domovskú stránku</Button>
+            </Link>
+          }
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={"container guttered"}>
       <Row gutter={[{ xs: 0, sm: 15 }, 15]}>

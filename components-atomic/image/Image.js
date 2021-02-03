@@ -1,6 +1,7 @@
 import styles from "./Image.module.scss";
 import { getImageUrl } from "grandus-lib/utils/index";
 import Image from "next/image";
+import useWebInstance from "grandus-lib/hooks/useWebInstance";
 
 const ImageNext = ({ photo, size, type, title, alt, imageProps }) => {
   const dimensions = size.match(/\d+/g).map(Number);
@@ -28,17 +29,26 @@ const ImageComponent = ({
   useNextImage = false,
   imageProps = {},
 }) => {
-  if (!photo) {
-    return ""; //@TODO add default blank image
+  const { webInstance } = useWebInstance();
+  let image = photo;
+
+  // if photo does not exist, use webinstance placeholder
+  if (!image && webInstance?.placeholder) {
+    image = {...webInstance?.placeholder};
+    image.path += "/" + image?.id;
   }
 
-  const imageTitle = title ? title : photo?.title;
-  const imageAlt = alt ? alt : photo?.description;
+  if (!image?.path) {
+    return null;
+  }
+
+  const imageTitle = title ? title : image?.title;
+  const imageAlt = alt ? alt : image?.description;
 
   if (useNextImage) {
     return (
       <ImageNext
-        photo={photo}
+        photo={image}
         size={size}
         type={type}
         title={imageTitle}
@@ -52,21 +62,21 @@ const ImageComponent = ({
     <picture className={`${styles.wrapper} ${className ? className : ""}`}>
       <source
         type="image/webp"
-        srcSet={`${getImageUrl(photo, size, "webp")} 1x, ${getImageUrl(
-          photo,
+        srcSet={`${getImageUrl(image, size, "webp")} 1x, ${getImageUrl(
+          image,
           size + "@2x",
           "webp"
         )} 2x`}
       />
       <source
-        srcSet={`${getImageUrl(photo, size, type)} 1x, ${getImageUrl(
-          photo,
+        srcSet={`${getImageUrl(image, size, type)} 1x, ${getImageUrl(
+          image,
           size + "@2x",
           type
         )} 2x`}
       />
       <img
-        src={`${getImageUrl(photo, size, type)}`}
+        src={`${getImageUrl(image, size, type)}`}
         title={imageTitle}
         alt={imageAlt}
         {...imageProps}

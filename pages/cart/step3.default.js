@@ -9,6 +9,7 @@ import {
   Button,
   Checkbox,
   Alert,
+  Result,
 } from "antd";
 import * as yup from "yup";
 import Steps from "components/cart/steps/CartSteps";
@@ -25,12 +26,17 @@ import {
   get,
   forEach,
   head,
+  toNumber,
 } from "lodash";
 import { useState, Fragment } from "react";
 import Link from "next/link";
 import TextArea from "antd/lib/input/TextArea";
 import { useRouter } from "next/router";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  FrownOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
@@ -333,6 +339,24 @@ const CartDeliveryAndPayment = (props) => {
   const [note, setNote] = useState("");
   const [termsAndConditions, setTermsAndConditions] = useState(false);
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
+
+  let privacyPolicyValidationSchema = null;
+  if (!!toNumber(get(settings, "require_consent_for_processing_personal_data"))) {
+    privacyPolicyValidationSchema = yup
+      .bool()
+      .nullable()
+      .oneOf([true], "Musíte súhlasiť so spracovaním osobných údajov");
+  }
+
+  const validationSchema = yup.object().shape({
+    delivery: yup.number().nullable().required("Povinne pole"),
+    payment: yup.number().nullable().required("Povinne pole"),
+    termsAndConditions: yup
+      .bool()
+      .oneOf([true], "Musíte súhlasiť s obchodnými podmienkami"),
+    privacyPolicy: yup.bool().nullable().concat(privacyPolicyValidationSchema),
+  });
+
   const formProps = {
     initialValues: {
       delivery: get(cart, "delivery.id", ""),
@@ -342,16 +366,7 @@ const CartDeliveryAndPayment = (props) => {
       privacyPolicy: privacyPolicy,
       note: note,
     },
-    validationSchema: yup.object({
-      delivery: yup.number().nullable().required("Povinne pole"),
-      payment: yup.number().nullable().required("Povinne pole"),
-      termsAndConditions: yup
-        .bool()
-        .oneOf([true], "Musíte súhlasiť s obchodnými podmienkami"),
-      privacyPolicy: yup
-        .bool()
-        .oneOf([true], "Musíte súhlasiť so spracovaním osobných údajov"),
-    }),
+    validationSchema,
     onSubmit: (
       values,
       { setFieldError, errors, isValid, setSubmitting, ...other }
@@ -399,6 +414,35 @@ const CartDeliveryAndPayment = (props) => {
   React.useEffect(() => {
     TagManager.push(EnhancedEcommerce.checkout(cart, 3));
   }, []);
+
+  if (isEmpty(get(cart, "items", [])) && isLoading) {
+    return (
+      <div className={"container guttered"}>
+        <Result
+          icon={<LoadingOutlined />}
+          title="Nákupný košík"
+          subTitle="Nahrávam nákupný košík"
+        />
+      </div>
+    );
+  }
+
+  if (isEmpty(get(cart, "items", [])) && !isLoading) {
+    return (
+      <div className={"container guttered"}>
+        <Result
+          icon={<FrownOutlined />}
+          title="Prázdny nákupný košík"
+          subTitle="Vo Vašom nákupnom košíku sa nenachádzajú žiadne produkty. V prípade, že ste sa sem vrátili z platobnej brány, tak vaša objednavka už bola úspešne zaznamenaná a bude Vám doručný potvrdzujúci email."
+          extra={
+            <Link href="/" as="/">
+              <Button type="primary">Pokračovať na domovskú stránku</Button>
+            </Link>
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={"container guttered"}>
@@ -518,32 +562,38 @@ const CartDeliveryAndPayment = (props) => {
 
                   <Divider />
 
-                  <Form.Item
-                    valuePropName="checked"
-                    className={styles?.agreementCheckboxWrapper}
-                    name="privacyPolicy"
-                    validateStatus={
-                      touched?.privacyPolicy && errors?.privacyPolicy
-                        ? "error"
-                        : ""
-                    }
-                    help={
-                      touched?.privacyPolicy && errors?.privacyPolicy
-                        ? errors?.privacyPolicy
-                        : ""
-                    }
-                  >
-                    <Checkbox
-                      className={styles?.agreementCheckbox}
-                      disabled={isSubmitting}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setPrivacyPolicy(e.target.checked);
-                      }}
+                  {!!toNumber(get(
+                    settings,
+                    "require_consent_for_processing_personal_data"
+                  )) ? (
+                    <Form.Item
+                      valuePropName="checked"
+                      className={styles?.agreementCheckboxWrapper}
+                      name="privacyPolicy"
+                      validateStatus={
+                        touched?.privacyPolicy && errors?.privacyPolicy
+                          ? "error"
+                          : ""
+                      }
+                      help={
+                        touched?.privacyPolicy && errors?.privacyPolicy
+                          ? errors?.privacyPolicy
+                          : ""
+                      }
                     >
-                      Súhlasím so spracovaním osobných údajov
-                    </Checkbox>
-                  </Form.Item>
+                      <Checkbox
+                        className={styles?.agreementCheckbox}
+                        disabled={isSubmitting}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setPrivacyPolicy(e.target.checked);
+                        }}
+                      >
+                        Súhlasím so spracovaním osobných údajov
+                      </Checkbox>
+                    </Form.Item>
+                  ) : null}
+
                   <Form.Item
                     valuePropName="checked"
                     className={styles?.agreementCheckboxWrapper}
