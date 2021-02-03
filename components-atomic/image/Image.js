@@ -38,6 +38,10 @@ const ImageComponent = ({
     image.path += "/" + image?.id;
   }
 
+  if (!image?.path) {
+    return null;
+  }
+
   const imageTitle = title ? title : image?.title;
   const imageAlt = alt ? alt : image?.description;
 
