@@ -36,8 +36,6 @@ const ImageComponent = ({
   if (!image && webInstance?.placeholder) {
     image = {...webInstance?.placeholder};
     image.path += "/" + image?.id;
-
-    console.log(image);
   }
 
   const imageTitle = title ? title : image?.title;
