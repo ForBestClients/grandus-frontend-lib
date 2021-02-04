@@ -7,9 +7,9 @@ import {
   Select,
   Form,
   Button,
-  Typography,
   Checkbox,
   Alert,
+  Result,
 } from "antd";
 import * as yup from "yup";
 import Steps from "components/cart/steps/CartSteps";
@@ -26,22 +26,28 @@ import {
   get,
   forEach,
   head,
+  toNumber,
 } from "lodash";
 import { useState, Fragment } from "react";
 import Link from "next/link";
 import TextArea from "antd/lib/input/TextArea";
 import { useRouter } from "next/router";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  FrownOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
 import styles from "./step3.page.default.module.scss";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import { deburredSearch } from "grandus-lib/utils";
+import Image from "grandus-lib/components-atomic/image/Image";
+import PaymentProvider from "grandus-lib/components/payment/provider";
 // import { getClientIdFromCookie } from "utils";
 
 const { Option } = Select;
-const { Paragraph } = Typography;
 
 const DeliveryForm = ({
   deliveryOptions = null,
@@ -62,7 +68,7 @@ const DeliveryForm = ({
     setFieldValue,
     handleBlur,
     handleChange,
-    isSubmitting
+    isSubmitting,
   } = useFormikContext();
 
   const resetPayment = () => {
@@ -70,7 +76,7 @@ const DeliveryForm = ({
     setFieldTouched("payment", true);
     setFieldValue("specificPaymentType", null);
     setFieldTouched("specificPaymentType", true);
-  }
+  };
 
   const onGroupChange = (e) => {
     setDeliveryType(null);
@@ -118,6 +124,14 @@ const DeliveryForm = ({
           <Row gutter={[8, 8]} key={"delivery-radio-" + get(option, "id")}>
             <Col span={24}>
               <Radio value={get(option, "id")}>
+                {option?.photo ? (
+                  <Image
+                    photo={option?.photo}
+                    size={`${option?.photo?.id}/80`}
+                    type={"png"}
+                    className={styles?.serviceImage}
+                  />
+                ) : null}
                 <b>{get(option, "name")}</b>{" "}
                 {option?.priceData?.priceFormatted
                   ? ` - ${option?.priceData?.priceFormatted}`
@@ -216,7 +230,6 @@ const PaymentForm = ({
   paymentOptions = null,
   setPaymentType,
   paymentType,
-  specificPaymentType,
   setSpecificPaymentType,
   cartUpdate,
 }) => {
@@ -231,7 +244,7 @@ const PaymentForm = ({
     setFieldValue,
     isSubmitting,
     handleBlur,
-    handleChange
+    handleChange,
   } = useFormikContext();
   const onChange = (e) => {
     setPaymentType(e.target.value);
@@ -245,13 +258,14 @@ const PaymentForm = ({
     cartUpdate({ paymentType: e.target.value });
     handleChange(e);
   };
+
   const onSpecificPaymentTypeChange = (e) => {
     setFieldValue("specificPaymentType", e.target.value);
     setFieldTouched("specificPaymentType", true);
     setSpecificPaymentType(e.target.value);
-    cartUpdate({ specificPaymentType: e.target.value });
     handleChange(e);
   };
+
   return (
     <Radio.Group
       onChange={onChange}
@@ -266,62 +280,33 @@ const PaymentForm = ({
           <Row gutter={[8, 8]}>
             <Col span={24}>
               <Radio value={get(option, "id")}>
+                {option?.photo ? (
+                  <Image
+                    photo={option?.photo}
+                    size={`${option?.photo?.id}/80`}
+                    type={"png"}
+                    className={styles?.serviceImage}
+                  />
+                ) : null}
                 <b>{get(option, "name")}</b>{" "}
                 {option?.priceData?.priceFormatted
                   ? ` - ${option?.priceData?.priceFormatted}`
                   : ""}
               </Radio>
+              {!isEmpty(option.description) ? (
+                <div
+                  className={styles.radioDescription}
+                  dangerouslySetInnerHTML={{ __html: option?.description }}
+                />
+              ) : null}
             </Col>
           </Row>
 
-          {paymentType === get(option, "id") &&
-          !isEmpty(get(option, "options")) ? (
-            <Row gutter={[8, 8]}>
-              <Col span={24}>
-                <Radio.Group
-                  onChange={onSpecificPaymentTypeChange}
-                  onBlur={handleBlur}
-                  value={specificPaymentType}
-                  style={{ width: "100%" }}
-                  name={"specificPaymentType"}
-                  disabled={isSubmitting}
-                >
-                  <Row gutter={[8, 8]}>
-                    {map(
-                      get(option, "options"),
-                      (specificPaymentOption, index) => (
-                        <Col
-                          xs={12}
-                          className={styles.specificPaymentOption}
-                          key={
-                            "specific-payment-" +
-                            get(specificPaymentOption, "value", index)
-                          }
-                        >
-                          <Radio.Button
-                            value={get(specificPaymentOption, "value")}
-                          >
-                            <img
-                              src={`${process.env.NEXT_PUBLIC_IMAGE_HOST}/${get(
-                                specificPaymentOption,
-                                "img"
-                              )}`}
-                              alt={get(specificPaymentOption, "name")}
-                            />
-                            <Paragraph
-                              ellipsis={{ rows: 1 }}
-                              style={{ marginBottom: 0 }}
-                            >
-                              {get(specificPaymentOption, "name")}
-                            </Paragraph>
-                          </Radio.Button>
-                        </Col>
-                      )
-                    )}
-                  </Row>
-                </Radio.Group>
-              </Col>
-            </Row>
+          {paymentType === get(option, "id") ? (
+            <PaymentProvider
+              payment={option}
+              handleChange={onSpecificPaymentTypeChange}
+            />
           ) : null}
         </Fragment>
       ))}
@@ -339,10 +324,7 @@ const CartDeliveryAndPayment = (props) => {
     createOrder,
     removeContact,
     cartDestroy,
-  } = useCart(false, {
-    revalidateOnMount: false,
-    revalidateOnFocus: false,
-  });
+  } = useCart();
   const [orderErrors, setOrderErrors] = useState(null);
   const [deliveryType, setDeliveryType] = useState(
     get(cart, "delivery.id", "")
@@ -357,6 +339,24 @@ const CartDeliveryAndPayment = (props) => {
   const [note, setNote] = useState("");
   const [termsAndConditions, setTermsAndConditions] = useState(false);
   const [privacyPolicy, setPrivacyPolicy] = useState(false);
+
+  let privacyPolicyValidationSchema = null;
+  if (!!toNumber(get(settings, "require_consent_for_processing_personal_data"))) {
+    privacyPolicyValidationSchema = yup
+      .bool()
+      .nullable()
+      .oneOf([true], "Musíte súhlasiť so spracovaním osobných údajov");
+  }
+
+  const validationSchema = yup.object().shape({
+    delivery: yup.number().nullable().required("Povinne pole"),
+    payment: yup.number().nullable().required("Povinne pole"),
+    termsAndConditions: yup
+      .bool()
+      .oneOf([true], "Musíte súhlasiť s obchodnými podmienkami"),
+    privacyPolicy: yup.bool().nullable().concat(privacyPolicyValidationSchema),
+  });
+
   const formProps = {
     initialValues: {
       delivery: get(cart, "delivery.id", ""),
@@ -366,16 +366,7 @@ const CartDeliveryAndPayment = (props) => {
       privacyPolicy: privacyPolicy,
       note: note,
     },
-    validationSchema: yup.object({
-      delivery: yup.number().nullable().required("Povinne pole"),
-      payment: yup.number().nullable().required("Povinne pole"),
-      termsAndConditions: yup
-        .bool()
-        .oneOf([true], "Musíte súhlasiť s obchodnými podmienkami"),
-      privacyPolicy: yup
-        .bool()
-        .oneOf([true], "Musíte súhlasiť so spracovaním osobných údajov"),
-    }),
+    validationSchema,
     onSubmit: (
       values,
       { setFieldError, errors, isValid, setSubmitting, ...other }
@@ -423,6 +414,35 @@ const CartDeliveryAndPayment = (props) => {
   React.useEffect(() => {
     TagManager.push(EnhancedEcommerce.checkout(cart, 3));
   }, []);
+
+  if (isEmpty(get(cart, "items", [])) && isLoading) {
+    return (
+      <div className={"container guttered"}>
+        <Result
+          icon={<LoadingOutlined />}
+          title="Nákupný košík"
+          subTitle="Nahrávam nákupný košík"
+        />
+      </div>
+    );
+  }
+
+  if (isEmpty(get(cart, "items", [])) && !isLoading) {
+    return (
+      <div className={"container guttered"}>
+        <Result
+          icon={<FrownOutlined />}
+          title="Prázdny nákupný košík"
+          subTitle="Vo Vašom nákupnom košíku sa nenachádzajú žiadne produkty. V prípade, že ste sa sem vrátili z platobnej brány, tak vaša objednavka už bola úspešne zaznamenaná a bude Vám doručný potvrdzujúci email."
+          extra={
+            <Link href="/" as="/">
+              <Button type="primary">Pokračovať na domovskú stránku</Button>
+            </Link>
+          }
+        />
+      </div>
+    );
+  }
 
   return (
     <div className={"container guttered"}>
@@ -542,32 +562,38 @@ const CartDeliveryAndPayment = (props) => {
 
                   <Divider />
 
-                  <Form.Item
-                    valuePropName="checked"
-                    className={styles?.agreementCheckboxWrapper}
-                    name="privacyPolicy"
-                    validateStatus={
-                      touched?.privacyPolicy && errors?.privacyPolicy
-                        ? "error"
-                        : ""
-                    }
-                    help={
-                      touched?.privacyPolicy && errors?.privacyPolicy
-                        ? errors?.privacyPolicy
-                        : ""
-                    }
-                  >
-                    <Checkbox
-                      className={styles?.agreementCheckbox}
-                      disabled={isSubmitting}
-                      onChange={(e) => {
-                        handleChange(e);
-                        setPrivacyPolicy(e.target.checked);
-                      }}
+                  {!!toNumber(get(
+                    settings,
+                    "require_consent_for_processing_personal_data"
+                  )) ? (
+                    <Form.Item
+                      valuePropName="checked"
+                      className={styles?.agreementCheckboxWrapper}
+                      name="privacyPolicy"
+                      validateStatus={
+                        touched?.privacyPolicy && errors?.privacyPolicy
+                          ? "error"
+                          : ""
+                      }
+                      help={
+                        touched?.privacyPolicy && errors?.privacyPolicy
+                          ? errors?.privacyPolicy
+                          : ""
+                      }
                     >
-                      Súhlasím so spracovaním osobných údajov
-                    </Checkbox>
-                  </Form.Item>
+                      <Checkbox
+                        className={styles?.agreementCheckbox}
+                        disabled={isSubmitting}
+                        onChange={(e) => {
+                          handleChange(e);
+                          setPrivacyPolicy(e.target.checked);
+                        }}
+                      >
+                        Súhlasím so spracovaním osobných údajov
+                      </Checkbox>
+                    </Form.Item>
+                  ) : null}
+
                   <Form.Item
                     valuePropName="checked"
                     className={styles?.agreementCheckboxWrapper}
