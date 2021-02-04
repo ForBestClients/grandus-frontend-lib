@@ -55,7 +55,9 @@ export const getApiExpand = (
     return "";
   }
 
-  const expandPrepend = asUriPart ? `expand=` : "";
+  const expandPrepend = asUriPart
+    ? `${toLower(uriType ? uriType : "EXPAND")}=`
+    : "";
   const expandData =
     process.env[`NEXT_PUBLIC_${type}_${uriType ? uriType : "EXPAND"}`];
 
