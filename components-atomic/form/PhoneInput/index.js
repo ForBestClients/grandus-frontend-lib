@@ -1,5 +1,4 @@
-import parsePhoneNumberFromString from "libphonenumber-js";
-import PhoneInputComponent from "react-phone-number-input";
+import PhoneInputComponent, { parsePhoneNumber } from "react-phone-number-input";
 import { Form } from "antd";
 import { get, isEmpty } from "lodash";
 
@@ -23,21 +22,29 @@ const PhoneInput = (props) => {
     setFieldValue,
   } = props;
 
-  const phoneNumber = parsePhoneNumberFromString(
-    !isEmpty(values[fieldName]) ? values[fieldName] : ""
-  );
-  const value = phoneNumber ? phoneNumber.number : values[fieldName];
+  const [value, setValue] = React.useState(null);
+
+  React.useEffect(() => {
+    const phoneNumber = parsePhoneNumber(
+      !isEmpty(values[fieldName]) ? values[fieldName] : ""
+    );
+    setValue(phoneNumber ? phoneNumber.number : values[fieldName]);
+  }, [values[fieldName]])
 
   const onPhoneNumberChange = (value) => {
     let phoneNumber = null;
     if (value) {
-      phoneNumber = parsePhoneNumberFromString(value);
+      phoneNumber = parsePhoneNumber(value);
     }
     const newValue = phoneNumber ? phoneNumber.number : value;
-
-    setFieldValue(fieldName, newValue);
-    if (!touched[fieldName]) setFieldTouched(fieldName);
+    setValue(newValue);
   };
+
+  const onPhoneNumberBlur = (e) => {
+    setFieldValue(fieldName, value);
+    if (!touched[fieldName]) setFieldTouched(fieldName);
+    handleBlur(e);
+  }
 
   return (
     <div className={`${styles?.phoneInput} phone-input-component `}>
@@ -56,15 +63,17 @@ const PhoneInput = (props) => {
             : help
         }
       >
-        <FloatLabel label={label} name={fieldName} value={values[fieldName]}>
+        <FloatLabel label={label} name={fieldName} value={value}>
           <PhoneInputComponent
             id={fieldName}
             name={fieldName}
             defaultCountry={defaultCountry}
             value={value}
+            // international
             withCountryCallingCode
+            countryCallingCodeEditable={false}
             onChange={onPhoneNumberChange}
-            onBlur={handleBlur}
+            onBlur={onPhoneNumberBlur}
             error={errors[fieldName]}
           />
         </FloatLabel>
