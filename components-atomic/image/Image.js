@@ -27,13 +27,14 @@ const ImageComponent = ({
   alt = false,
   className,
   useNextImage = false,
+  usePlacehoder = false,
   imageProps = {},
 }) => {
   const { webInstance } = useWebInstance();
   let image = photo;
 
   // if photo does not exist, use webinstance placeholder
-  if (!image && webInstance?.placeholder) {
+  if (usePlacehoder && !image && webInstance?.placeholder) {
     image = {...webInstance?.placeholder};
     image.path += "/" + image?.id;
   }
