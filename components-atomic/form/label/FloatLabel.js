@@ -7,7 +7,7 @@ const FloatLabel = props => {
   const { children, label, value } = props;
 
   const labelClass =
-    focus || (value && value.length !== 0) ? styles?.labelFloat : "";
+    focus || (value && value.length !== 0) ? `${styles?.labelFloat} label-float-custom` : "";
 
   return (
     <div
