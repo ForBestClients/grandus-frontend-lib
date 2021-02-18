@@ -53,7 +53,7 @@ const ImageComponent = ({
         size={size}
         type={type}
         title={imageTitle}
-        alt={imageAlt}
+        alt={imageAlt || imageTitle}
         imageProps={imageProps}
       />
     );
@@ -79,7 +79,7 @@ const ImageComponent = ({
       <img
         src={`${getImageUrl(image, size, type)}`}
         title={imageTitle}
-        alt={imageAlt}
+        alt={imageAlt || imageTitle}
         {...imageProps}
       />
     </picture>
