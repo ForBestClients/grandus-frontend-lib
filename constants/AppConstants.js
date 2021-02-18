@@ -7,6 +7,7 @@ export const ATTACHMENT_TYPE_FILE = 1;
 export const ATTACHMENT_TYPE_URL = 2;
 export const ATTACHMENT_EXTENSION_PDF = 'pdf';
 
+export const ADDITIONAL_INFOS_TYPE_SIZES_TABLE = 1;
 export const ADDITIONAL_INFOS_TYPE_PERSON = 2;
 export const ADDITIONAL_INFOS_STORE_MANAGER_HASH = 'store_manager';
 
