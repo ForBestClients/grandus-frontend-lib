@@ -5,7 +5,15 @@ import {
   ESHOP_TYPE_B2B_LOCKED,
   ESHOP_TYPE_MIXED,
 } from "grandus-lib/constants/AppConstants";
-import { get, parseInt, toNumber, deburr, toLower, replace } from "lodash";
+import {
+  get,
+  parseInt,
+  toNumber,
+  deburr,
+  toLower,
+  replace,
+  isEmpty,
+} from "lodash";
 
 export const getDevMeta = () => {
   if (
@@ -21,6 +29,29 @@ export const getDevMeta = () => {
   }
 
   return "";
+};
+
+export const getDocumentInitialProps = (webInstance = null) => {
+  if (isEmpty(webInstance)) {
+    return {};
+  }
+
+  return {
+    favicon: get(webInstance, "favicon"),
+    customScripts: get(webInstance, "globalSettings.custom_javascript", ""),
+    customStyles: get(webInstance, "globalSettings.custom_css", ""),
+    googleAnalyticsCode: get(
+      webInstance,
+      "globalSettings.google_analytics_code",
+      ""
+    ),
+    googleTagManagerCode: get(
+      webInstance,
+      "globalSettings.google_tag_manager_code",
+      ""
+    ),
+    fbPixelCode: get(webInstance, "globalSettings.facebook_remarketing_id", ""),
+  };
 };
 
 export const reqExtractUri = (url) => {
@@ -46,22 +77,29 @@ export const reqApiHost = (req) => {
   return process.env.HOST_API;
 };
 
-export const getCartExpand = (asUriPart = false) => {
-  return process.env.NEXT_PUBLIC_CART_EXPAND
-    ? `${asUriPart ? `expand=` : ""}${
-        process.env.NEXT_PUBLIC_CART_EXPAND
-      }`
+export const getApiExpand = (
+  type = "",
+  asUriPart = false,
+  uriType = "EXPAND"
+) => {
+  if (!type) {
+    return "";
+  }
+
+  const expandPrepend = asUriPart
+    ? `${toLower(uriType ? uriType : "EXPAND")}=`
     : "";
+  const expandData =
+    process.env[`NEXT_PUBLIC_${type}_${uriType ? uriType : "EXPAND"}`];
+
+  return expandPrepend + expandData;
 };
 
-export const getCartFields = (asUriPart = false) => {
-  return process.env.NEXT_PUBLIC_CART_FIELDS
-    ? `${asUriPart ? `fields=` : ""}${
-        process.env.NEXT_PUBLIC_CART_FIELDS
-      }`
-    : "";
+export const getApiFields = (type = "", asUriPart = false) => {
+  return getApiExpand(type, asUriPart, "FIELDS");
 };
 
+/* @TODO deprecated */
 export const getProductDetailExpand = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_DETAIL_EXPAND
     ? `${asUriPart ? `expand=` : ""}${
@@ -70,6 +108,7 @@ export const getProductDetailExpand = (asUriPart = false) => {
     : "";
 };
 
+/* @TODO deprecated */
 export const getProductDetailFields = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_DETAIL_FIELDS
     ? `${asUriPart ? `fields=` : ""}${
@@ -78,6 +117,7 @@ export const getProductDetailFields = (asUriPart = false) => {
     : "";
 };
 
+/* @TODO deprecated */
 export const getProductCardFields = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
     ? `${asUriPart ? `fields=` : ""}${

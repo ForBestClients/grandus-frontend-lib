@@ -116,9 +116,14 @@ const searchPage = {
 };
 
 const blogPage = {
-  serverSideProps: async (context) => {
+  serverSideProps: async (context, options = {}) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${context?.params?.id}`
+      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${
+        context?.params?.id
+      }?${queryToQueryString(options)}`,
+      {
+        headers: reqGetHeadersFront(context?.req),
+      }
     ).then((result) => result.json());
     return {
       props: { blog: data },
@@ -209,7 +214,7 @@ const userProfilePage = {
     const countries = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/countries`
     ).then((result) => result.json());
-    
+
     let towns = [];
     try {
       towns = await fetch(
@@ -226,15 +231,21 @@ const userProfilePage = {
 
 const thanksPage = {
   serverSideProps: async (context) => {
-    const order = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/order?orderToken=${get(
-        context,
-        "query.orderToken",
-        ""
-      )}`
-    ).then((response) => response.json());
+    let [order, banners] = await Promise.all([
+      fetch(
+        `${reqGetHost(context?.req)}/api/lib/v1/order?orderToken=${get(
+          context,
+          "query.orderToken",
+          ""
+        )}`
+      )
+        .then((result) => result.json()),
+
+      fetch(`${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`)
+        .then((result) => result.json()),
+    ]);
     return {
-      props: { order },
+      props: { order, banners },
     };
   },
 };

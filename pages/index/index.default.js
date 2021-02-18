@@ -119,7 +119,7 @@ const Homepage = (props) => {
                   const image = (
                     <Image
                       photo={photo}
-                      size={"1420x400__cropped"}
+                      size={"1420x400__cropped@2x"}
                       type={"jpg"}
                       useNextImage={true}
                       imageProps={imageProps}
@@ -148,7 +148,7 @@ const Homepage = (props) => {
               const image = (
                 <Image
                   photo={photo}
-                  size={"340x100__cropped"}
+                  size={"340x100__cropped@2x"}
                   type={"jpg"}
                   useNextImage={true}
                 />
@@ -226,7 +226,7 @@ const Homepage = (props) => {
                 const image = (
                   <Image
                     photo={photo}
-                    size={"700x200__cropped"}
+                    size={"700x200__cropped@2x"}
                     type={"jpg"}
                     useNextImage={true}
                   />

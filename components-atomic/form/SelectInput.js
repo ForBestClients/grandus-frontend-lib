@@ -1,6 +1,6 @@
 import { Form, Select } from "antd";
 import { deburredSearch } from "grandus-lib/utils";
-import { get, map } from "lodash";
+import { get, isFunction, map } from "lodash";
 import FloatLabel from "./label/FloatLabel";
 
 const SelectInput = (props) => {
@@ -18,6 +18,7 @@ const SelectInput = (props) => {
     validateStatus = "",
     help = null,
     showSearch,
+    onSelect,
   } = props;
   return (
     <Form.Item
@@ -44,10 +45,19 @@ const SelectInput = (props) => {
           disabled={disabled}
           allowClear={allowClear}
           onChange={(val) => {
-            onChange(val);
+            if (isFunction(onChange)) {
+              onChange(val);
+            }
+          }}
+          onSelect={(val) => {
+            if (isFunction(onSelect)) {
+              onSelect(val);
+            }
           }}
           onBlur={() => {
-            onBlur();
+            if (isFunction(onBlur)) {
+              onBlur();
+            }
           }}
           filterOption={(inputValue, option) => {
             return deburredSearch(get(option, "children"), inputValue);

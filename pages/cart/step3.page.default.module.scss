@@ -29,6 +29,11 @@
     }
 }
 
+.serviceImage > img {
+    max-height: 40px;
+    width: auto;
+}
+
 .agreementCheckboxWrapper {
     margin-bottom: 0 !important;
     display: block !important;
@@ -47,3 +52,10 @@
         }
     }
 }
+
+.radioDescription {
+    font-size: 11px;
+    margin-left: 24px;
+    max-height: 100px;
+    overflow-y: auto;
+  }

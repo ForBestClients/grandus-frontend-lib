@@ -53,14 +53,13 @@ export default function useCart(initialCart = false, options = {}) {
               ...data,
             },
           }),
-        }).then((result) => {
-          result.json().then((data) => {
-            if (isFunction(callback)) {
-              callback(data);
-            }
-
-            return data;
-          });
+        })
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
         }),
         false
       );

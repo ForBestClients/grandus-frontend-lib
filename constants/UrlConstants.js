@@ -14,45 +14,51 @@ export const RESERVED_URI_PARTS = [
     priority: 2,
   },
   {
+    key: "availability",
+    urlTitle: "dostupnost",
+    title: "Dostupnosť", //@todo translation
+    priority: 3,
+  },
+  {
     key: "condition",
     urlTitle: "trieda",
     title: "Trieda", //@todo translation
-    priority: 3,
+    priority: 4,
   },
   { //TODO fix bug with undefined
     key: "brand",
     urlTitle: "vyrobca",
     title: "Výrobca", //@todo translation
-    priority: 4,
+    priority: 5,
   },
   {
     key: "status",
     urlTitle: "stav",
     title: "Stav", //@todo translation
-    priority: 5,
+    priority: 6,
   },
   {
     key: "store",
     urlTitle: "velkost",
     title: "Veľkosť", //@todo translation
-    priority: 6,
+    priority: 7,
   },
   {
     key: "tags",
     urlTitle: "tag",
     title: "Tag", //@todo translations
-    priority: 7
+    priority: 8
   },
   {
     key: "storeLocationTown",
     urlTitle: "mesto",
     title: "Mesto", //@todo translation
-    priority: 8,
+    priority: 9,
   },
   {
     key: "storeLocationDistrict",
     urlTitle: "okres",
     title: "Okres", //@todo translation
-    priority: 9,
+    priority: 10,
   },
 ];
