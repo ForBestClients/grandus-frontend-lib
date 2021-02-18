@@ -44,6 +44,7 @@ import styles from "./step3.page.default.module.scss";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import { deburredSearch } from "grandus-lib/utils";
 import Image from "grandus-lib/components-atomic/image/Image";
+import DeliveryProvider from "grandus-lib/components/delivery/provider";
 import PaymentProvider from "grandus-lib/components/payment/provider";
 // import { getClientIdFromCookie } from "utils";
 
@@ -142,6 +143,11 @@ const DeliveryForm = ({
                   className={styles.radioDescription}
                   dangerouslySetInnerHTML={{ __html: option?.description }}
                 />
+              ) : null}
+              {option?.serviceProviderType && deliveryType === option?.id ? (
+                <div className={styles.deliveryProviderWrapper}>
+                  <DeliveryProvider deliveryProviderType={option.serviceProviderType} />
+                </div>
               ) : null}
             </Col>
           </Row>
