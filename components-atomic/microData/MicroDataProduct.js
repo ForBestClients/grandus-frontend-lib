@@ -16,7 +16,7 @@ const MicroDataProduct = ({ data = null, webInstance = null }) => {
       ean = "",
       availability,
     } = data;
-    const { domain = null, currencySymbol } = webInstance;
+    const { domain = null, currency } = webInstance;
     return (
       <script
         type="application/ld+json"
@@ -30,8 +30,8 @@ const MicroDataProduct = ({ data = null, webInstance = null }) => {
               photo && photo?.path ? getImageUrl(photo, "400x250", "jpg") : "",
             description: get(shortProductDescription, "description", ""),
             url: `${domain}/produkt/${urlTitle}`,
-            sku: sku,
-            mpn: ean,
+            sku: sku || id,
+            mpn: ean || id,
             brand: {
               "@type": "Thing",
               name: get(brand, "name", ""),
@@ -39,7 +39,7 @@ const MicroDataProduct = ({ data = null, webInstance = null }) => {
             offers: {
               "@type": "Offer",
               url: `${domain}/produkt/${urlTitle}`,
-              priceCurrency: currencySymbol,
+              priceCurrency: currency,
               price: get(finalPriceData, "price", finalPrice),
               availability: availability
                 ? "https://schema.org/InStock"
