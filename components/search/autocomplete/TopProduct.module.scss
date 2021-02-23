@@ -1,0 +1,49 @@
+@import "styles/variables";
+
+.product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 50px);
+  margin: $general-gutter;
+  border: 1px solid transparent;
+  border-radius: $general-radius;
+
+  @media (max-width: $md) {
+    flex-direction: row;
+    justify-content: space-between;
+    padding: $general-gutter;
+    margin: 0;
+    border-color: $grey-dark-color;
+    img {
+      height: 75px;
+      width: auto;
+    }
+  }
+
+  &:hover {
+    border: 1px solid $primary-color;
+    box-shadow: $general-shadow;
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: $general-radius;
+  }
+
+  .name {
+    font-size: 17px;
+    color: $primary-color;
+    display: block;
+    margin: 10px 0;
+    text-align: center;
+  }
+
+  .price {
+    font-size: 19px;
+    font-weight: bold;
+    color: $text-color;
+    white-space: nowrap;
+  }
+}

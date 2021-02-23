@@ -1,0 +1,43 @@
+@import "styles/variables";
+
+.product {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  width: 100%;
+  padding: $general-gutter / 1.5;
+  border: 1px solid transparent;
+  border-bottom-color: $grey-light-color;
+  border-radius: $general-radius;
+
+  &:hover {
+    border: 1px solid $primary-color;
+    box-shadow: $general-shadow;
+  }
+
+  img {
+    max-width: 80px;
+    margin-right: 10px;
+    border-radius: $general-radius;
+  }
+
+  .right {
+    display: flex;
+    flex-direction: column;
+
+    .name {
+      font-size: 0.8em;
+      color: $primary-color;
+      display: block;
+      text-align: left;
+    }
+
+    .price {
+      font-size: 15px;
+      font-size: 0.9em;
+      font-weight: bold;
+      color: $secondary-color;
+    }
+  }
+}
