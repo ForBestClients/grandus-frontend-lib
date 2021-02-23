@@ -24,10 +24,49 @@ import { Table, InputNumber, Button, Row, Col, Result, Typography } from "antd";
 
 const { Paragraph } = Typography;
 
-const ItemCountInput = ({ item, itemUpdate, setLoading }) => {
+const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
   const storeId = item?.store?.id;
   const productStore = find(get(item, "product.store"), { id: storeId });
   const [count, setCount] = useState(get(item, "count", 1));
+
+  const handleChange = (value) => setCount(value);
+  const handleBlur = (e) => {
+    const value = e.target.value;
+    setLoading(true);
+    itemUpdate(item?.id, { count: value }, async (response) => {
+      const cart = await response.then((json) => json);
+      if (cart) {
+        const newCount = get(find(cart?.items, { id: item?.id }), "count", 1);
+        setCount(newCount);
+
+        const itemsDifference = toNumber(newCount) - toNumber(item?.count);
+        if (itemsDifference < 0) {
+          TagManager.push(
+            EnhancedEcommerce.cartRemove(
+              item?.product,
+              Math.abs(itemsDifference)
+            )
+          );
+        } else if (itemsDifference > 0) {
+          TagManager.push(
+            EnhancedEcommerce.cartAdd(item?.product, Math.abs(itemsDifference))
+          );
+        }
+      }
+      setLoading(false);
+    });
+  };
+
+  if (inputCountRender) {
+    return inputCountRender({
+      item,
+      setLoading,
+      count,
+      handleChange,
+      handleBlur
+    });
+  }
+
   return (
     <>
       {get(item, "measureUnit") ? `1 ${get(item, "measureUnit")} x ` : ""}
@@ -37,41 +76,8 @@ const ItemCountInput = ({ item, itemUpdate, setLoading }) => {
         max={get(productStore, "count", 1)}
         defaultValue={get(item, "count", 1)}
         value={count}
-        onChange={(value) => setCount(value)}
-        onBlur={(e) => {
-          const value = e.target.value;
-          setLoading(true);
-          itemUpdate(item?.id, { count: value }, async (response) => {
-            const cart = await response.then((json) => json);
-            if (cart) {
-              const newCount = get(
-                find(cart?.items, { id: item?.id }),
-                "count",
-                1
-              );
-              setCount(newCount);
-
-              const itemsDifference =
-                toNumber(newCount) - toNumber(item?.count);
-              if (itemsDifference < 0) {
-                TagManager.push(
-                  EnhancedEcommerce.cartRemove(
-                    item?.product,
-                    Math.abs(itemsDifference)
-                  )
-                );
-              } else if (itemsDifference > 0) {
-                TagManager.push(
-                  EnhancedEcommerce.cartAdd(
-                    item?.product,
-                    Math.abs(itemsDifference)
-                  )
-                );
-              }
-            }
-            setLoading(false);
-          });
-        }}
+        onChange={handleChange}
+        onBlur={handleBlur}
       />
       {get(item, "store.name")}
     </>
@@ -99,7 +105,7 @@ const ItemRemove = ({ item, itemRemove, setLoading, style = {} }) => {
   );
 };
 
-const Cart = () => {
+const Cart = ({ inputCountRender }) => {
   const { cart, itemRemove, itemUpdate, isLoading } = useCart();
   const { settings } = useWebInstance();
   const [loading, setLoading] = useState(false);
@@ -186,6 +192,7 @@ const Cart = () => {
                 item={item}
                 itemUpdate={itemUpdate}
                 setLoading={setLoading}
+                inputCountRender={inputCountRender}
               />
             </Col>
           </>
@@ -200,6 +207,7 @@ const Cart = () => {
           item={item}
           itemUpdate={itemUpdate}
           setLoading={setLoading}
+          inputCountRender={inputCountRender}
         />
       ),
     },

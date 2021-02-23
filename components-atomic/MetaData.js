@@ -14,13 +14,13 @@ const MetaData = (props) => {
       ) : null}
       {description ? (
         <>
-          <meta property="description" content={description} />
+          <meta name="description" content={description} />
           <meta property="og:description" content={description} />
         </>
       ) : null}
       {keywords ? (
         <>
-          <meta property="keywords" content={keywords} />
+          <meta name="keywords" content={keywords} />
           <meta property="og:keywords" content={keywords} />
         </>
       ) : null}
