@@ -90,7 +90,7 @@ const Results = ({ products, brands, categories, closeAction }) => {
   );
 };
 
-const Search = () => {
+const Search = ({ endpoint = "/api/lib/v1/autosuggest?search=" }) => {
   const router = useRouter();
   const [value, setValue] = React.useState("");
   const [isFocused, setIsFocused] = React.useState(false);
@@ -110,9 +110,9 @@ const Search = () => {
 
   const fetchResults = async (value) => {
     setLoading(true);
-    const data = await fetch(
-      `/api/lib/v1/autosuggest?search=${value}`
-    ).then((result) => result.json());
+    const data = await fetch(`${endpoint}${value}`).then((result) =>
+      result.json()
+    );
     setResults(data);
     setLoading(false);
   };
