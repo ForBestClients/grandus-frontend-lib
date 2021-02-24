@@ -1,5 +1,6 @@
 import useUser from "grandus-lib/hooks/useUser";
 import { USER_CONSTANT } from "grandus-lib/constants/SessionConstants";
+import MetaData from "grandus-lib/components-atomic/MetaData";
 
 import Link from "next/link";
 import { get } from "lodash";
@@ -41,6 +42,8 @@ const Register = ({ user }) => {
       className="container guttered"
       style={{ maxWidth: "400px", margin: "40px auto" }}
     >
+      <MetaData title={"Registrácia nového zákazníka"} noindex={true} />
+      <h1>Registrácia</h1>
       <RegisterForm />
     </div>
   );

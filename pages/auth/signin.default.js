@@ -12,6 +12,7 @@ import { get } from "lodash";
 import { Button, Result, Row, Col, Divider } from "antd";
 import { FacebookFilled, GoogleOutlined } from "@ant-design/icons";
 import useCart from "grandus-lib/hooks/useCart";
+import MetaData from "grandus-lib/components-atomic/MetaData";
 
 import LoginForm from "components/forms/Login";
 
@@ -53,6 +54,8 @@ const Login = ({ user, apiHost, host }) => {
       className="container guttered"
       style={{ maxWidth: "400px", margin: "40px auto" }}
     >
+      <MetaData title={"Prihlásenie do Vášho účtu"} noindex={true} />
+      <h1>Prihlásenie</h1>
       <Row gutter={[8, 24]}>
         {facebokLoginEnabled ? (
           <Col xs={24} md={googleLoginEnabled ? 12 : 24}>
