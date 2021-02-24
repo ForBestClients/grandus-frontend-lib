@@ -3,7 +3,14 @@ import { getImageUrl } from "grandus-lib/utils";
 import { get } from "lodash";
 
 const MetaData = (props) => {
-  const { title, description, keywords, photo = {}, options = {} } = props;
+  const {
+    title,
+    description,
+    keywords,
+    photo = {},
+    noindex = false,
+    options = {},
+  } = props;
   return (
     <Head>
       {title ? (
@@ -22,6 +29,12 @@ const MetaData = (props) => {
         <>
           <meta name="keywords" content={keywords} />
           <meta property="og:keywords" content={keywords} />
+        </>
+      ) : null}
+      {noindex ? (
+        <>
+          <meta name="robots" content="noindex, nofollow" />
+          <meta name="googlebot" content="noindex" />
         </>
       ) : null}
       {get(photo, "path") ? (
