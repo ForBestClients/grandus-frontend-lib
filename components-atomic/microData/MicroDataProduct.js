@@ -24,14 +24,14 @@ const MicroDataProduct = ({ data = null, webInstance = null }) => {
           __html: JSON.stringify({
             "@context": "https://schema.org/",
             "@type": "Product",
-            productID: id,
+            productID: `${id}`,
             name,
             image:
               photo && photo?.path ? getImageUrl(photo, "400x250", "jpg") : "",
             description: get(shortProductDescription, "description", ""),
             url: `${domain}/produkt/${urlTitle}`,
-            sku: sku || id,
-            mpn: ean || id,
+            sku: `${sku}` || `${id}`,
+            mpn: `${ean}` || `${id}`,
             brand: {
               "@type": "Thing",
               name: get(brand, "name", ""),
