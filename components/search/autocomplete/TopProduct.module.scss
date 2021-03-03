@@ -3,16 +3,17 @@
 .product {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
   height: calc(100% - 50px);
-  margin: $general-gutter;
+  margin: $general-gutter / 2;
+  padding: $general-gutter;
   border: 1px solid transparent;
   border-radius: $general-radius;
 
   @media (max-width: $md) {
     flex-direction: row;
     justify-content: space-between;
+    align-items: center;
     padding: $general-gutter;
     margin: 0;
     border-color: $grey-dark-color;
@@ -37,13 +38,21 @@
     color: $primary-color;
     display: block;
     margin: 10px 0;
-    text-align: center;
+    text-align: left;
+    @media (max-width: $md) {
+      font-size: 0.8em;
+      padding: 0 $general-gutter / 2;
+    }
   }
 
   .price {
-    font-size: 19px;
-    font-weight: bold;
+    text-align: left;
     color: $text-color;
     white-space: nowrap;
+
+    & [data-property="price"] {
+      font-size: 1.1em;
+      font-weight: bolder;
+    }
   }
 }

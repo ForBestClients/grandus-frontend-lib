@@ -27,17 +27,15 @@
     flex-direction: column;
 
     .name {
-      font-size: 0.8em;
+      font-size: 0.9em;
       color: $primary-color;
       display: block;
       text-align: left;
     }
 
     .price {
-      font-size: 15px;
-      font-size: 0.9em;
-      font-weight: bold;
-      color: $secondary-color;
+      font-size: 0.8em;
+      color: $text-color;
     }
   }
 }

@@ -23,15 +23,11 @@ const RowProduct = ({
       <div className={styles?.right}>
         <span className={styles.name}>
           {truncate(name, {
-            length: 50,
+            length: 70,
             omission: " ...",
           })}
         </span>
-        <Price
-          priceData={finalPriceData}
-          className={styles.price}
-          options={{ hideVatPrice: true }}
-        />
+        <Price priceData={finalPriceData} className={styles.price} />
       </div>
     </a>
   </Link>

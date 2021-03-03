@@ -20,11 +20,7 @@ const TopProduct = ({
     >
       <Image photo={photo} size={"250x250"} type={"jpg"} />
       <span className={styles.name}>{name}</span>
-      <Price
-        priceData={finalPriceData}
-        className={styles.price}
-        options={{ hideVatPrice: true }}
-      />
+      <Price priceData={finalPriceData} className={styles.price} />
     </a>
   </Link>
 );
