@@ -209,7 +209,7 @@ const Search = ({ endpoint = "/api/lib/v1/autosuggest?search=" }) => {
           </div>
         </button>
       </Form>
-      {!isEmpty(results) ? (
+      {!isEmpty(results) && value ? (
         <Results {...results} closeAction={handleClose} />
       ) : null}
     </div>
