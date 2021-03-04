@@ -154,12 +154,17 @@ export const outputCachedData = async (req, res, cache, options = {}) => {
 export const saveDataToCache = async (req, cache, data, options = {}) => {
   if (!cache) return false;
 
+  let cacheTime = get(options, 'time');
+  if (!cacheTime) {
+    cacheTime = process.env.CACHE_TIME ? process.env.CACHE_TIME : 60;
+  }
+
   try {
     cache.set(
       getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options }),
       JSON.stringify(data),
       "EX",
-      process.env.CACHE_TIME ? process.env.CACHE_TIME : 60
+      cacheTime
     );
   } catch (error) {
     console.error(error);
