@@ -13,3 +13,7 @@ export const ADDITIONAL_INFOS_STORE_MANAGER_HASH = 'store_manager';
 
 export const GRID_ROWS = "rows";
 export const GRID_COLS = "cols";
+
+export const HOOK_TYPE_HARD = 1;
+export const HOOK_TYPE_SOFT = 2;
+export const HOOK_TYPE_DISCOUNT = 3;
