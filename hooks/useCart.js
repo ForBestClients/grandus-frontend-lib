@@ -120,11 +120,12 @@ export default function useCart(initialCart = false, options = {}) {
         await fetch(`/api/lib/v1/cart`, {
           method: "POST",
           body: JSON.stringify(reqBody),
-        }).then((result) => {
+        }).then(async (result) => {
+          const data = await result.json();
           if (isFunction(callback)) {
-            callback(result);
+            callback(data);
           }
-          return result.json();
+          return data;
         }),
         false
       );
