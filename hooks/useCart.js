@@ -1,6 +1,6 @@
 import { useState } from "react";
 import useSWR from "swr";
-import { get, isFunction, filter } from "lodash";
+import { get, isFunction, filter, isArray, map } from "lodash";
 
 export default function useCart(initialCart = false, options = {}) {
   const swrOptions = {
@@ -41,6 +41,24 @@ export default function useCart(initialCart = false, options = {}) {
     );
     setIsLoading(false);
   };
+
+
+  const itemsRemove = async (itemsIds, callback) => {
+    setIsLoading(true);
+    await mutate(
+      await fetch(`/api/lib/v1/cart/items/bulk`, {
+        method: "DELETE",
+        body: JSON.stringify({ items: itemsIds }),
+      }).then((result) => {
+        if (isFunction(callback)) {
+          callback(result);
+        }
+        return result.json();
+      }),
+      false
+    );
+    setIsLoading(false);
+  }
 
   const cartUpdate = async (data, callback) => {
     setIsLoading(true);
@@ -289,6 +307,7 @@ export default function useCart(initialCart = false, options = {}) {
     isLoading: isValidating || isLoading,
     itemAdd,
     itemRemove,
+    itemsRemove,
     itemUpdate,
     cartUpdate,
     cartDestroy,
