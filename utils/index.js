@@ -4,6 +4,8 @@ import {
   ESHOP_TYPE_B2C,
   ESHOP_TYPE_B2B_LOCKED,
   ESHOP_TYPE_MIXED,
+  CATEGORY_PARAMETERS_BASIC,
+  CATEGORY_PARAMETERS_ADVANCED,
 } from "grandus-lib/constants/AppConstants";
 import {
   get,
@@ -13,6 +15,7 @@ import {
   toLower,
   replace,
   isEmpty,
+  filter,
 } from "lodash";
 
 export const getDevMeta = () => {
@@ -264,4 +267,59 @@ export const getPaginationFromHeaders = (headers) => {
     currentPage: parseInt(headers.get("x-pagination-current-page")),
     perPage: parseInt(headers.get("x-pagination-per-page")),
   };
+};
+
+/**
+ *
+ * Get specific parameters from Category data
+ *
+ * @param {object} data
+ * @param {int} type
+ */
+export const getCategoryParameters = (
+  data,
+  type = null,
+  path = "parameters"
+) => {
+  if (!data) {
+    return [];
+  }
+
+  const extractType = (item, type) => {
+    return parseInt(item.filter) == type;
+  };
+
+  let parameters = [];
+
+  if (path && path !== "") {
+    parameters = get(data, "parameters", []);
+  } else {
+    parameters = data;
+  }
+
+  switch (type) {
+    case CATEGORY_PARAMETERS_BASIC:
+      return filter(parameters, (parameter) =>
+        extractType(parameter, CATEGORY_PARAMETERS_BASIC)
+      );
+      break;
+
+    case CATEGORY_PARAMETERS_ADVANCED:
+      return filter(parameters, (parameter) =>
+        extractType(parameter, CATEGORY_PARAMETERS_ADVANCED)
+      );
+      break;
+
+    default:
+      return parameters;
+      break;
+  }
+};
+
+export const getCategoryParametersBasic = (data, path = "parameters") => {
+  return getCategoryParameters(data, CATEGORY_PARAMETERS_BASIC, path);
+};
+
+export const getCategoryParametersAdvanced = (data, path = "parameters") => {
+  return getCategoryParameters(data, CATEGORY_PARAMETERS_ADVANCED, path);
 };

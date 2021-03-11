@@ -1,0 +1,70 @@
+@import "styles/variables";
+
+.wrapper {
+  display: block;
+  @media (max-width: $md) {
+    // display: none;
+  }
+}
+
+.modal {
+  :global(.ant-modal-body) {
+    padding: $general-gutter $general-gutter / 3;
+  }
+
+  :global(.ant-tabs .ant-tabs-content .ant-tabs-tabpane) {
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 0 $general-gutter;
+  }
+
+  :global(.ant-tabs .ant-tabs-tab .ant-tabs-tab-btn) {
+    text-align: right;
+  }
+
+  :global(.ant-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn) {
+    text-align: right;
+    font-weight: bolder;
+  }
+
+  h4 {
+    font-weight: bolder;
+    font-size: 1.1em;
+
+    & + div {
+      border-bottom: 1px solid $grey-light-color;
+      margin-bottom: $general-gutter / 2;
+    }
+  }
+
+  :global(.ant-slider) {
+    border-bottom: none;
+    margin: $general-gutter;
+    & + div {
+      display: flex;
+      justify-content: space-between;
+      padding-bottom: $general-gutter;
+      border-bottom: 1px solid $grey-light-color;
+      margin-top: $general-gutter / 2;
+      margin-bottom: $general-gutter / 2;
+    }
+  }
+
+  :global(.ant-checkbox-group) {
+    & > div {
+      width: 33%;
+      float: left;
+      padding: $general-gutter / 2;
+      border-radius: $general-radius;
+      border: 1px solid white;
+      @media (max-width: $md) {
+        width: 49%;
+      }
+
+      &:hover {
+        background-color: $grey-light-color;
+        box-shadow: $general-shadow;
+      }
+    }
+  }
+}

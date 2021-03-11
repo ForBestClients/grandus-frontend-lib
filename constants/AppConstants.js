@@ -17,3 +17,7 @@ export const GRID_COLS = "cols";
 export const HOOK_TYPE_HARD = 1;
 export const HOOK_TYPE_SOFT = 2;
 export const HOOK_TYPE_DISCOUNT = 3;
+
+export const CATEGORY_PARAMETERS_BASIC = 1;
+export const CATEGORY_PARAMETERS_ADVANCED = 2;
+export const CATEGORY_PARAMETERS_SHOW_LIMIT = 5;
