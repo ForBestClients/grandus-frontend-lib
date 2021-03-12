@@ -12,8 +12,10 @@ import {
   omit,
   sortBy,
   flatten,
+  indexOf
 } from "lodash";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
+import { CATEGORY_PARAMETERS_SHOW_LIMIT } from "grandus-lib/constants/AppConstants";
 
 const replaceKeyForUrlTitle = (key) =>
   get(find(RESERVED_URI_PARTS, ["key", key]), "urlTitle", key);
@@ -214,6 +216,52 @@ export const getCampaignLinkAttributes = (
       pathname: `/akcie/${campaign}/${parameters}`,
       query: newQuery,
     },
+  };
+};
+
+export const getSystemFilterAttributes = (data, key, options = {}) => {
+  return {
+    parameter: {
+      id: key,
+      name: get(options, "name")
+        ? get(options, "name")
+        : get(find(RESERVED_URI_PARTS, ["key", key]), "title", key),
+      urlTitle: get(find(RESERVED_URI_PARTS, ["key", key]), "urlTitle", key),
+      values: data,
+    },
+    handleChange: get(options, "handleChange"),
+    selected: get(options, "selected"),
+    options: {
+      styles: get(options, "styles", {}),
+      ...getShowMoreAttributes(
+        {
+          id: key,
+          values: data,
+        },
+        get(options, "openedParameter"),
+        get(options, "onClickToggleOpen")
+      ),
+    },
+  };
+};
+
+export const getShowMoreAttributes = (
+  parameter,
+  opened,
+  onClickToggleOpen,
+  options = {}
+) => {
+  return {
+    showMoreEnabled:
+      get(parameter, "values", []).length >
+      get(options, "parametersShowLimit", CATEGORY_PARAMETERS_SHOW_LIMIT),
+    showMoreActive: !(indexOf(opened, get(parameter, "id")) >= 0),
+    showMoreLimit: get(
+      options,
+      "parametersShowLimit",
+      CATEGORY_PARAMETERS_SHOW_LIMIT
+    ),
+    showMoreToggle: onClickToggleOpen,
   };
 };
 

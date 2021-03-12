@@ -1,0 +1,152 @@
+@import "styles/variables";
+
+.search {
+  width: 100%;
+  .results {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 10px);
+    z-index: 20;
+    border: 1px solid $grey-light-color;
+    box-shadow: $general-shadow;
+    border-radius: $general-radius;
+
+    @media (min-width: $md) {
+      width: 800px;
+      left: -200px;
+      right: auto;
+    }
+
+    @media (min-width: $lg) {
+      width: 1000px;
+      // left: -250px;
+    }
+
+    @media (min-width: $xl) {
+      width: 1100px;
+      // left: -350px;
+    }
+
+    p {
+      color: $text-color;
+    }
+
+    .resultsWrapper {
+      position: relative;
+      display: flex;
+      background: white;
+      flex-direction: column;
+      border-radius: $general-radius;
+
+      @media (min-width: $md) {
+        height: 500px;
+        flex-direction: row;
+      }
+
+      .close {
+        position: absolute;
+        top: $general-gutter;
+        right: $general-gutter;
+        width: 25px;
+        height: 25px;
+        color: $grey-color;
+        display: block;
+        font-size: 25px;
+        cursor: pointer;
+        &:hover {
+          color: $grey-dark-color;
+        }
+      }
+
+      .resultsLeft {
+        background: $grey-light-color;
+        padding: $general-gutter;
+        border-radius: $general-radius;
+        margin: $general-gutter / 2;
+        border: 1px solid $grey-dark-color;
+
+        @media (min-width: $md) {
+          width: 30%;
+        }
+
+        ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          margin-bottom: $general-gutter;
+
+          &.inline {
+            width: 100%;
+
+            li {
+              display: inline-flex;
+              margin: 5px 5px 0 0;
+            }
+          }
+
+          li {
+            list-style: none;
+
+            a {
+              display: block;
+              padding: $general-gutter / 4 $general-gutter / 2;
+              color: $text-color;
+              font-size: 0.9em;
+
+              &:hover {
+                text-decoration: underline;
+                background-color: white;
+                border-radius: $general-radius;
+              }
+
+              &.tag {
+                border-radius: 15px;
+                background: white;
+                padding: 5px 10px;
+                font-size: 13px;
+
+                &:hover {
+                  background: $primary-color;
+                  color: white;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .topProduct {
+        width: 100%;
+        background: white;
+        border-right: 1px solid $grey-light-color;
+        padding: $general-gutter;
+
+        @media (min-width: $md) {
+          width: 30%;
+        }
+      }
+
+      .emptyProducts {
+        width: 100%;
+        background: white;
+        padding: $general-gutter;
+
+        @media (min-width: $md) {
+          width: 60%;
+        }
+      }
+
+      .resultsRight {
+        background: white;
+        padding: $general-gutter;
+        overflow-y: scroll;
+        border-radius: $general-radius;
+
+        @media (min-width: $md) {
+          width: 40%;
+        }
+      }
+    }
+  }
+}

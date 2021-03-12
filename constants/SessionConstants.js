@@ -12,3 +12,7 @@ export const CART_CONTACT_CONSTANT = "_grandus_cart_contact";
 
 // - LEGAL
 export const LEGAL_COOKIE_CONSENT = "_grandus_cookie_consent";
+
+// - STORAGE
+export const SESSION_STORAGE_CONSTANT = "_grandus-frontend-session-storage";
+export const DELIVERY_DATA_SESSION_STORAGE_KEY = "deliveryProviderData";

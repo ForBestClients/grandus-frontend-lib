@@ -4,7 +4,11 @@ import { get, map, isEmpty, parseInt, toNumber, first } from "lodash";
 import { deburredSearch, scrollToTop } from "grandus-lib/utils";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import { checkoutContactPage } from "grandus-lib/utils/fetches";
-import { ArrowLeftOutlined, FrownOutlined, LoadingOutlined } from "@ant-design/icons";
+import {
+  ArrowLeftOutlined,
+  FrownOutlined,
+  LoadingOutlined,
+} from "@ant-design/icons";
 import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
@@ -26,7 +30,7 @@ import {
   Card,
   Checkbox,
   Alert,
-  Result
+  Result,
 } from "antd";
 import Steps from "components/cart/steps/CartSteps";
 import useCart from "grandus-lib/hooks/useCart";
@@ -78,7 +82,7 @@ const CartContact = (props) => {
   const formProps = {
     enableReinitialize: true,
     initialValues: {
-      name: get(contact, "name", get(user, "attributes.name", "")),
+      firstname: get(contact, "firstname", get(user, "attributes.name", "")),
       surname: get(contact, "surname", get(user, "attributes.surname", "")),
       street: get(contact, "street", get(user, "attributes.street", "")),
       city: get(contact, "city", get(user, "attributes.city", "")),
@@ -113,7 +117,7 @@ const CartContact = (props) => {
       deliveryCountryId: getDefaultCountryValue("deliveryCountryId"),
     },
     validationSchema: yup.object({
-      name: yup
+      firstname: yup
         .string()
         .trim()
         .nullable()
@@ -537,7 +541,7 @@ const ContactForm = ({ countries, towns = [], user }) => {
         <Col xs={24} md={12}>
           <TextInput
             label="Meno"
-            name="name"
+            name="firstname"
             values={values}
             touched={touched}
             errors={errors}
@@ -558,6 +562,13 @@ const ContactForm = ({ countries, towns = [], user }) => {
             autoComplete="lname"
           />
         </Col>
+      </Row>
+      <Row
+        gutter={[
+          { xs: 0, sm: 8 },
+          { xs: 0, sm: 8 },
+        ]}
+      >
         <Col xs={24} md={12}>
           <PhoneInput
             label="Telefón"
@@ -587,17 +598,25 @@ const ContactForm = ({ countries, towns = [], user }) => {
           />
         </Col>
       </Row>
-
-      <TextInput
-        label="Ulica"
-        name="street"
-        values={values}
-        touched={touched}
-        errors={errors}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        autoComplete="shipping street-address"
-      />
+      <Row
+        gutter={[
+          { xs: 0, sm: 8 },
+          { xs: 0, sm: 8 },
+        ]}
+      >
+        <Col xs={24}>
+          <TextInput
+            label="Ulica"
+            name="street"
+            values={values}
+            touched={touched}
+            errors={errors}
+            handleChange={handleChange}
+            handleBlur={handleBlur}
+            autoComplete="shipping street-address"
+          />
+        </Col>
+      </Row>
       <Row
         gutter={[
           { xs: 0, sm: 8 },
