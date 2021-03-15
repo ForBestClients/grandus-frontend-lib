@@ -40,6 +40,7 @@ import { CART_CONTACT_CONSTANT } from "grandus-lib/constants/SessionConstants";
 import {
   LETTERS_ONLY_REGEX,
   BUSINESS_ID_REGEX,
+  VAT_ID_REGEX,
   VAT_NUMBER_REGEX,
   ZIP_REGEX,
   STREET_REGEX,
@@ -216,7 +217,7 @@ const CartContact = (props) => {
       dic: yup
         .string()
         .nullable()
-        .matches(BUSINESS_ID_REGEX, {
+        .matches(VAT_ID_REGEX, {
           excludeEmptyString: true,
           message: "Nespávny tvar",
         })

@@ -73,7 +73,7 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
       <InputNumber
         style={{ margin: "0 5px" }}
         min={1}
-        max={get(productStore, "count", 1)}
+        max={get(productStore, "count") ? get(productStore, "count") : 1}
         defaultValue={get(item, "count", 1)}
         value={count}
         onChange={handleChange}
