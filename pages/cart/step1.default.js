@@ -34,7 +34,7 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
     const value = e.target.value;
     setLoading(true);
     itemUpdate(item?.id, { count: value }, async (response) => {
-      const cart = await response.then((json) => json);
+      const cart = response;
       if (cart) {
         const newCount = get(find(cart?.items, { id: item?.id }), "count", 1);
         setCount(newCount);
