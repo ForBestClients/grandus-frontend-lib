@@ -42,7 +42,6 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(false);
   };
 
-
   const itemsRemove = async (itemsIds, callback) => {
     setIsLoading(true);
     await mutate(
@@ -58,7 +57,7 @@ export default function useCart(initialCart = false, options = {}) {
       false
     );
     setIsLoading(false);
-  }
+  };
 
   const cartUpdate = async (data, callback) => {
     setIsLoading(true);
@@ -72,13 +71,13 @@ export default function useCart(initialCart = false, options = {}) {
             },
           }),
         })
-        .then((result) => result.json())
-        .then((result) => {
-          if (isFunction(callback)) {
-            callback(result);
-          }
-          return result;
-        }),
+          .then((result) => result.json())
+          .then((result) => {
+            if (isFunction(callback)) {
+              callback(result);
+            }
+            return result;
+          }),
         false
       );
     } catch (error) {
@@ -111,44 +110,54 @@ export default function useCart(initialCart = false, options = {}) {
   };
 
   const itemAdd = async (count, store, productId, callback, options = {}) => {
-    const reqBody = { items: { count: count, sizeId: store, productId: productId } };
+    const reqBody = {
+      items: { count: count, sizeId: store, productId: productId },
+    };
     if (options?.hash) {
-      reqBody.items.hash = get(options, 'hash', '');
+      reqBody.items.hash = get(options, "hash", "");
     }
     try {
-      await mutate(
-        await fetch(`/api/lib/v1/cart`, {
-          method: "POST",
-          body: JSON.stringify(reqBody),
-        }).then((result) => {
-          if (isFunction(callback)) {
-            callback(result);
-          }
-          return result.json();
-        }),
-        false
-      );
+      let success = true;
+      const cart = await fetch(`/api/lib/v1/cart`, {
+        method: "POST",
+        body: JSON.stringify(reqBody),
+      }).then(async (result) => {
+        success = result?.ok;
+        const data = await result.json();
+        if (isFunction(callback)) {
+          callback(data);
+        }
+        return data;
+      });
+
+      if (success) {
+        await mutate(cart, false);
+      }
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
   };
 
   const itemUpdate = async (itemId, body, callback) => {
-    await mutate(
-      await fetch(`/api/lib/v1/cart/items/${itemId}`, {
+   
+    let success = true;
+      const cart = await fetch(`/api/lib/v1/cart/items/${itemId}`, {
         method: "PUT",
         body: JSON.stringify({
           item: body,
         }),
-      }).then((result) => {
-        const data = result.json();
+      }).then(async (result) => {
+        success = result?.ok;
+        const data = await result.json();
         if (isFunction(callback)) {
           callback(data);
         }
         return data;
-      }),
-      false
-    );
+      });
+
+      if (success) {
+        await mutate(cart, false);
+      }
   };
 
   const saveContact = async (values, callback) => {
