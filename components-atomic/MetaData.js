@@ -1,6 +1,7 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { getImageUrl } from "grandus-lib/utils";
-import { get } from "lodash";
+import { get, split } from "lodash";
 
 const MetaData = (props) => {
   const {
@@ -11,6 +12,7 @@ const MetaData = (props) => {
     noindex = false,
     options = {},
   } = props;
+  const canonicalUrl = get(split(useRouter().asPath, "?"), "[0]", "");
   return (
     <Head>
       {title ? (
@@ -19,6 +21,14 @@ const MetaData = (props) => {
           <meta property="og:title" content={title} />
         </>
       ) : null}
+
+      {canonicalUrl && !get(options, "disableCanonical") ? (
+        <link
+          rel={"canonical"}
+          href={`${process.env.HOST ? process.env.HOST : ""}${canonicalUrl}`}
+        />
+      ) : null}
+
       {description ? (
         <>
           <meta name="description" content={description} />
