@@ -12,7 +12,7 @@ import {
   omit,
   sortBy,
   flatten,
-  indexOf
+  indexOf,
 } from "lodash";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
 import { CATEGORY_PARAMETERS_SHOW_LIMIT } from "grandus-lib/constants/AppConstants";
@@ -27,6 +27,12 @@ const sortChunks = (chunks) => chunks; // temporary disabled sortingsortBy(chunk
 
 export const getSeoTitleData = (filter = {}) => {
   const titleData = [];
+
+  map(get(filter, "selected.brands.data", []), (brand) => {
+    if (get(brand, "name")) {
+      titleData.push(get(brand, "name"));
+    }
+  });
 
   map(get(filter, "selected.storeLocations.data", []), (store) => {
     if (get(store, "name")) {
