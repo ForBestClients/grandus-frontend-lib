@@ -12,7 +12,14 @@ const MetaData = (props) => {
     noindex = false,
     options = {},
   } = props;
-  const canonicalUrl = get(split(useRouter().asPath, "?"), "[0]", "");
+
+  const router = useRouter();
+  const routerPage = get(router, "query.page");
+
+  const canonicalUrl =
+    get(split(router?.asPath, "?"), "[0]", "") +
+    (routerPage && routerPage > 1 ? `?page=${routerPage}` : "");
+
   return (
     <Head>
       {title ? (
@@ -43,7 +50,7 @@ const MetaData = (props) => {
       ) : null}
       {noindex ? (
         <>
-          <meta name="robots" content="noindex, nofollow" />
+          <meta name="robots" content="noindex, follow" />
           <meta name="googlebot" content="noindex" />
         </>
       ) : null}
