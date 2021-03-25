@@ -1,17 +1,28 @@
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button } from "antd";
+import { Button, Typography } from "antd";
 import useCart from "grandus-lib/hooks/useCart";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import useSessionStorage from "grandus-lib/hooks/useSessionStorage";
-import { isEmpty, get, toString, pick } from "lodash";
+import { isEmpty, get, toString, pick, isFunction } from "lodash";
 import Head from "next/head";
 import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/SessionConstants";
 
 import styles from "./packetery.module.scss";
+import yup from "grandus-lib/utils/validator";
+
+const { Text } = Typography;
 
 const WIDGET_URL = "https://widget.packeta.com/www/js/library.js";
 
-const Packetery = () => {
+export const validationScheme = yup.object().shape({
+  specificDeliveryType: yup
+    .string()
+    .nullable()
+    .trim()
+    .required("Vyberte odberné miesto"),
+});
+
+const Packetery = ({ errors, onSelect }) => {
   const {
     session,
     itemAdd,
@@ -41,7 +52,10 @@ const Packetery = () => {
             itemAdd(
               DELIVERY_DATA_SESSION_STORAGE_KEY,
               pick(selected, ["place", "nameStreet", "url"]),
-              (sessionData) => setSelectedPickupPoint(get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null))
+              (sessionData) =>
+                setSelectedPickupPoint(
+                  get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null)
+                )
             );
           } else {
             itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
@@ -49,6 +63,9 @@ const Packetery = () => {
           }
         }
       );
+      if (isFunction(onSelect)) {
+        onSelect(pickupPointId);
+      }
       setIsLoading(false);
     }
   };
@@ -76,20 +93,28 @@ const Packetery = () => {
           <LoadingOutlined spin />
         ) : (
           <div className={`${styles.selected} packetery__custom--selected`}>
-            {!isEmpty(selectedPickupPoint) ? (
+            {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint) ? (
               <p>
                 <strong>{get(selectedPickupPoint, "nameStreet", "")}</strong>
                 <br />
                 {get(selectedPickupPoint, "place", "")}
               </p>
             ) : null}
-            <Button onClick={showModal}>
-              {!isEmpty(selectedPickupPoint)
+            <Button
+              type={!isEmpty(errors?.specificDeliveryType) ? "danger" : null}
+              onClick={showModal}
+            >
+              {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint)
                 ? "Zmeniť"
                 : "Vybrať odberné miesto"}
             </Button>
           </div>
         )}
+        {errors?.specificDeliveryType ? (
+          <Text className={styles?.error} type="danger">
+            {errors?.specificDeliveryType}
+          </Text>
+        ) : null}
       </div>
     </>
   );
