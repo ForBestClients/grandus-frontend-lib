@@ -1,15 +1,28 @@
-import Packetery from "./providers/packetery";
+import Packetery, { validationScheme as packeteryValidationScheme } from "./providers/packetery";
 
-const PACKETERY_TYPE = 1;
+export const PACKETERY_TYPE = 1;
 
-const DeliveryProvider = ({ deliveryProviderType = null }) => {
+export const getValidationScheme = (deliveryProviderType = null) => {
     if (!deliveryProviderType) {
         return null
     }
 
     switch (deliveryProviderType) {
         case PACKETERY_TYPE:
-            return <Packetery />
+            return packeteryValidationScheme;
+        default:
+            return null;
+    }
+}
+
+const DeliveryProvider = ({ deliveryProviderType = null, errors = null, onSelect = null }) => {
+    if (!deliveryProviderType) {
+        return null
+    }
+
+    switch (deliveryProviderType) {
+        case PACKETERY_TYPE:
+            return <Packetery errors={errors} onSelect={onSelect} />
         default:
             return null;
     }
