@@ -21,7 +21,7 @@ const CrossSaleHeadline = ({ title, photo = {} }) => {
   );
 };
 
-const CrossSale = ({ data }) => {
+const CrossSale = ({ data, options }) => {
   if (isEmpty(data)) {
     return "";
   }
@@ -58,6 +58,7 @@ const CrossSale = ({ data }) => {
         },
       },
     ],
+    ...get(options, 'carouselSettings', {})
   };
 
   return (
