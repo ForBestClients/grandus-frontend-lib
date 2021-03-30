@@ -6,6 +6,7 @@ import {
   ESHOP_TYPE_MIXED,
   CATEGORY_PARAMETERS_BASIC,
   CATEGORY_PARAMETERS_ADVANCED,
+  ATTACHMENT_TYPE_URL
 } from "grandus-lib/constants/AppConstants";
 import {
   get,
@@ -223,7 +224,7 @@ export const getAttachmentUrl = (attachment) => {
     return false;
   }
 
-  return host + attachment.fileUrl;
+  return (attachment?.type !== ATTACHMENT_TYPE_URL ? host : '') + attachment.fileUrl;
 };
 
 export const convertToNumber = (numberCandidate) => {
