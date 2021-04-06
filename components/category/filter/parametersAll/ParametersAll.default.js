@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Modal, Button, Tabs } from "antd";
-import { useRouter } from "next/router";
 import useFilter, {
   paramsToPath,
   arrayToParams,
@@ -34,13 +33,8 @@ const ParametersAll = ({ selected, handleChange, styles }) => {
     setIsModalVisible(false);
   };
 
-  const router = useRouter();
   const { filter, isLoading } = useFilter({
-    category: get(router, "query.category"),
-    parameters: split(
-      paramsToPath(arrayToParams(get(router, "query.parameters", []))),
-      "/"
-    ),
+    useDataFromRouter: true,
   });
 
   const categoryData = filter;

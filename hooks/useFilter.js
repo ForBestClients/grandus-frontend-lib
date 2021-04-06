@@ -16,6 +16,7 @@ import {
 } from "lodash";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
 import { CATEGORY_PARAMETERS_SHOW_LIMIT } from "grandus-lib/constants/AppConstants";
+import { useRouter } from "next/router";
 
 const replaceKeyForUrlTitle = (key) =>
   get(find(RESERVED_URI_PARTS, ["key", key]), "urlTitle", key);
@@ -330,15 +331,41 @@ export const paramsToPath = (params) => {
   return arrayToPath(flatMap(params, (value, key) => [key, value]));
 };
 
-const useFilter = ({ category = null, parameters = [], options = {} } = {}) => {
+const useFilter = ({
+  category = null,
+  parameters = [],
+  options = {},
+  useDataFromRouter = false,
+} = {}) => {
+  const router = useRouter();
   let uri = [];
 
-  if (!isEmpty(parameters)) {
-    uri.push(`param=${arrayToPath(parameters)}`);
-  }
+  if (useDataFromRouter) {
+    map(get(router, "query"), (uriPart, index) => {
+      switch (index) {
+        case "category":
+          uri.push(`id=${uriPart}`);
+          break;
 
-  if (category) {
-    uri.push(`id=${category}`);
+        case "parameters":
+          uri.push(`param=${arrayToPath(uriPart)}`);
+          break;
+
+        default:
+          uri.push(`${index}=${uriPart}`);
+          break;
+      }
+
+      return;
+    });
+  } else {
+    if (!isEmpty(parameters)) {
+      uri.push(`param=${arrayToPath(parameters)}`);
+    }
+
+    if (category) {
+      uri.push(`id=${category}`);
+    }
   }
 
   const url = `/api/lib/v1/filters?${uri.join("&")}`;
