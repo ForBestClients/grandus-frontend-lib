@@ -6,7 +6,7 @@ import {
   ESHOP_TYPE_MIXED,
   CATEGORY_PARAMETERS_BASIC,
   CATEGORY_PARAMETERS_ADVANCED,
-  ATTACHMENT_TYPE_URL
+  ATTACHMENT_TYPE_URL,
 } from "grandus-lib/constants/AppConstants";
 import {
   get,
@@ -18,6 +18,7 @@ import {
   isEmpty,
   filter,
 } from "lodash";
+import dayjs from "dayjs";
 
 export const getDevMeta = () => {
   if (
@@ -206,7 +207,11 @@ export const getImageUrl = (image, size, type) => {
     return false;
   }
 
-  return host + image.path + "/" + size + "." + type;
+  const updateTimeTimestamp = image.updateTime
+    ? "?v=" + dayjs(image.updateTime, "YYYY-MM-DD HH:mm:ss").valueOf()
+    : "";
+
+  return host + image.path + "/" + size + "." + type + updateTimeTimestamp;
 };
 
 /**
@@ -224,7 +229,9 @@ export const getAttachmentUrl = (attachment) => {
     return false;
   }
 
-  return (attachment?.type !== ATTACHMENT_TYPE_URL ? host : '') + attachment.fileUrl;
+  return (
+    (attachment?.type !== ATTACHMENT_TYPE_URL ? host : "") + attachment.fileUrl
+  );
 };
 
 export const convertToNumber = (numberCandidate) => {
