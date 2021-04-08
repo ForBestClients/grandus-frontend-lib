@@ -86,7 +86,7 @@ const useWishlist = () => {
 
   return {
     wishlist,
-    mutateCompare: mutate,
+    mutateWishlist: mutate,
     isLoading: isValidating || isLoading,
     itemAdd,
     itemRemove,
