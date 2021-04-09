@@ -12,7 +12,8 @@ import yup from "grandus-lib/utils/validator";
 
 const { Text } = Typography;
 
-const WIDGET_URL = "https://widget.packeta.com/www/js/library.js";
+const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
+const PICKUP_POINT_TYPE_EXTERNAL = "external";
 
 export const validationScheme = yup.object().shape({
   specificDeliveryType: yup
@@ -42,7 +43,10 @@ const Packetery = ({ errors, onSelect }) => {
   }
 
   const handlePickupPointSelection = async (selected) => {
-    const pickupPointId = get(selected, "id") || null;
+    let pickupPointId = get(selected, "id") || null;
+    if (get(selected, 'pickupPointId') === PICKUP_POINT_TYPE_EXTERNAL) {
+      pickupPointId = get(selected, "carrierId");
+    }
     if (pickupPointId !== cart?.specificDeliveryType) {
       setIsLoading(true);
       await cartUpdate(
@@ -51,7 +55,13 @@ const Packetery = ({ errors, onSelect }) => {
           if (newCart?.specificDeliveryType) {
             itemAdd(
               DELIVERY_DATA_SESSION_STORAGE_KEY,
-              pick(selected, ["place", "nameStreet", "url"]),
+              pick(selected, [
+                "place",
+                "nameStreet",
+                "url",
+                "pickupPointType",
+                "carrierPickupPointId",
+              ]),
               (sessionData) =>
                 setSelectedPickupPoint(
                   get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null)
