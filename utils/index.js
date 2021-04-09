@@ -207,8 +207,8 @@ export const getImageUrl = (image, size, type) => {
     return false;
   }
 
-  const updateTimeTimestamp = image.updateTime
-    ? "?v=" + dayjs(image.updateTime, "YYYY-MM-DD HH:mm:ss").valueOf()
+  const updateTimeTimestamp = image?.updateTime
+    ? "?v=" + dayjs(image?.updateTime, "YYYY-MM-DD HH:mm:ss").valueOf()
     : "";
 
   return host + image.path + "/" + size + "." + type + updateTimeTimestamp;
