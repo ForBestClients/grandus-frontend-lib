@@ -3,7 +3,7 @@ import { get, map } from "lodash";
 export const transformWishlist = (object) => {
   return {
     count: get(object, "count", 0),
-    items: get(object, "items", []),
+    products: get(object, "items", []),
     productIds: get(
       object,
       "productIds",
