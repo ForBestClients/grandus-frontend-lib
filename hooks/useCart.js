@@ -44,18 +44,23 @@ export default function useCart(initialCart = false, options = {}) {
 
   const itemsRemove = async (itemsIds, callback) => {
     setIsLoading(true);
-    await mutate(
-      await fetch(`/api/lib/v1/cart/items/bulk`, {
-        method: "DELETE",
-        body: JSON.stringify({ items: itemsIds }),
-      }).then((result) => {
-        if (isFunction(callback)) {
-          callback(result);
-        }
-        return result.json();
-      }),
-      false
-    );
+    let success = true;
+    const cart = await fetch(`/api/lib/v1/cart/items/bulk`, {
+      method: "DELETE",
+      body: JSON.stringify({ items: itemsIds }),
+    }).then(async (result) => {
+      success = result?.ok;
+      const data = await result.json();
+      data.success = success;
+      if (isFunction(callback)) {
+        callback(data);
+      }
+      return data;
+    });
+
+    if (success) {
+      await mutate(cart, false);
+    }
     setIsLoading(false);
   };
 
