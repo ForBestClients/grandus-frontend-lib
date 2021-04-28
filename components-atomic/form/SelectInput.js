@@ -18,6 +18,7 @@ const SelectInput = (props) => {
     validateStatus = "",
     help = null,
     showSearch,
+    virtual = true,
     onSelect,
   } = props;
   return (
@@ -44,6 +45,7 @@ const SelectInput = (props) => {
           value={values[fieldName]}
           disabled={disabled}
           allowClear={allowClear}
+          virtual={virtual}
           onChange={(val) => {
             if (isFunction(onChange)) {
               onChange(val);
