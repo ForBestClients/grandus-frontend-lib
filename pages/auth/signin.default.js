@@ -20,7 +20,7 @@ const Login = (props) => {
 
   React.useEffect(() => {
     mutateUser(user, false);
-  }, [user, mutateUser])
+  }, [user, mutateUser]);
 
   const router = useRouter();
   const { cart } = useCart();
