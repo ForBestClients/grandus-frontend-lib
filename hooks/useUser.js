@@ -6,6 +6,7 @@ import { get, isFunction } from "lodash";
 export default function useUser({
   redirectTo = false,
   redirectIfFound = false,
+  initialUser = null
 } = {}) {
   const { data: user, mutate, isValidating } = useSWR(
     `/api/lib/v1/auth/profile`,
@@ -14,6 +15,7 @@ export default function useUser({
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
       shouldRetryOnError: false,
+      initialData: initialUser
     }
   );
 
