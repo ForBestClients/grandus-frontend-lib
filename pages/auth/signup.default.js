@@ -8,7 +8,6 @@ import { Button, Result } from "antd";
 import { userPage } from "grandus-lib/utils/fetches";
 
 const Register = ({ user }) => {
-  console.log('user reg', user);
   const { user: userFront, mutateUser } = useUser({
     redirectTo: "/",
     redirectIfFound: true,
