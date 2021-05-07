@@ -14,19 +14,19 @@ import MetaData from "grandus-lib/components-atomic/MetaData";
 import LoginForm from "components/forms/Login";
 import { userPage } from "grandus-lib/utils/fetches";
 
-const Login = (props) => {
-  const { user, apiHost, host } = props;
+const Login = ({ user, apiHost, host }) => {
   const { user: userFront, mutateUser } = useUser({ initialUser: { ...user } });
-
-  React.useEffect(() => {
-    mutateUser(user, false);
-  }, [user, mutateUser]);
 
   const router = useRouter();
   const { cart } = useCart();
   const { webInstance, settings, domain } = useWebInstance();
   const facebokLoginEnabled = get(settings, "facebook_login_enabled");
   const googleLoginEnabled = get(settings, "google_login_enabled");
+
+  React.useEffect(() => {
+    mutateUser(user, false);
+  }, [user, mutateUser]);
+
 
   if (userFront?.id) {
     return (
@@ -118,7 +118,7 @@ const Login = (props) => {
   );
 };
 
-export async function getServerSideProps(context) {
+export const getServerSideProps = async (context) => {
   const { req } = context;
   const userProps = await userPage.serverSideProps(context);
   const cart = req.session.get(CART_CONSTANT);

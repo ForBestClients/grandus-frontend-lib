@@ -1,19 +1,25 @@
 import useUser from "grandus-lib/hooks/useUser";
-import { USER_CONSTANT } from "grandus-lib/constants/SessionConstants";
 import MetaData from "grandus-lib/components-atomic/MetaData";
 
 import Link from "next/link";
 import { get } from "lodash";
 import RegisterForm from "components/forms/Register";
 import { Button, Result } from "antd";
+import { userPage } from "grandus-lib/utils/fetches";
 
 const Register = ({ user }) => {
-  const { user: userFront } = useUser({
+  console.log('user reg', user);
+  const { user: userFront, mutateUser } = useUser({
     redirectTo: "/",
     redirectIfFound: true,
+    initialUser: user
   });
 
-  if (user || userFront) {
+  React.useEffect(() => {
+    mutateUser(user, false);
+  }, [user, mutateUser]);
+
+  if (userFront?.id) {
     return (
       <div className="container guttered">
         <Result
@@ -49,12 +55,8 @@ const Register = ({ user }) => {
   );
 };
 
-export const getServerSideProps = async ({ req, res }) => {
-  const user = req.session.get(USER_CONSTANT);
-
-  return {
-    props: { user: user ? user : null },
-  };
+export const getServerSideProps = async (context) => {
+  return await userPage.serverSideProps(context);
 };
 
 export default Register;
