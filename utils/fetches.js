@@ -209,6 +209,25 @@ const checkoutContactPage = {
   },
 };
 
+const userPage = {
+  serverSideProps: async (context) => {
+    let user = null;
+    try {
+      user = await fetch(
+        `${reqGetHost(context?.req)}/api/lib/v1/auth/profile`,
+        {
+          headers: reqGetHeadersFront(context?.req),
+        }
+      ).then((result) => result.json());
+    } catch (error) {
+      user = null;
+    }
+    return {
+      props: { user },
+    };
+  },
+};
+
 const userProfilePage = {
   serverSideProps: async (context) => {
     const countries = await fetch(
@@ -238,11 +257,11 @@ const thanksPage = {
           "query.orderToken",
           ""
         )}`
-      )
-        .then((result) => result.json()),
+      ).then((result) => result.json()),
 
-      fetch(`${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`)
-        .then((result) => result.json()),
+      fetch(
+        `${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`
+      ).then((result) => result.json()),
     ]);
     return {
       props: { order, banners },
@@ -260,6 +279,7 @@ export {
   campaignListingPage,
   campaignPage,
   checkoutContactPage,
+  userPage,
   userProfilePage,
   thanksPage,
   searchPage,
