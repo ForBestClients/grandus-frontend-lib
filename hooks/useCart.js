@@ -115,6 +115,7 @@ export default function useCart(initialCart = false, options = {}) {
   };
 
   const itemAdd = async (count, store, productId, callback, options = {}) => {
+    setIsLoading(true);
     const reqBody = {
       items: { count: count, sizeId: store, productId: productId },
     };
@@ -141,10 +142,11 @@ export default function useCart(initialCart = false, options = {}) {
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
   const itemUpdate = async (itemId, body, callback) => {
-   
+    setIsLoading(true);
     let success = true;
       const cart = await fetch(`/api/lib/v1/cart/items/${itemId}`, {
         method: "PUT",
@@ -163,6 +165,7 @@ export default function useCart(initialCart = false, options = {}) {
       if (success) {
         await mutate(cart, false);
       }
+      setIsLoading(false);
   };
 
   const saveContact = async (values, callback) => {
