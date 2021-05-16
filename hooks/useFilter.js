@@ -1,4 +1,3 @@
-import useSWR from "swr";
 import {
   get,
   fromPairs,
@@ -9,11 +8,14 @@ import {
   map,
   find,
   isArray,
+  isFunction,
   omit,
-  sortBy,
+  without,
+  isString,
   flatten,
   indexOf,
 } from "lodash";
+import useSWR from "swr";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
 import { CATEGORY_PARAMETERS_SHOW_LIMIT } from "grandus-lib/constants/AppConstants";
 import { useRouter } from "next/router";
@@ -154,6 +156,7 @@ export const getCategoryLinkAttributesFromRouter = (router, options = {}) => {
   );
 };
 
+//tested
 export const getCategoryLinkAttributes = (
   category,
   parameters = "",
@@ -162,6 +165,21 @@ export const getCategoryLinkAttributes = (
 ) => {
   if (get(options, "absoluteHref")) {
     return { href: options.absoluteHref };
+  }
+
+  const emptyResult = {
+    href: {
+      pathname: `/`,
+      query: {},
+    },
+    as: {
+      pathname: `/`,
+      query: {},
+    },
+  };
+
+  if (!category || !isString(category)) {
+    return emptyResult;
   }
 
   const newQuery = get(options, "toDelete")
