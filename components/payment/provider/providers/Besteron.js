@@ -1,4 +1,4 @@
-import { Col, Row, Radio } from "antd";
+// import { Col, Row, Radio } from "antd";
 import useCart from "grandus-lib/hooks/useCart";
 import { isEmpty, get, map, find, omitBy } from "lodash";
 
@@ -8,16 +8,19 @@ import styles from "./Besteron.module.scss";
 
 const CARD_PAYMENT_BUTTON = "FIRSTDATACARD";
 
-const Besteron = ({ payment, handleChange }) => {
-  const { cart, cartUpdate } = useCart();
+const Besteron = ({ payment, updateCart = true, handleChange }) => {
+  const { cart, cartUpdate } = useCart(null, { revalidateOnMount: false });
 
-  if (isEmpty(get(payment, "options")) || isEmpty(cart)) {
+  if (isEmpty(get(payment, "options"))) {
     return null;
   }
 
   const onChange = (e) => {
+    e.preventDefault();
     handleChange(e);
-    cartUpdate({ specificPaymentType: e.target.value });
+    if (updateCart) {
+      cartUpdate({ specificPaymentType: e.target.value });
+    }
   };
 
   const firstDataCardPaymentButton = find(
@@ -32,57 +35,56 @@ const Besteron = ({ payment, handleChange }) => {
   return (
     <>
       <div className={`${styles.besteron} besteron__custom`}>
-        <Row gutter={[8, 8]}>
-          <Col span={24}>
-            <Radio.Group
-              onChange={onChange}
-              value={cart?.specificPaymentType}
-              name={"specificPaymentType"}
-            >
-              {!isEmpty(firstDataCardPaymentButton) ? (
-                <>
-                  <Row gutter={[0, 8]}>
-                    <Col xs={24} className={styles.specificPaymentOptionHeader}>
-                      Platba kartou
-                    </Col>
-                  </Row>
-                  <Row gutter={[0, 8]}>
-                    <Col xs={24} className={styles.specificPaymentOption}>
-                      <BesteronSingleButton data={firstDataCardPaymentButton} />
-                    </Col>
-                  </Row>
-                </>
-              ) : null}
+        {/* <Radio.Group
+          onChange={onChange}
+          value={cart?.specificPaymentType}
+          name={"specificPaymentType"}
+        > */}
+        {!isEmpty(firstDataCardPaymentButton) ? (
+          <>
+            <div className={styles.specificPaymentOptionHeader}>
+              Platba kartou
+            </div>
+            <div className={styles.specificPaymentOption}>
+              <BesteronSingleButton
+                handleChange={onChange}
+                active={
+                  cart?.specificPaymentType ===
+                  firstDataCardPaymentButton?.value
+                }
+                data={firstDataCardPaymentButton}
+              />
+            </div>
+          </>
+        ) : null}
 
-              {!isEmpty(otherPaymentButtons) ? (
-                <>
-                  <Row gutter={[0, 8]}>
-                    <Col xs={24} className={styles.specificPaymentOptionHeader}>
-                      Platba bankovými tlačidlami
-                    </Col>
-                  </Row>
-                  <Row gutter={[0, 8]}>
-                    {map(
-                      otherPaymentButtons,
-                      (specificPaymentOption, index) => (
-                        <Col
-                          xs={24}
-                          className={styles.specificPaymentOption}
-                          key={
-                            "besteron-specific-payment-" +
-                            get(specificPaymentOption, "value", index)
-                          }
-                        >
-                          <BesteronSingleButton data={specificPaymentOption} />
-                        </Col>
-                      )
-                    )}
-                  </Row>
-                </>
-              ) : null}
-            </Radio.Group>
-          </Col>
-        </Row>
+        {!isEmpty(otherPaymentButtons) ? (
+          <>
+            <div className={styles.specificPaymentOptionHeader}>
+              Platba bankovými tlačidlami
+            </div>
+            <>
+              {map(otherPaymentButtons, (specificPaymentOption, index) => (
+                <div
+                  className={styles.specificPaymentOption}
+                  key={
+                    "besteron-specific-payment-" +
+                    get(specificPaymentOption, "value", index)
+                  }
+                >
+                  <BesteronSingleButton
+                    handleChange={onChange}
+                    active={
+                      cart?.specificPaymentType === specificPaymentOption?.value
+                    }
+                    data={specificPaymentOption}
+                  />
+                </div>
+              ))}
+            </>
+          </>
+        ) : null}
+        {/* </Radio.Group> */}
       </div>
     </>
   );

@@ -1,5 +1,5 @@
-import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Typography } from "antd";
+// import { LoadingOutlined } from "@ant-design/icons";
+// import { Button, Typography } from "antd";
 import useCart from "grandus-lib/hooks/useCart";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import useSessionStorage from "grandus-lib/hooks/useSessionStorage";
@@ -9,8 +9,9 @@ import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/Session
 
 import styles from "./packetery.module.scss";
 import yup from "grandus-lib/utils/validator";
+import { useState } from "react";
 
-const { Text } = Typography;
+// const { Text } = Typography;
 
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
@@ -23,7 +24,7 @@ export const validationScheme = yup.object().shape({
     .required("Vyberte odberné miesto"),
 });
 
-const Packetery = ({ errors, onSelect }) => {
+const Packetery = ({ errors, delivery, onSelect }) => {
   const {
     session,
     itemAdd,
@@ -31,9 +32,9 @@ const Packetery = ({ errors, onSelect }) => {
     isLoading: isSessionStorageLoading,
   } = useSessionStorage();
   const { settings } = useWebInstance();
-  const { cart, cartUpdate } = useCart();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [selectedPickupPoint, setSelectedPickupPoint] = React.useState(
+  const { cart, cartUpdate } = useCart(null, { revalidateOnMount: false });
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedPickupPoint, setSelectedPickupPoint] = useState(
     get(session, DELIVERY_DATA_SESSION_STORAGE_KEY)
   );
 
@@ -49,8 +50,12 @@ const Packetery = ({ errors, onSelect }) => {
     }
     if (pickupPointId !== cart?.specificDeliveryType) {
       setIsLoading(true);
+      const updateData = { specificDeliveryType: toString(pickupPointId) };
+      if (delivery) {
+        updateData.deliveryType = delivery?.id;
+      }
       await cartUpdate(
-        { specificDeliveryType: toString(pickupPointId) },
+        updateData,
         (newCart) => {
           if (newCart?.specificDeliveryType) {
             itemAdd(
@@ -100,7 +105,8 @@ const Packetery = ({ errors, onSelect }) => {
       </Head>
       <div className={`${styles.packetery} packetery__custom`}>
         {isLoading || isSessionStorageLoading ? (
-          <LoadingOutlined spin />
+          'loading'
+          // <LoadingOutlined spin />
         ) : (
           <div className={`${styles.selected} packetery__custom--selected`}>
             {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint) ? (
@@ -110,20 +116,20 @@ const Packetery = ({ errors, onSelect }) => {
                 {get(selectedPickupPoint, "place", "")}
               </p>
             ) : null}
-            <Button
+            <button
               type={!isEmpty(errors?.specificDeliveryType) ? "danger" : null}
               onClick={showModal}
             >
               {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint)
                 ? "Zmeniť"
                 : "Vybrať odberné miesto"}
-            </Button>
+            </button>
           </div>
         )}
         {errors?.specificDeliveryType ? (
-          <Text className={styles?.error} type="danger">
+          <div className={styles?.error} type="danger">
             {errors?.specificDeliveryType}
-          </Text>
+          </div>
         ) : null}
       </div>
     </>
