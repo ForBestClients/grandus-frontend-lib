@@ -63,7 +63,7 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
       setLoading,
       count,
       handleChange,
-      handleBlur
+      handleBlur,
     });
   }
 
@@ -105,7 +105,7 @@ const ItemRemove = ({ item, itemRemove, setLoading, style = {} }) => {
   );
 };
 
-const Cart = ({ inputCountRender }) => {
+const Cart = ({ inputCountRender, allowCoupons = true }) => {
   const { cart, itemRemove, itemUpdate, isLoading } = useCart();
   const { settings } = useWebInstance();
   const [loading, setLoading] = useState(false);
@@ -265,9 +265,11 @@ const Cart = ({ inputCountRender }) => {
         </Col>
         <Col xs={24} md={14}>
           <Row gutter={[{ xs: 0, sm: 15 }, 15]}>
-            <Col xs={24}>
-              <Coupon />
-            </Col>
+            {allowCoupons ? (
+              <Col xs={24}>
+                <Coupon />
+              </Col>
+            ) : null}
             {toNumber(settings?.credits_allow_user) ? (
               <Col xs={24}>
                 <Credits />

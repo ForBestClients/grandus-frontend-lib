@@ -130,6 +130,7 @@ export default function useCart(initialCart = false, options = {}) {
       }).then(async (result) => {
         success = result?.ok;
         const data = await result.json();
+        data.success = success;
         if (isFunction(callback)) {
           callback(data);
         }
@@ -156,6 +157,7 @@ export default function useCart(initialCart = false, options = {}) {
       }).then(async (result) => {
         success = result?.ok;
         const data = await result.json();
+        data.success = success;
         if (isFunction(callback)) {
           callback(data);
         }
