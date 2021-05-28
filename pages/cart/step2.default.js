@@ -208,7 +208,7 @@ const CartContact = (props) => {
             .required("Povinné pole")
             .matches(BUSINESS_ID_REGEX, {
               excludeEmptyString: true,
-              message: "Nespávny tvar",
+              message: "Nesprávny tvar",
             })
             .trim(),
         }),
@@ -217,7 +217,7 @@ const CartContact = (props) => {
         .nullable()
         .matches(VAT_ID_REGEX, {
           excludeEmptyString: true,
-          message: "Nespávny tvar",
+          message: "Nesprávny tvar",
         })
         .trim(),
       icDPH: yup
@@ -225,7 +225,7 @@ const CartContact = (props) => {
         .nullable()
         .matches(VAT_NUMBER_REGEX, {
           excludeEmptyString: true,
-          message: "Nespávny tvar",
+          message: "Nesprávny tvar",
         })
         .trim(),
       isDifferentDeliveryAddress: yup.bool(),
