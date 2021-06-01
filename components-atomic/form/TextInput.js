@@ -17,6 +17,7 @@ const TextInput = (props) => {
     disabled = false,
     validateStatus = "",
     help = null,
+    type = 'text'
   } = props;
   return (
     <Form.Item
@@ -45,6 +46,7 @@ const TextInput = (props) => {
           addonBefore={addonBefore}
           allowClear={allowClear}
           disabled={disabled}
+          type={type}
         />
       </FloatLabel>
     </Form.Item>
