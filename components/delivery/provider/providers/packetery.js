@@ -3,12 +3,17 @@
 import useCart from "grandus-lib/hooks/useCart";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import useSessionStorage from "grandus-lib/hooks/useSessionStorage";
-import { isEmpty, get, toString, pick, isFunction } from "lodash";
+import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
+import toString from "lodash/toString";
+import pick from "lodash/pick";
+import isFunction from "lodash/isFunction";
+
 import Head from "next/head";
 import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/SessionConstants";
 
 import styles from "./packetery.module.scss";
-import yup from "grandus-lib/utils/validator";
+import * as yup from "yup";
 import { useState } from "react";
 
 // const { Text } = Typography;

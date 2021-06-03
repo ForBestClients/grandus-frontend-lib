@@ -1,7 +1,7 @@
 // this file is a wrapper with defaults to be used in both API routes and `getServerSideProps` functions
 import { withIronSession } from "next-iron-session";
 import { GENERAL_CONSTANT } from "grandus-lib/constants/SessionConstants";
-import { get } from "lodash";
+import get from "lodash/get";
 
 export default function withSession(handler) {
   return withIronSession(handler, {
