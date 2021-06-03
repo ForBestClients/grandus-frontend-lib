@@ -29,6 +29,20 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
   const productStore = find(get(item, "product.store"), { id: storeId });
   const [count, setCount] = useState(get(item, "count", 1));
 
+  const { settings } = useWebInstance();
+
+  const productStoreCount = toNumber(get(productStore, "count"));
+  const maxPiecesCount = toNumber(get(settings, "cart_max_pieces_count"));
+
+  let maxValue = productStoreCount ? productStoreCount : 1;
+  if (toNumber(get(settings, 'order_out_of_stock_products', 0))) {
+    maxValue = 999;
+  }
+
+  if (maxValue > maxPiecesCount) {
+    maxValue = maxPiecesCount;
+  }
+
   const handleChange = (value) => setCount(value);
   const handleBlur = (e) => {
     const value = e.target.value;
@@ -63,7 +77,7 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
       setLoading,
       count,
       handleChange,
-      handleBlur
+      handleBlur,
     });
   }
 
@@ -73,7 +87,7 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
       <InputNumber
         style={{ margin: "0 5px" }}
         min={1}
-        max={get(productStore, "count") ? get(productStore, "count") : 1}
+        max={maxValue}
         defaultValue={get(item, "count", 1)}
         value={count}
         onChange={handleChange}
@@ -105,7 +119,7 @@ const ItemRemove = ({ item, itemRemove, setLoading, style = {} }) => {
   );
 };
 
-const Cart = ({ inputCountRender }) => {
+const Cart = ({ inputCountRender, allowCoupons = true }) => {
   const { cart, itemRemove, itemUpdate, isLoading } = useCart();
   const { settings } = useWebInstance();
   const [loading, setLoading] = useState(false);
@@ -265,9 +279,11 @@ const Cart = ({ inputCountRender }) => {
         </Col>
         <Col xs={24} md={14}>
           <Row gutter={[{ xs: 0, sm: 15 }, 15]}>
-            <Col xs={24}>
-              <Coupon />
-            </Col>
+            {allowCoupons ? (
+              <Col xs={24}>
+                <Coupon />
+              </Col>
+            ) : null}
             {toNumber(settings?.credits_allow_user) ? (
               <Col xs={24}>
                 <Credits />
