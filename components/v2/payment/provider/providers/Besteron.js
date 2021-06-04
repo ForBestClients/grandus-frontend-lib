@@ -1,7 +1,7 @@
 import useCart from "grandus-lib/hooks/useCart";
 import { isEmpty, get, map, find, omitBy } from "lodash";
 
-import BesteronSingleButton from "grandus-lib/components/payment/provider/providers/BesteronSingleButton";
+import BesteronSingleButton from "grandus-lib/components/v2/payment/provider/providers/BesteronSingleButton";
 
 import styles from "./Besteron.module.scss";
 
