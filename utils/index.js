@@ -331,3 +331,17 @@ export const getCategoryParametersBasic = (data, path = "parameters") => {
 export const getCategoryParametersAdvanced = (data, path = "parameters") => {
   return getCategoryParameters(data, CATEGORY_PARAMETERS_ADVANCED, path);
 };
+
+export const generateRandomString = (length = 10) => {
+  let stringLength = length;
+  if (stringLength < 1) {
+    stringLength = 10;
+  }
+
+  const chars = [
+    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+  ];
+  return [...Array(stringLength)].map(
+    (i) => chars[(Math.random() * chars.length) | 0]
+  ).join``;
+};
