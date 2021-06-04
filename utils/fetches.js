@@ -1,6 +1,7 @@
-import { get } from "lodash";
+import get from "lodash/get";
 import { reqGetHost, reqGetHeadersFront } from "grandus-lib/utils";
 import { arrayToPath, queryToQueryString } from "grandus-lib/hooks/useFilter";
+import { getCleanedUrl } from "grandus-lib/utils/url";
 
 const indexPage = {
   // staticProps: async () => { //TODO next 9.5 static optimization
@@ -37,7 +38,11 @@ const productPage = {
 
     const data = await fetch(uri, {
       headers: reqGetHeadersFront(context?.req, {
-        forwardUrl: context?.resolvedUrl,
+        forwardUrl: getCleanedUrl(
+          context?.resolvedUrl,
+          context?.params,
+          context?.query
+        ),
       }),
     }).then((result) => result.json());
     return {
@@ -59,7 +64,11 @@ const categoryPage = {
 
     const data = await fetch(url, {
       headers: reqGetHeadersFront(context?.req, {
-        forwardUrl: context?.resolvedUrl,
+        forwardUrl: getCleanedUrl(
+          context?.resolvedUrl,
+          context?.params,
+          context?.query
+        ),
       }),
     }).then((result) => {
       return result.json();
@@ -196,9 +205,9 @@ const checkoutContactPage = {
 
     let towns = [];
     try {
-      towns = await fetch(
-        `${reqGetHost(context?.req)}/api/lib/v1/towns`
-      ).then((result) => result.json());
+      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`).then(
+        (result) => result.json()
+      );
     } catch (error) {
       towns = [];
     }
@@ -236,9 +245,9 @@ const userProfilePage = {
 
     let towns = [];
     try {
-      towns = await fetch(
-        `${reqGetHost(context?.req)}/api/lib/v1/towns`
-      ).then((result) => result.json());
+      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`).then(
+        (result) => result.json()
+      );
     } catch (error) {
       towns = [];
     }
@@ -259,9 +268,9 @@ const thanksPage = {
         )}`
       ).then((result) => result.json()),
 
-      fetch(
-        `${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`
-      ).then((result) => result.json()),
+      fetch(`${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`).then(
+        (result) => result.json()
+      ),
     ]);
     return {
       props: { order, banners },

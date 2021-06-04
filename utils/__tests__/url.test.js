@@ -1,4 +1,4 @@
-import { removeParameter, addParameter } from "../url";
+import { removeParameter, addParameter, getCleanedUrl } from "../url";
 
 //removeParameter - TEST SUITE
 const removeParameterTests = () => {
@@ -156,5 +156,75 @@ const addParameterTests = () => {
   });
 };
 
+//addParameter - TEST SUITE
+const getCleanedUrlTests = () => {
+  const input = {
+    path: "test/path",
+    path2: "test/path?category=123&test=2",
+    path3: "test/path?category=123&test=2?url=wrong",
+    parameters: {
+      category: "obuv",
+      parameters: [
+        "velkost",
+        "41-1-3",
+        "typ-doslapu",
+        "neutralny",
+        "typ-bezeckej-obuvi",
+        "treningova",
+        "farba",
+        "modra,oranzova",
+      ],
+      unused: ["123", "456"],
+    },
+    query: {
+      category: "obuv",
+      parameters: [
+        "velkost",
+        "41-1-3",
+        "typ-doslapu",
+        "neutralny",
+        "typ-bezeckej-obuvi",
+        "treningova",
+        "farba",
+        "modra,oranzova",
+      ],
+      orderBy: "price-asc",
+      limit: "45",
+    },
+  };
+
+  let output = { path: "test/path?orderBy=price-asc&limit=45" };
+
+  test("addParameter - empty values", () => {
+    expect(getCleanedUrl("")).toEqual("");
+    expect(getCleanedUrl({})).toEqual(false);
+    expect(getCleanedUrl([])).toEqual(false);
+    expect(getCleanedUrl({ test: "test" })).toEqual(false);
+  });
+
+  test("addParameter - functional tests", () => {
+    expect(getCleanedUrl({})).toEqual(false);
+    expect(getCleanedUrl([])).toEqual(false);
+    expect(getCleanedUrl({ test: "test" })).toEqual(false);
+
+    expect(getCleanedUrl(input.path)).toEqual(input.path);
+    expect(getCleanedUrl(input.path, input.parameters)).toEqual(input.path);
+    expect(getCleanedUrl(input.path, input.parameters, input.query)).toEqual(
+      output.path
+    );
+    expect(getCleanedUrl(input.path2)).toEqual(input.path);
+    expect(getCleanedUrl(input.path2, input.parameters)).toEqual(input.path);
+    expect(getCleanedUrl(input.path2, input.parameters, input.query)).toEqual(
+      output.path
+    );
+    expect(getCleanedUrl(input.path3)).toEqual(input.path);
+    expect(getCleanedUrl(input.path3, input.parameters)).toEqual(input.path);
+    expect(getCleanedUrl(input.path3, input.parameters, input.query)).toEqual(
+      output.path
+    );
+  });
+};
+
 removeParameterTests();
 addParameterTests();
+getCleanedUrlTests();
