@@ -212,7 +212,7 @@ export const getCampaignLinkAttributesFromRouter = (router, options = {}) => {
 
 export const getSearchLinkAttributesFromRouter = (router, options = {}) => {
   return getSearchLinkAttributes(
-    get(router, "query.term"),
+    encodeURIComponent(get(router, "query.term")),
     arrayToPath(get(router, "query.parameters", [])),
     router.query,
     options
