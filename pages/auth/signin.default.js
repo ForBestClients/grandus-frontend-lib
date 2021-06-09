@@ -2,10 +2,7 @@ import { useRouter } from "next/router";
 import useUser from "grandus-lib/hooks/useUser";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import { reqApiHost, reqGetHost } from "grandus-lib/utils";
-import {
-  USER_CONSTANT,
-  CART_CONSTANT,
-} from "grandus-lib/constants/SessionConstants";
+import { CART_CONSTANT } from "grandus-lib/constants/SessionConstants";
 
 import Link from "next/link";
 import { get } from "lodash";
@@ -15,19 +12,23 @@ import useCart from "grandus-lib/hooks/useCart";
 import MetaData from "grandus-lib/components-atomic/MetaData";
 
 import LoginForm from "components/forms/Login";
+import { userPage } from "grandus-lib/utils/fetches";
 
 const Login = ({ user, apiHost, host }) => {
-  const { user: userFront } = useUser({
-    redirectTo: "/",
-    redirectIfFound: true,
-  });
+  const { user: userFront, mutateUser } = useUser({ initialUser: { ...user } });
 
   const router = useRouter();
   const { cart } = useCart();
   const { webInstance, settings, domain } = useWebInstance();
   const facebokLoginEnabled = get(settings, "facebook_login_enabled");
   const googleLoginEnabled = get(settings, "google_login_enabled");
-  if (user || userFront) {
+
+  React.useEffect(() => {
+    mutateUser(user, false);
+  }, [user, mutateUser]);
+
+
+  if (userFront?.id) {
     return (
       <Result
         status="success"
@@ -117,18 +118,19 @@ const Login = ({ user, apiHost, host }) => {
   );
 };
 
-export const getServerSideProps = async ({ req, res }) => {
-  const user = req.session.get(USER_CONSTANT);
+export const getServerSideProps = async (context) => {
+  const { req } = context;
+  const userProps = await userPage.serverSideProps(context);
   const cart = req.session.get(CART_CONSTANT);
 
   return {
     props: {
-      user: user ? user : null,
+      ...userProps?.props,
       cart: cart ? cart : null,
       apiHost: reqApiHost(),
       host: reqGetHost(req),
     },
   };
-};
+}
 
 export default Login;

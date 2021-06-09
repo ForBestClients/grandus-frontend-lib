@@ -18,7 +18,9 @@ const SelectInput = (props) => {
     validateStatus = "",
     help = null,
     showSearch,
+    virtual = true,
     onSelect,
+    dropdownRender
   } = props;
   return (
     <Form.Item
@@ -44,6 +46,8 @@ const SelectInput = (props) => {
           value={values[fieldName]}
           disabled={disabled}
           allowClear={allowClear}
+          virtual={virtual}
+          dropdownRender={dropdownRender}
           onChange={(val) => {
             if (isFunction(onChange)) {
               onChange(val);

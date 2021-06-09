@@ -44,18 +44,23 @@ export default function useCart(initialCart = false, options = {}) {
 
   const itemsRemove = async (itemsIds, callback) => {
     setIsLoading(true);
-    await mutate(
-      await fetch(`/api/lib/v1/cart/items/bulk`, {
-        method: "DELETE",
-        body: JSON.stringify({ items: itemsIds }),
-      }).then((result) => {
-        if (isFunction(callback)) {
-          callback(result);
-        }
-        return result.json();
-      }),
-      false
-    );
+    let success = true;
+    const cart = await fetch(`/api/lib/v1/cart/items/bulk`, {
+      method: "DELETE",
+      body: JSON.stringify({ items: itemsIds }),
+    }).then(async (result) => {
+      success = result?.ok;
+      const data = await result.json();
+      data.success = success;
+      if (isFunction(callback)) {
+        callback(data);
+      }
+      return data;
+    });
+
+    if (success) {
+      await mutate(cart, false);
+    }
     setIsLoading(false);
   };
 
@@ -110,6 +115,7 @@ export default function useCart(initialCart = false, options = {}) {
   };
 
   const itemAdd = async (count, store, productId, callback, options = {}) => {
+    setIsLoading(true);
     const reqBody = {
       items: { count: count, sizeId: store, productId: productId },
     };
@@ -124,6 +130,7 @@ export default function useCart(initialCart = false, options = {}) {
       }).then(async (result) => {
         success = result?.ok;
         const data = await result.json();
+        data.success = success;
         if (isFunction(callback)) {
           callback(data);
         }
@@ -136,10 +143,11 @@ export default function useCart(initialCart = false, options = {}) {
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
   const itemUpdate = async (itemId, body, callback) => {
-   
+    setIsLoading(true);
     let success = true;
       const cart = await fetch(`/api/lib/v1/cart/items/${itemId}`, {
         method: "PUT",
@@ -149,6 +157,7 @@ export default function useCart(initialCart = false, options = {}) {
       }).then(async (result) => {
         success = result?.ok;
         const data = await result.json();
+        data.success = success;
         if (isFunction(callback)) {
           callback(data);
         }
@@ -158,6 +167,7 @@ export default function useCart(initialCart = false, options = {}) {
       if (success) {
         await mutate(cart, false);
       }
+      setIsLoading(false);
   };
 
   const saveContact = async (values, callback) => {

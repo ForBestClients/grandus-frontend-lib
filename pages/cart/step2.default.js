@@ -20,9 +20,7 @@ import TextInput from "grandus-lib/components-atomic/form/TextInput";
 import PhoneInput from "grandus-lib/components-atomic/form/PhoneInput";
 
 import {
-  Divider,
   Form,
-  Input,
   Select,
   Button,
   Row,
@@ -161,10 +159,10 @@ const CartContact = (props) => {
         .trim()
         .required("Povinné pole")
         .matches(ZIP_REGEX, "Nesprávny tvar PSČ. Zadajte v tvare XXX XX."),
-      phone: yup.string().nullable().trim().required("Povinné pole"),
-      // .validatePhoneNumber(
-      //   "Zadané telefónne číslo nie je v správnom formáte. Zadajte číslo vo formáte +421 (0)901 XXX XXX"
-      // ),
+      phone: yup.string().nullable().trim().required("Povinné pole")
+        .validatePhoneNumber(
+          "Zadané telefónne číslo nie je v správnom formáte. Zadajte číslo vo formáte +421 (0)901 XXX XXX"
+        ),
       email: yup
         .string()
         .nullable()
@@ -210,7 +208,7 @@ const CartContact = (props) => {
             .required("Povinné pole")
             .matches(BUSINESS_ID_REGEX, {
               excludeEmptyString: true,
-              message: "Nespávny tvar",
+              message: "Nesprávny tvar",
             })
             .trim(),
         }),
@@ -219,7 +217,7 @@ const CartContact = (props) => {
         .nullable()
         .matches(VAT_ID_REGEX, {
           excludeEmptyString: true,
-          message: "Nespávny tvar",
+          message: "Nesprávny tvar",
         })
         .trim(),
       icDPH: yup
@@ -227,7 +225,7 @@ const CartContact = (props) => {
         .nullable()
         .matches(VAT_NUMBER_REGEX, {
           excludeEmptyString: true,
-          message: "Nespávny tvar",
+          message: "Nesprávny tvar",
         })
         .trim(),
       isDifferentDeliveryAddress: yup.bool(),
@@ -305,10 +303,10 @@ const CartContact = (props) => {
         .trim()
         .when("isDifferentDeliveryAddress", {
           is: true,
-          then: yup.string().required("Povinné pole"),
-          // .validatePhoneNumber(
-          //   "Zadané telefónne číslo nie je v správnom formáte. Zadajte číslo vo formáte +421 (0)901 XXX XXX"
-          // ),
+          then: yup.string().required("Povinné pole")
+            .validatePhoneNumber(
+              "Zadané telefónne číslo nie je v správnom formáte. Zadajte číslo vo formáte +421 (0)901 XXX XXX"
+            ),
         }),
       deliveryEmail: yup
         .string()
