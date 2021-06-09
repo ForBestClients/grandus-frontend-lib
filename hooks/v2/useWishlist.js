@@ -5,7 +5,7 @@ import { get, isFunction } from "lodash";
 const useWishlist = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: wishlist, mutate, isValidating } = useSWR(
-    `/api/lib/v1/wishlist`,
+    `/api/lib/v2/wishlist`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
@@ -25,7 +25,7 @@ const useWishlist = () => {
   const itemRemove = async (productId, callback) => {
     setIsLoading(true);
     await mutate(
-      await fetch(`/api/lib/v1/wishlist/items/${productId}`, {
+      await fetch(`/api/lib/v2/wishlist/items/${productId}`, {
         method: "DELETE",
       })
       .then((result) => result.json())
@@ -44,7 +44,7 @@ const useWishlist = () => {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v1/wishlist/items/${productId}`, {
+        await fetch(`/api/lib/v2/wishlist/items/${productId}`, {
           method: "POST",
         })
         .then((result) => result.json())
@@ -66,7 +66,7 @@ const useWishlist = () => {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v1/wishlist/items/bulk`, {
+        await fetch(`/api/lib/v2/wishlist/items/bulk`, {
           method: "POST",
         })
         .then((result) => result.json())
