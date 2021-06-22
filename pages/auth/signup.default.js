@@ -15,7 +15,7 @@ const Register = ({ user }) => {
     initialUser: user
   });
 
-  useEffect (() => {
+  useEffect(() => {
     mutateUser(user, false);
   }, [user, mutateUser]);
 
