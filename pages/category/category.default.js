@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { categoryPage } from "grandus-lib/utils/fetches";
 import { get, map, isEmpty, isArray } from "lodash";
 import { Button, Row, Col } from "antd";
@@ -80,7 +80,7 @@ const Category = (props) => {
 
   const seoTitleData = getSeoTitleData(filter);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const list = hasActiveFilters(filter) ? "category filter" : "category";
     TagManager.push(
       EnhancedEcommerce.impressions(products, list, {

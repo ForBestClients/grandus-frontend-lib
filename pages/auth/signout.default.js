@@ -9,11 +9,12 @@ import { Result, Button } from "antd";
 import useUser from "grandus-lib/hooks/useUser";
 import useCart from "grandus-lib/hooks/useCart";
 import Link from "next/link";
+import { useEffect } from "react";
 
 const Signout = ({ user }) => {
   const { logoutUser } = useUser();
   const { mutateCart } = useCart();
-  React.useEffect(() => {
+  useEffect(() => {
     logoutUser();
     mutateCart();
   }, []);
