@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DeleteOutlined,
   FrownOutlined,
@@ -126,7 +126,7 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
 
   const isProcessing = isLoading || loading;
 
-  React.useEffect(() => {
+  useEffect(() => {
     TagManager.push(EnhancedEcommerce.checkout(get(cart, "items", []), 1));
   }, []);
 

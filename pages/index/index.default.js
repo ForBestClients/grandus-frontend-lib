@@ -12,6 +12,7 @@ import Content from "grandus-lib/components-atomic/content/Content";
 import ProductCard from "components/product/card/ProductCard";
 import BlogCard from "components/blog/card/BlogCard";
 import Image from "grandus-lib/components-atomic/image/Image";
+import { useEffect } from "react";
 
 const HomepageContent = ({ pages }) => {
   if (!pages) return null;
@@ -83,7 +84,7 @@ const Homepage = (props) => {
     ],
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     TagManager.push(
       EnhancedEcommerce.impressions(products, "homepage favourite products")
     );

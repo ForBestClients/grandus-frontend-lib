@@ -43,7 +43,7 @@ import {
   ZIP_REGEX,
   STREET_REGEX,
 } from "grandus-lib/constants/ValidatorConstants";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 const { Option } = Select;
 
 const authSectionContentList = {
@@ -54,10 +54,10 @@ const authSectionContentList = {
 const CartContact = (props) => {
   const { countries, towns = [], contact } = props;
   const { settings } = useWebInstance();
-  const [authSectionActiveTab, toggleAuthSectionActiveTab] = React.useState(
+  const [authSectionActiveTab, toggleAuthSectionActiveTab] = useState(
     "login"
   );
-  const [authSectionVisible, toggleAuthSection] = React.useState(false);
+  const [authSectionVisible, toggleAuthSection] = useState(false);
   const { cart, cartUpdate, saveContact, isLoading } = useCart();
   const { user, isLoading: isLoadingUser } = useUser();
   const router = useRouter();
@@ -346,7 +346,7 @@ const CartContact = (props) => {
       });
     },
   };
-  React.useEffect(() => {
+  useEffect(() => {
     TagManager.push(EnhancedEcommerce.checkout(cart, 2));
   }, []);
 

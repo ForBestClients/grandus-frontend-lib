@@ -28,7 +28,7 @@ import {
   head,
   toNumber,
 } from "lodash";
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import Link from "next/link";
 import TextArea from "antd/lib/input/TextArea";
 import { useRouter } from "next/router";
@@ -410,14 +410,14 @@ const CartDeliveryAndPayment = (props) => {
       });
     },
   };
-  React.useEffect(() => {
+ useEffect(() => {
     setDeliveryTypeGroup(get(cart, "delivery.group", ""));
     setDeliveryType(get(cart, "delivery.id", ""));
     setPaymentType(get(cart, "payment.id", ""));
     setSpecificPaymentType(get(cart, "specificPaymentType", ""));
   }, [cart]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     TagManager.push(EnhancedEcommerce.checkout(cart, 3));
   }, []);
 

@@ -1,4 +1,5 @@
 import { get, find, first, isEmpty, map } from "lodash";
+import { useEffect, useState } from "react";
 
 import styles from "./switcher.module.scss";
 
@@ -13,7 +14,7 @@ const Switcher = ({
   error,
   inputSize = "normal",
 }) => {
-  const [selectedValue, setSelectedValue] = React.useState("");
+  const [selectedValue, setSelectedValue] = useState("");
   const onClick = (selectedValue) => (e) => {
     e.preventDefault();
     if (disabled) {
@@ -32,7 +33,7 @@ const Switcher = ({
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEmpty(defaultValue)) {
       setFieldValue(inputName, get(first(options), "value", null));
     } else {
@@ -41,7 +42,7 @@ const Switcher = ({
     }
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setSelectedValue(defaultValue);
     setFieldValue(inputName, defaultValue);
   }, [defaultValue]);

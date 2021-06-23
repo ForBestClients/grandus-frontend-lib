@@ -9,6 +9,7 @@ import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/Session
 
 import styles from "./packetery.module.scss";
 import yup from "grandus-lib/utils/validator";
+import { useState } from "react";
 
 const { Text } = Typography;
 
@@ -32,8 +33,8 @@ const Packetery = ({ errors, onSelect }) => {
   } = useSessionStorage();
   const { settings } = useWebInstance();
   const { cart, cartUpdate } = useCart();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [selectedPickupPoint, setSelectedPickupPoint] = React.useState(
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedPickupPoint, setSelectedPickupPoint] = useState(
     get(session, DELIVERY_DATA_SESSION_STORAGE_KEY)
   );
 
