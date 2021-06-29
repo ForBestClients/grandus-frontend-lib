@@ -43,6 +43,17 @@ const Packetery = ({ errors, onSelect }) => {
     return null;
   }
 
+  let options = {
+    language: "sk",
+    country: "sk",
+  };
+  
+  try {
+    options = JSON.parse(get(settings, "packetery_widget_settings"));
+  } catch (e) {
+    // do nothing
+  }
+
   const handlePickupPointSelection = async (selected) => {
     let pickupPointId = get(selected, "id") || null;
     if (get(selected, 'pickupPointId') === PICKUP_POINT_TYPE_EXTERNAL) {
@@ -83,20 +94,13 @@ const Packetery = ({ errors, onSelect }) => {
 
   const showModal = () => {
     Packeta.Widget.pick(apiKey, handlePickupPointSelection, {
-      apiKey,
-      language: "sk",
-      country: "sk",
+      ...options
     });
   };
 
   return (
     <>
       <Head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: get(settings, "packetery_widget_settings"),
-          }}
-        ></script>
         <script src={WIDGET_URL} data-api-key={apiKey}></script>
       </Head>
       <div className={`${styles.packetery} packetery__custom`}>
