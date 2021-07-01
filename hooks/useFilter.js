@@ -351,6 +351,7 @@ export const paramsToPath = (params) => {
 
 const useFilter = ({
   category = null,
+  search = null,
   parameters = [],
   options = {},
   useDataFromRouter = false,
@@ -364,7 +365,9 @@ const useFilter = ({
         case "category":
           uri.push(`id=${uriPart}`);
           break;
-
+        case "term":
+            uri.push(`search=${uriPart}`);
+            break;
         case "parameters":
           uri.push(`param=${arrayToPath(uriPart)}`);
           break;
@@ -383,6 +386,10 @@ const useFilter = ({
 
     if (category) {
       uri.push(`id=${category}`);
+    }
+
+    if (search) {
+      uri.push(`search=${search}`);
     }
   }
 
