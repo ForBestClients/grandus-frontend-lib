@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "styles/variables";
 
 .megamenu {
@@ -58,7 +59,7 @@
           width: 100%;
           padding: 0;
           li {
-            margin-bottom: $general-gutter / 2;
+            margin-bottom: math.div($general-gutter, 2);
             a {
               color: $text-color;
               &:hover {
@@ -71,7 +72,7 @@
           display: flex;
           color: $primary-color;
           font-size: 16px;
-          padding-bottom: $general-gutter / 2;
+          padding-bottom: math.div($general-gutter, 2);
           font-weight: bolder;
           align-items: center;
           position: relative;
@@ -167,7 +168,7 @@
 }
 .megamenu-wrap {
   display: flex;
-  padding-left: $general-gutter / 2;
+  padding-left: math.div($general-gutter, 2);
 }
 @media (min-width: 900px) {
   .megamenu-title.has-submenu {
@@ -266,7 +267,7 @@
             }
             .column.menu-col-auto {
               padding: 0;
-              margin-top: $general-gutter / 2;
+              margin-top: math.div($general-gutter, 2);
               a {
                 border-bottom: none;
               }

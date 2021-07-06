@@ -1,9 +1,10 @@
+@use "sass:math";
 @import "styles/variables";
 
 .badge {
   border-radius: $general-radius;
   background-color: transparent;
-  padding: $general-gutter / 2;
+  padding: math.div($general-gutter, 2);
   font-weight: bolder;
   fill: $primary-color;
   color: $primary-color;
