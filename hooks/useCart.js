@@ -146,6 +146,28 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(false);
   };
 
+  const itemsAdd = async (items, callback) => {
+    setIsLoading(true);
+    let success = true;
+    const cart = await fetch(`/api/lib/v1/cart`, {
+      method: "POST",
+      body: JSON.stringify({ items }),
+    }).then(async (result) => {
+      success = result?.ok;
+      const data = await result.json();
+      data.success = success;
+      if (isFunction(callback)) {
+        callback(data);
+      }
+      return data;
+    });
+
+    if (success) {
+      await mutate(cart, false);
+    }
+    setIsLoading(false);
+  };
+
   const itemUpdate = async (itemId, body, callback) => {
     setIsLoading(true);
     let success = true;
@@ -324,6 +346,7 @@ export default function useCart(initialCart = false, options = {}) {
     cart: get(cart, "accessToken") ? cart : null,
     mutateCart: mutate,
     isLoading: isValidating || isLoading,
+    itemsAdd,
     itemAdd,
     itemRemove,
     itemsRemove,
