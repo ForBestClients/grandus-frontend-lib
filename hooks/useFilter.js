@@ -266,6 +266,7 @@ export const getSystemFilterAttributes = (data, key, options = {}) => {
         get(options, "openedParameter"),
         get(options, "onClickToggleOpen")
       ),
+      ...options
     },
   };
 };

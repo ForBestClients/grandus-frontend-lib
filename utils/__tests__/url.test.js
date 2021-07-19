@@ -154,6 +154,22 @@ const addParameterTests = () => {
     expect(addParameter(input, "key3", "value4", false)).toEqual(output);
     expect(addParameter(input, "key3", ["value4"], false)).toEqual(output);
   });
+
+  test("addParameter - adding keys + sort", () => {
+    output = {
+      key1: ["value1"],
+      key2: ["value2", "value3"],
+      key3: [150, 44]
+    };
+    expect(addParameter(input, "key3", [44,150])).toEqual(output);
+
+    output = {
+      key1: ["value1"],
+      key2: ["value2", "value3"],
+      key3: [44, 150]
+    };
+    expect(addParameter(input, "key3", [44,150], false, false)).toEqual(output);
+  });
 };
 
 //addParameter - TEST SUITE

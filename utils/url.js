@@ -3,6 +3,7 @@ import isEmpty from "lodash/isEmpty";
 import isObject from "lodash/isObject";
 import isArray from "lodash/isArray";
 import union from "lodash/union";
+import uniq from "lodash/uniq";
 import sortedUniq from "lodash/sortedUniq";
 import isString from "lodash/isString";
 import keys from "lodash/keys";
@@ -49,7 +50,8 @@ export const addParameter = (
   parameters,
   parameterKey,
   parameterValues,
-  replace = true
+  replace = true,
+  sort = true
 ) => {
   if (!isObject(parameters)) {
     return {};
@@ -66,15 +68,20 @@ export const addParameter = (
     : [parameterValues];
 
   if (replace) {
-    parametersActual[parameterKey] = parameterValuesActual.sort();
+    parametersActual[parameterKey] = parameterValuesActual;
   } else {
     parametersActual[parameterKey] = union(
       parametersActual[parameterKey],
       parameterValuesActual
-    ).sort();
+    );
   }
 
-  parametersActual[parameterKey] = sortedUniq(parametersActual[parameterKey]);
+  if (sort) {
+    parametersActual[parameterKey] = sortedUniq(parametersActual[parameterKey].sort());
+  } else {
+    parametersActual[parameterKey] = uniq(parametersActual[parameterKey]);
+  }
+  
 
   return { ...parametersActual };
 };
