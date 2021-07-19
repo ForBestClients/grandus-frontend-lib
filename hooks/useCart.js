@@ -116,30 +116,12 @@ export default function useCart(initialCart = false, options = {}) {
 
   const itemAdd = async (count, store, productId, callback, options = {}) => {
     setIsLoading(true);
-    const reqBody = {
-      items: { count: count, sizeId: store, productId: productId },
-    };
+    const items = { count: count, sizeId: store, productId: productId };
     if (options?.hash) {
-      reqBody.items.hash = get(options, "hash", "");
+      items.hash = get(options, "hash", "");
     }
     try {
-      let success = true;
-      const cart = await fetch(`/api/lib/v1/cart`, {
-        method: "POST",
-        body: JSON.stringify(reqBody),
-      }).then(async (result) => {
-        success = result?.ok;
-        const data = await result.json();
-        data.success = success;
-        if (isFunction(callback)) {
-          callback(data);
-        }
-        return data;
-      });
-
-      if (success) {
-        await mutate(cart, false);
-      }
+      itemsAdd(items, callback)
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
