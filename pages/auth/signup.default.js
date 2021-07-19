@@ -6,6 +6,7 @@ import { get } from "lodash";
 import RegisterForm from "components/forms/Register";
 import { Button, Result } from "antd";
 import { userPage } from "grandus-lib/utils/fetches";
+import { useEffect } from "react";
 
 const Register = ({ user }) => {
   const { user: userFront, mutateUser } = useUser({
@@ -14,7 +15,7 @@ const Register = ({ user }) => {
     initialUser: user
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     mutateUser(user, false);
   }, [user, mutateUser]);
 

@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "styles/variables";
 
 .wrapper {
@@ -33,7 +34,7 @@
 
     & + div {
       border-bottom: 1px solid $grey-light-color;
-      margin-bottom: $general-gutter / 2;
+      margin-bottom: math.div($general-gutter, 2);
     }
   }
 
@@ -45,8 +46,8 @@
       justify-content: space-between;
       padding-bottom: $general-gutter;
       border-bottom: 1px solid $grey-light-color;
-      margin-top: $general-gutter / 2;
-      margin-bottom: $general-gutter / 2;
+      margin-top: math.div($general-gutter, 2);
+      margin-bottom: math.div($general-gutter, 2);
     }
   }
 
@@ -54,7 +55,7 @@
     & > div {
       width: 33%;
       float: left;
-      padding: $general-gutter / 2;
+      padding: math.div($general-gutter, 2);
       border-radius: $general-radius;
       border: 1px solid white;
       @media (max-width: $md) {

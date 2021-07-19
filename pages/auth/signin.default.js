@@ -13,6 +13,7 @@ import MetaData from "grandus-lib/components-atomic/MetaData";
 
 import LoginForm from "components/forms/Login";
 import { userPage } from "grandus-lib/utils/fetches";
+import { useEffect } from "react";
 
 const Login = ({ user, apiHost, host }) => {
   const { user: userFront, mutateUser } = useUser({ initialUser: { ...user } });
@@ -23,7 +24,7 @@ const Login = ({ user, apiHost, host }) => {
   const facebokLoginEnabled = get(settings, "facebook_login_enabled");
   const googleLoginEnabled = get(settings, "google_login_enabled");
 
-  React.useEffect(() => {
+  useEffect(() => {
     mutateUser(user, false);
   }, [user, mutateUser]);
 

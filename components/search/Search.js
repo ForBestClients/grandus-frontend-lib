@@ -8,6 +8,7 @@ import { useRouter } from "next/router";
 import styles from "./Search.module.scss";
 import TopProduct from "./autocomplete/TopProduct";
 import ProductRow from "./autocomplete/ProductRow";
+import { useEffect, useRef, useState } from "react";
 
 const Results = ({ products, brands, categories, closeAction }) => {
   const topProduct = first(products);
@@ -92,16 +93,16 @@ const Results = ({ products, brands, categories, closeAction }) => {
 
 const Search = ({ endpoint = "/api/lib/v1/autosuggest?search=" }) => {
   const router = useRouter();
-  const [value, setValue] = React.useState("");
-  const [isFocused, setIsFocused] = React.useState(false);
-  const [typing, setTyping] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
-  const [typingTimeout, setTypingTimeout] = React.useState(0);
-  const [results, setResults] = React.useState([]);
+  const [value, setValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [typing, setTyping] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState(0);
+  const [results, setResults] = useState([]);
 
-  const wrapperRef = React.useRef(null);
+  const wrapperRef = useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);

@@ -9,6 +9,7 @@ import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/Session
 
 import styles from "./packetery.module.scss";
 import yup from "grandus-lib/utils/validator";
+import { useState } from "react";
 
 const { Text } = Typography;
 
@@ -32,14 +33,25 @@ const Packetery = ({ errors, onSelect }) => {
   } = useSessionStorage();
   const { settings } = useWebInstance();
   const { cart, cartUpdate } = useCart();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const [selectedPickupPoint, setSelectedPickupPoint] = React.useState(
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedPickupPoint, setSelectedPickupPoint] = useState(
     get(session, DELIVERY_DATA_SESSION_STORAGE_KEY)
   );
 
   const apiKey = get(settings, "packetery_merchant_key");
   if (isEmpty(apiKey)) {
     return null;
+  }
+
+  let options = {
+    language: "sk",
+    country: "sk",
+  };
+  
+  try {
+    options = JSON.parse(get(settings, "packetery_widget_settings"));
+  } catch (e) {
+    // do nothing
   }
 
   const handlePickupPointSelection = async (selected) => {
@@ -82,20 +94,13 @@ const Packetery = ({ errors, onSelect }) => {
 
   const showModal = () => {
     Packeta.Widget.pick(apiKey, handlePickupPointSelection, {
-      apiKey,
-      language: "sk",
-      country: "sk",
+      ...options
     });
   };
 
   return (
     <>
       <Head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: get(settings, "packetery_widget_settings"),
-          }}
-        ></script>
         <script src={WIDGET_URL} data-api-key={apiKey}></script>
       </Head>
       <div className={`${styles.packetery} packetery__custom`}>

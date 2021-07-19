@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "styles/variables";
 
 .product {
@@ -5,7 +6,7 @@
   flex-direction: column;
   justify-content: center;
   height: calc(100% - 50px);
-  margin: $general-gutter / 2;
+  margin: math.div($general-gutter, 2);
   padding: $general-gutter;
   border: 1px solid transparent;
   border-radius: $general-radius;
@@ -41,7 +42,7 @@
     text-align: left;
     @media (max-width: $md) {
       font-size: 0.8em;
-      padding: 0 $general-gutter / 2;
+      padding: 0 math.div($general-gutter, 2);
     }
   }
 
