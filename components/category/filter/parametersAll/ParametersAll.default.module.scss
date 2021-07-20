@@ -10,7 +10,7 @@
 
 .modal {
   :global(.ant-modal-body) {
-    padding: $general-gutter $general-gutter / 3;
+    padding: $general-gutter math.div($general-gutter, 3);
   }
 
   :global(.ant-tabs .ant-tabs-content .ant-tabs-tabpane) {
