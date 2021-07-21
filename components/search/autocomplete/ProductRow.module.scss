@@ -1,3 +1,4 @@
+@use "sass:math";
 @import "styles/variables";
 
 .product {
@@ -6,7 +7,7 @@
   align-items: center;
   justify-content: left;
   width: 100%;
-  padding: $general-gutter / 1.5;
+  padding: math.div($general-gutter, 1.5);
   border: 1px solid transparent;
   border-bottom-color: $grey-light-color;
   border-radius: $general-radius;
