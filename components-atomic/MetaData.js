@@ -1,7 +1,11 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { getImageUrl } from "grandus-lib/utils";
-import { get, split } from "lodash";
+
+import get from "lodash/get";
+import split from "lodash/split";
+
+import { adjustTitle, adjustDescription } from "grandus-lib/utils/meta";
 
 const MetaData = (props) => {
   const {
@@ -16,16 +20,29 @@ const MetaData = (props) => {
   const router = useRouter();
   const routerPage = get(router, "query.page");
 
+  const metaTitle = adjustTitle(
+    title,
+    get(options, "title.branding"),
+    get(options, "title.suffix"),
+    get(options, "title.prefix")
+  );
+  const metaDescription = adjustDescription(
+    description,
+    get(options, "description.branding"),
+    get(options, "description.suffix"),
+    get(options, "description.prefix")
+  );
+
   const canonicalUrl =
     get(split(router?.asPath, "?"), "[0]", "") +
     (routerPage && routerPage > 1 ? `?page=${routerPage}` : "");
 
   return (
     <Head>
-      {title ? (
+      {metaTitle ? (
         <>
-          <title>{title}</title>
-          <meta property="og:title" content={title} />
+          <title>{metaTitle}</title>
+          <meta property="og:title" content={metaTitle} />
         </>
       ) : null}
 
@@ -36,24 +53,27 @@ const MetaData = (props) => {
         />
       ) : null}
 
-      {description ? (
+      {metaDescription ? (
         <>
-          <meta name="description" content={description} />
-          <meta property="og:description" content={description} />
+          <meta name="description" content={metaDescription} />
+          <meta property="og:description" content={metaDescription} />
         </>
       ) : null}
+
       {keywords ? (
         <>
           <meta name="keywords" content={keywords} />
           <meta property="og:keywords" content={keywords} />
         </>
       ) : null}
+
       {noindex ? (
         <>
           <meta name="robots" content="noindex, follow" />
           <meta name="googlebot" content="noindex" />
         </>
       ) : null}
+
       {get(photo, "path") ? (
         <>
           <meta

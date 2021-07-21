@@ -1,10 +1,11 @@
 import { getImageUrl } from "grandus-lib/utils";
-import { get, isEmpty } from "lodash";
+import get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
 
 const MicroDataProduct = ({ data = null, webInstance = null }) => {
   if (!isEmpty(data) && !isEmpty(webInstance)) {
     const {
-        id,
+      id,
       name,
       shortProductDescription,
       brand,
