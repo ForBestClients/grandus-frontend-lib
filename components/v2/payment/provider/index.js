@@ -1,13 +1,14 @@
 import Besteron from "./providers/Besteron";
 
-const DEFAULT_TYPE = 0;
-const CASH_ON_DELIVERY_TYPE = 1;
-const BESTERON_TYPE = 2;
+export const DEFAULT_TYPE = 0;
+export const CASH_ON_DELIVERY_TYPE = 1;
+export const BESTERON_TYPE = 2;
 
 const PaymentProvider = ({
   payment = null,
   updateCart = true,
   handleChange,
+  options = {}
 }) => {
   if (!payment) {
     return null;
@@ -20,6 +21,7 @@ const PaymentProvider = ({
           payment={payment}
           updateCart={updateCart}
           handleChange={handleChange}
+          options={options}
         />
       );
     default:
