@@ -7,7 +7,12 @@ import styles from "./Besteron.module.scss";
 
 const CARD_PAYMENT_BUTTON = "FIRSTDATACARD";
 
-const Besteron = ({ payment, updateCart = true, handleChange }) => {
+const Besteron = ({
+  payment,
+  updateCart = true,
+  handleChange,
+  options = {},
+}) => {
   const { cart, cartUpdate } = useCart(null, { revalidateOnMount: false });
 
   if (isEmpty(get(payment, "options"))) {
@@ -37,7 +42,7 @@ const Besteron = ({ payment, updateCart = true, handleChange }) => {
         {!isEmpty(firstDataCardPaymentButton) ? (
           <>
             <div className={styles.specificPaymentOptionHeader}>
-              Platba kartou
+              {get(options, "cardPaymentText", "Platba kartou")}
             </div>
             <div className={styles.specificPaymentOption}>
               <BesteronSingleButton
@@ -55,7 +60,11 @@ const Besteron = ({ payment, updateCart = true, handleChange }) => {
         {!isEmpty(otherPaymentButtons) ? (
           <>
             <div className={styles.specificPaymentOptionHeader}>
-              Platba bankovými tlačidlami
+              {get(
+                options,
+                "bankButtonsPaymentText",
+                "Platba bankovými tlačidlami"
+              )}
             </div>
             <>
               {map(otherPaymentButtons, (specificPaymentOption, index) => (

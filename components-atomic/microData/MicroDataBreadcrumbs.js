@@ -1,5 +1,6 @@
 import get from "lodash/get";
 import map from "lodash/map";
+import trimStart from "lodash/trimStart";
 import isEmpty from "lodash/isEmpty";
 
 const MicroDataBreadcrumbs = ({ data = null, webInstance = {} }) => {
@@ -29,14 +30,23 @@ const MicroDataBreadcrumbs = ({ data = null, webInstance = {} }) => {
     });
   });
 
-  // map(get(data, "childrens", []), (entry) => {
-  //   positionIndex = positionIndex + 1;
-  //   items.push({
-  //     "@type": "ListItem",
-  //     position: positionIndex,
-  //     name: entry,
-  //   });
-  // });
+  map(get(data, "childrens", []), (entry) => {
+    positionIndex = positionIndex + 1;
+    items.push({
+      "@type": "ListItem",
+      position: positionIndex,
+      name: entry?.name,
+      item: `${domain}/${trimStart(get(entry, "as") || get(entry, "href"), '/')}`,
+    });
+  });
+
+  if (get(data, "current")) {
+    items.push({
+      "@type": "ListItem",
+      position: positionIndex + 1,
+      name: data?.current,
+    });
+  }
 
   return (
     <script
