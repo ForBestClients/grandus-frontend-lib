@@ -4,7 +4,10 @@ import trimStart from "lodash/trimStart";
 import isEmpty from "lodash/isEmpty";
 
 const MicroDataBreadcrumbs = ({ data = null, webInstance = {} }) => {
-  if (isEmpty(data)) {
+  if (
+    (isEmpty(data?.categorical) && isEmpty(data?.childrens)) ||
+    isEmpty(webInstance)
+  ) {
     return null;
   }
 
@@ -36,7 +39,10 @@ const MicroDataBreadcrumbs = ({ data = null, webInstance = {} }) => {
       "@type": "ListItem",
       position: positionIndex,
       name: entry?.name,
-      item: `${domain}/${trimStart(get(entry, "as") || get(entry, "href"), '/')}`,
+      item: `${domain}/${trimStart(
+        get(entry, "as") || get(entry, "href"),
+        "/"
+      )}`,
     });
   });
 
