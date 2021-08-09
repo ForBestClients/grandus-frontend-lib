@@ -24,7 +24,10 @@ const MetaData = (props) => {
     title,
     get(options, "title.branding"),
     get(options, "title.suffix"),
-    get(options, "title.prefix")
+    get(options, "title.prefix"),
+    {
+      maxLength: get(options, "title.maxLength")
+    }
   );
   const metaDescription = adjustDescription(
     description,
