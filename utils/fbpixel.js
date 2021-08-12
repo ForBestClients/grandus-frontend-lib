@@ -42,10 +42,12 @@ const FBPixel = {
     }
   },
   isEnabled: function () {
-    return (typeof window !== 'undefined') && !!window;
+    return typeof window !== "undefined" && !!window.fbq;
   },
   pageView: function () {
-    fbq("track", "PageView");
+    if (this.isEnabled()) {
+      fbq("track", "PageView");
+    }
   },
   products: function (products) {
     if (isEmpty(products)) {
