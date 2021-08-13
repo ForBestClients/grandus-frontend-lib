@@ -26,7 +26,7 @@ const MetaData = (props) => {
     get(options, "title.suffix"),
     get(options, "title.prefix"),
     {
-      maxLength: get(options, "title.maxLength")
+      maxLength: get(options, "title.maxLength"),
     }
   );
   const metaDescription = adjustDescription(
@@ -44,13 +44,14 @@ const MetaData = (props) => {
     <Head>
       {metaTitle ? (
         <>
-          <title>{metaTitle}</title>
-          <meta property="og:title" content={metaTitle} />
+          <title key={"title"}>{metaTitle}</title>
+          <meta key={"ogtitle"} property="og:title" content={metaTitle} />
         </>
       ) : null}
 
       {canonicalUrl && !get(options, "disableCanonical") ? (
         <link
+          key={"canonical"}
           rel={"canonical"}
           href={`${process.env.HOST ? process.env.HOST : ""}${canonicalUrl}`}
         />
@@ -58,28 +59,37 @@ const MetaData = (props) => {
 
       {metaDescription ? (
         <>
-          <meta name="description" content={metaDescription} />
-          <meta property="og:description" content={metaDescription} />
+          <meta
+            key={"description"}
+            name="description"
+            content={metaDescription}
+          />
+          <meta
+            key={"ogdescription"}
+            property="og:description"
+            content={metaDescription}
+          />
         </>
       ) : null}
 
       {keywords ? (
         <>
-          <meta name="keywords" content={keywords} />
-          <meta property="og:keywords" content={keywords} />
+          <meta key={"keywords"} name="keywords" content={keywords} />
+          <meta key={"ogkeywords"} property="og:keywords" content={keywords} />
         </>
       ) : null}
 
       {noindex ? (
         <>
-          <meta name="robots" content="noindex, follow" />
-          <meta name="googlebot" content="noindex" />
+          <meta key={"robots"} name="robots" content="noindex, follow" />
+          <meta key={"googlebot"} name="googlebot" content="noindex" />
         </>
       ) : null}
 
       {get(photo, "path") ? (
         <>
           <meta
+            key={"ogimage"}
             property="og:image"
             content={getImageUrl(
               photo,
@@ -87,9 +97,14 @@ const MetaData = (props) => {
               "jpg"
             )}
           />
-          <meta property="og:image:type" content={"image/jpeg"} />
+          <meta
+            key={"ogimagetype"}
+            property="og:image:type"
+            content={"image/jpeg"}
+          />
           {get(options, "image.width") !== -1 ? (
             <meta
+              key={"ogimagewidth"}
               property="og:image:width"
               content={get(options, "image.width", 1200)}
             />
@@ -98,6 +113,7 @@ const MetaData = (props) => {
           )}
           {get(options, "image.height") !== -1 ? (
             <meta
+              key={"ogimageheight"}
               property="og:image:height"
               content={get(options, "image.height", 630)}
             />

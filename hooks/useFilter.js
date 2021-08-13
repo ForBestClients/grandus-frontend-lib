@@ -31,6 +31,12 @@ const sortChunks = (chunks) => chunks; // temporary disabled sortingsortBy(chunk
 export const getSeoTitleData = (filter = {}) => {
   const titleData = [];
 
+  map(get(filter, "selected.stores.data", []), (store) => {
+    if (get(store, "name")) {
+      titleData.push(get(store, "name"));
+    }
+  });
+
   map(get(filter, "selected.brands.data", []), (brand) => {
     if (get(brand, "name")) {
       titleData.push(get(brand, "name"));
@@ -266,7 +272,7 @@ export const getSystemFilterAttributes = (data, key, options = {}) => {
         get(options, "openedParameter"),
         get(options, "onClickToggleOpen")
       ),
-      ...options
+      ...options,
     },
   };
 };
@@ -367,8 +373,8 @@ const useFilter = ({
           uri.push(`id=${uriPart}`);
           break;
         case "term":
-            uri.push(`search=${uriPart}`);
-            break;
+          uri.push(`search=${uriPart}`);
+          break;
         case "parameters":
           uri.push(`param=${arrayToPath(uriPart)}`);
           break;
@@ -396,16 +402,16 @@ const useFilter = ({
 
   const url = `/api/lib/v1/filters?${uri.join("&")}`;
 
-  const { data: filter, mutate, isValidating } = useSWR(
-    url,
-    (url) => fetch(url).then((r) => r.json()),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      shouldRetryOnError: true,
-      ...options,
-    }
-  );
+  const {
+    data: filter,
+    mutate,
+    isValidating,
+  } = useSWR(url, (url) => fetch(url).then((r) => r.json()), {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+    shouldRetryOnError: true,
+    ...options,
+  });
 
   return {
     filter,
