@@ -5,7 +5,9 @@ import useFilter, {
   arrayToParams,
   getSystemFilterAttributes,
 } from "grandus-lib/hooks/useFilter";
-import { get, split, groupBy, map } from "lodash";
+import get from "lodash/get";
+import groupBy from "lodash/groupBy";
+import map from "lodash/map"
 
 import ElementCheckbox from "components/category/categoryElements/CategoryElementCheckbox";
 import ElementRadio from "components/category/categoryElements/CategoryElementRadio";
@@ -18,7 +20,34 @@ import stylesDefault from "./ParametersAll.default.module.scss";
 
 const { TabPane } = Tabs;
 
-const ParametersAll = ({ selected, handleChange, styles }) => {
+/*
+List of options to use with component
+
+Available texts:
+options.text : {
+  nonGroupedParametersLabel : "Ostatné",
+  basicParametersLabel : "Základné",
+  allParametersButtonLabel : "Všetky parametre",
+  cancelAllFiltrationsButtonLabel : "zrušiť všetky filtre",
+  showCount : "Zobraziť",
+  itemsCountOne : "položku",
+  itemsCountLessThan5 : "položky",
+  itemsCountMoreThan5 : "položiek",
+  chooseStoreLabel : "Vyberte predajňu",
+  storeLabel : "Predajňa"
+}
+
+allow / disallow basic filtrations : 
+options.filter : {
+  sytemFilter : true,
+  systemFilter_price : true,
+  systemFilter_storeLocation : true,
+  systemFilter_status : true
+}
+*/
+
+const ParametersAll = ({ selected, handleChange, styles, options }) => {
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -42,7 +71,7 @@ const ParametersAll = ({ selected, handleChange, styles }) => {
   const groupedParameters = groupBy(
     get(categoryData, "parameters", []),
     (parameter) =>
-      get(parameter, "group") ? get(parameter, "group") : "Ostatné"
+      get(parameter, "group") ? get(parameter, "group") : get(options, 'text.nonGroupedParametersLabel', "Ostatné")
   );
 
   let iterator = 1;
@@ -50,7 +79,7 @@ const ParametersAll = ({ selected, handleChange, styles }) => {
   return (
     <div className={stylesDefault.wrapper}>
       <Button type="primary" block loading={isLoading} onClick={showModal}>
-        Všetky parametre
+        {get(options, 'text.allParametersButtonLabel', "Všetky parametre")}
       </Button>
 
       <Link
@@ -60,7 +89,7 @@ const ParametersAll = ({ selected, handleChange, styles }) => {
         )}`}
       >
         <Button type="text" block>
-          zrušiť všetky filtre
+          {get(options, 'text.cancelAllFiltrationsButtonLabel', "zrušiť všetky filtre")}
         </Button>
       </Link>
 
@@ -78,7 +107,9 @@ const ParametersAll = ({ selected, handleChange, styles }) => {
               "selected.category.data.urlName"
             )}`}
           >
-            <Button type="text">zrušiť všetky filtre</Button>
+            <Button type="text">
+              {get(options, 'text.cancelAllFiltrationsButtonLabel', "zrušiť všetky filtre")}
+            </Button>
           </Link>,
           <Button
             key="submit"
@@ -86,71 +117,83 @@ const ParametersAll = ({ selected, handleChange, styles }) => {
             loading={isLoading}
             onClick={handleOk}
           >
-            Zobraziť{" "}
+            {get(options, 'text.showCount', "Zobraziť")}{" "}
             {get(categoryData, "productsCount")
-              ? `${get(categoryData, "productsCount")} ${
-                  get(categoryData, "productsCount") == 1
-                    ? "položku"
-                    : get(categoryData, "productsCount") < 5
-                    ? "položky"
-                    : "položiek"
-                }`
+              ? `${get(categoryData, "productsCount")} ${get(categoryData, "productsCount") == 1
+                ? get(options, 'text.itemsCountOne', "položku")
+                : get(categoryData, "productsCount") < 5
+                  ? get(options, 'text.itemsCountLessThan5', "položky")
+                  : get(options, 'text.itemsCountMoreThan5', "položiek")
+              }`
               : ""}
           </Button>,
         ]}
       >
         <Tabs type="card" tabPosition="left">
-          <TabPane tab="Základné" key="1">
-            <ElementPrice
-              selected={{
-                min: get(
-                  categoryData,
-                  "selected.price.from.data.price",
-                  get(categoryData, "minPrice")
-                ),
-                max: get(
-                  categoryData,
-                  "selected.price.to.data.price",
-                  get(categoryData, "maxPrice")
-                ),
-              }}
-              handleChange={handleChange}
-              options={{
-                min: get(categoryData, "minPrice"),
-                max: get(categoryData, "maxPrice"),
-                styles,
-              }}
-            />
 
-            <ElementSelect
-              {...getSystemFilterAttributes(
-                get(categoryData, "storeLocations", []),
-                "storeLocation",
-                {
-                  selected,
-                  handleChange,
-                  styles,
-                }
-              )}
-              attributes={{
-                showSearch: true,
-                mode: "tags",
-                placeholder: "Vyberte predajňu",
-              }}
-            />
+          {(get(options, 'filter.systemFilter', true)) ? (
 
-            <ElementCheckbox
-              {...getSystemFilterAttributes(
-                get(categoryData, "statuses", []),
-                "status",
-                {
-                  selected,
-                  handleChange,
-                  styles,
-                }
-              )}
-            />
-          </TabPane>
+            <TabPane tab={get(options, 'text.basicParametersLabel', "Základné")} key="1">
+
+              {(get(options, 'filter.systemFilter_price', true)) ? (
+                <ElementPrice
+                  selected={{
+                    min: get(
+                      categoryData,
+                      "selected.price.from.data.price",
+                      get(categoryData, "minPrice")
+                    ),
+                    max: get(
+                      categoryData,
+                      "selected.price.to.data.price",
+                      get(categoryData, "maxPrice")
+                    ),
+                  }}
+                  handleChange={handleChange}
+                  options={{
+                    min: get(categoryData, "minPrice"),
+                    max: get(categoryData, "maxPrice"),
+                    styles,
+                  }}
+                />
+              ) : ("")}
+
+              {(get(options, 'filter.systemFilter_storeLocation', true)) ? (
+                <ElementSelect
+                  {...getSystemFilterAttributes(
+                    get(categoryData, "storeLocations", []),
+                    "storeLocation",
+                    {
+                      selected,
+                      handleChange,
+                      styles,
+                    }
+                  )}
+                  attributes={{
+                    showSearch: true,
+                    mode: "tags",
+                    placeholder: get(options, 'text.chooseStoreLabel', "Vyberte predajňu"),
+                  }}
+                />
+              ) : ("")}
+
+              {(get(options, 'filter.systemFilter_status', true)) ? (
+                <ElementCheckbox
+                  {...getSystemFilterAttributes(
+                    get(categoryData, "statuses", []),
+                    "status",
+                    {
+                      selected,
+                      handleChange,
+                      styles,
+                    }
+                  )}
+                />
+              ) : ("")}
+
+            </TabPane>
+
+          ) : ("")}
 
           {map(groupedParameters, (group, index) => {
             iterator = iterator + 1;
