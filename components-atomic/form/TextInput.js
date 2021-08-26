@@ -6,6 +6,7 @@ const TextInput = (props) => {
   const {
     name: fieldName,
     label,
+    placeholder,
     touched,
     values,
     errors,
@@ -35,7 +36,7 @@ const TextInput = (props) => {
           : help
       }
     >
-      <FloatLabel label={label} name={fieldName} value={values[fieldName]}>
+      <FloatLabel placeholder={placeholder} label={label} name={fieldName} value={values[fieldName]}>
         <Input
           id={fieldName}
           name={fieldName}

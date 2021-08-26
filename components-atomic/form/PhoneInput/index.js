@@ -12,6 +12,7 @@ const PhoneInput = (props) => {
   const {
     name: fieldName,
     label,
+    placeholder,
     touched,
     values,
     errors,
@@ -56,7 +57,7 @@ const PhoneInput = (props) => {
             : help
         }
       >
-        <FloatLabel label={label} name={fieldName} value={values[fieldName]}>
+        <FloatLabel label={label} placeholder={placeholder} name={fieldName} value={values[fieldName]}>
           <PhoneInputComponent
             id={fieldName}
             name={fieldName}
