@@ -159,9 +159,11 @@ export default function useShoppingList(options = {}) {
   };
 
   const getProductLists = (productId) =>
-    filter(shoppingLists, (list) =>
-      find(list?.items, (item) => item?.product?.id === productId)
-    );
+    productId
+      ? filter(shoppingLists, (list) =>
+          find(list?.items, (item) => item?.product?.id === productId)
+        )
+      : false;
 
   return {
     shoppingLists,
