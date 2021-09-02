@@ -13,14 +13,14 @@ export default function useCart(initialCart = false, options = {}) {
   }
 
   const [isLoading, setIsLoading] = useState(false);
-  const { data: cart, mutate, isValidating } = useSWR(
-    `/api/lib/v1/cart`,
-    (url) => fetch(url).then((r) => r.json()),
-    {
-      ...swrOptions,
-      ...options,
-    }
-  );
+  const {
+    data: cart,
+    mutate,
+    isValidating,
+  } = useSWR(`/api/lib/v1/cart`, (url) => fetch(url).then((r) => r.json()), {
+    ...swrOptions,
+    ...options,
+  });
 
   const itemRemove = async (itemId, callback) => {
     setIsLoading(true);
@@ -121,7 +121,7 @@ export default function useCart(initialCart = false, options = {}) {
       items.hash = get(options, "hash", "");
     }
     try {
-      itemsAdd(items, callback)
+      itemsAdd(items, callback);
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
@@ -153,25 +153,25 @@ export default function useCart(initialCart = false, options = {}) {
   const itemUpdate = async (itemId, body, callback) => {
     setIsLoading(true);
     let success = true;
-      const cart = await fetch(`/api/lib/v1/cart/items/${itemId}`, {
-        method: "PUT",
-        body: JSON.stringify({
-          item: body,
-        }),
-      }).then(async (result) => {
-        success = result?.ok;
-        const data = await result.json();
-        data.success = success;
-        if (isFunction(callback)) {
-          callback(data);
-        }
-        return data;
-      });
-
-      if (success) {
-        await mutate(cart, false);
+    const cart = await fetch(`/api/lib/v1/cart/items/${itemId}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        item: body,
+      }),
+    }).then(async (result) => {
+      success = result?.ok;
+      const data = await result.json();
+      data.success = success;
+      if (isFunction(callback)) {
+        callback(data);
       }
-      setIsLoading(false);
+      return data;
+    });
+
+    if (success) {
+      await mutate(cart, false);
+    }
+    setIsLoading(false);
   };
 
   const saveContact = async (values, callback) => {
@@ -277,7 +277,7 @@ export default function useCart(initialCart = false, options = {}) {
   const applyCredits = async (value, callback) => {
     setIsLoading(true);
     try {
-      const response = fetch(`/api/lib/v1/cart/credits`, {
+      const response = await fetch(`/api/lib/v1/cart/credits`, {
         method: "POST",
         body: JSON.stringify({ credit: value }),
       })
@@ -288,10 +288,10 @@ export default function useCart(initialCart = false, options = {}) {
           }
           return result;
         });
+      setIsLoading(false);
       return response;
     } catch (error) {
       console.error("An unexpected error happened:", error);
-    } finally {
       setIsLoading(false);
     }
   };
