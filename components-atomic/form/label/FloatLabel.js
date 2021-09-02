@@ -2,13 +2,19 @@ import React, { useState } from "react";
 
 import styles from "./FloatLabel.module.scss";
 
-const FloatLabel = props => {
+const FloatLabel = (props) => {
   const [focus, setFocus] = useState(false);
-  const { children, label, value } = props;
+  const { children, label, placeholder, value } = props;
 
   const labelClass =
-    focus || (value && value.length !== 0) ? `${styles?.labelFloat} label-float-custom` : "";
+    focus || (value && value.length !== 0)
+      ? `${styles?.labelFloat} label-float-custom`
+      : "";
 
+  let fieldLabel = placeholder || label;
+  if (focus || value) {
+    fieldLabel = label;
+  }
   return (
     <div
       className={styles?.floatLabel}
@@ -16,7 +22,7 @@ const FloatLabel = props => {
       onFocus={() => setFocus(true)}
     >
       {children}
-      <label className={`${styles?.label} ${labelClass}`}>{label}</label>
+      <label className={`${styles?.label} ${labelClass}`}>{fieldLabel}</label>
     </div>
   );
 };
