@@ -1,8 +1,10 @@
-import { useSWRInfinite } from "swr";
+import { useSWRInfinite } from 'swr'
 import map from "lodash/map";
+import toNumber from "lodash/toNumber";
 import LoadingIcon from "components/_other/icons/LoadingIcon";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import { useRouter } from 'next/router';
 
 // import styles from "./Infinite.module.scss";
 
@@ -26,11 +28,17 @@ const Infinite = ({
     initialSize: 0,
   });
 
+  const router = useRouter();
   const [isBrowser, setIsBrowser] = useState(false);
 
   useEffect(() => {
     setIsBrowser(true);
   }, []);
+
+  useEffect(() => {
+    const newPage = toNumber(router?.query?.page) || 1;
+    setActualPage(newPage) 
+  }, [router?.query?.page]);
 
   if (isBrowser) {
     return (
