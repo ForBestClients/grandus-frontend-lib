@@ -27,7 +27,6 @@ const getClientUserAgent = (req) => String(req.headers['user-agent'] ?? '');
  */
 const getClientFbp = (req) => {
   const cookies = Cookies.parse(req.headers.cookie);
-  console.log(cookies);
 
   if (cookies?._fbp) {
     return cookies?._fbp;
