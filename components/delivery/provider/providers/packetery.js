@@ -24,7 +24,16 @@ export const validationScheme = yup.object().shape({
     .required("Vyberte odberné miesto"),
 });
 
-const Packetery = ({ errors, onSelect }) => {
+
+/*
+Available texts:
+
+options.text : {
+  choosePlaceLabel : "Vybrať odberné miesto",
+  changePlaceLabel : "Zmeniť",
+}
+ */
+const Packetery = ({ errors, onSelect, options }) => {
   const {
     session,
     itemAdd,
@@ -43,13 +52,13 @@ const Packetery = ({ errors, onSelect }) => {
     return null;
   }
 
-  let options = {
+  let packetaOptions = {
     language: "sk",
     country: "sk",
   };
   
   try {
-    options = JSON.parse(get(settings, "packetery_widget_settings"));
+    packetaOptions = JSON.parse(get(settings, "packetery_widget_settings"));
   } catch (e) {
     // do nothing
   }
@@ -94,7 +103,7 @@ const Packetery = ({ errors, onSelect }) => {
 
   const showModal = () => {
     Packeta.Widget.pick(apiKey, handlePickupPointSelection, {
-      ...options
+      ...packetaOptions
     });
   };
 
@@ -120,8 +129,8 @@ const Packetery = ({ errors, onSelect }) => {
               onClick={showModal}
             >
               {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint)
-                ? "Zmeniť"
-                : "Vybrať odberné miesto"}
+                ? get(options, 'text.changePlaceLabel', "Zmeniť")
+                : get(options, 'text.choosePlaceLabel', "Vybrať odberné miesto")}
             </Button>
           </div>
         )}

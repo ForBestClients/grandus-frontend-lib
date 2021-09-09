@@ -17,6 +17,7 @@ import {
   replace,
   isEmpty,
   filter,
+  endsWith,
 } from "lodash";
 import dayjs from "dayjs";
 
@@ -211,7 +212,11 @@ export const getImageUrl = (image, size, type) => {
     ? "?v=" + dayjs(image?.updateTime, "YYYY-MM-DD HH:mm:ss").valueOf()
     : "";
 
-  return host + image.path + "/" + size + "." + type + updateTimeTimestamp;
+  const imagePath = endsWith(image?.path, "_")
+    ? image?.path
+    : image?.path + "/";
+
+  return host + imagePath + size + "." + type + updateTimeTimestamp;
 };
 
 /**

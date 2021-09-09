@@ -35,9 +35,9 @@ const FBPixel = {
   },
   registerPageViewTracking: function (router) {
     if (this.isEnabled()) {
-      router.events.on("routeChangeComplete", this.pageView);
+      router.events.on("routeChangeComplete", this.pageView.bind(this));
       return () => {
-        router.events.off("routeChangeComplete", this.pageView);
+        router.events.off("routeChangeComplete", this.pageView.bind(this));
       };
     }
   },
