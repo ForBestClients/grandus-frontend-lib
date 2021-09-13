@@ -20,12 +20,19 @@ const { Text } = Typography;
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
 
-export const validationScheme = (text = "Vyberte odberné miesto") => yup.object().shape({
+/*
+Available texts:
+
+options.text : {
+  validationScheme : "Vybrať odberné miesto",
+}
+*/
+export const validationScheme = ( options = {}) => yup.object().shape({
   specificDeliveryType: yup
     .string()
     .nullable()
     .trim()
-    .required(text),
+    .required(get(options, "text.validationScheme", "Vyberte odberné miesto"))
 });
 
 

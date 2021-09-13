@@ -5,9 +5,13 @@ export const PACKETERY_TYPE = 1;
 
 /*
 getValidationScheme can handle options
-options.text : {
+If key in options are from these available:
+ - Packetery
+will be processed to that component
+
+options : {
     Packetery : {
-        validationScheme : "Vyberte odberné miesto"
+        ...
     }
 }
  */
@@ -18,7 +22,7 @@ export const getValidationScheme = (deliveryProviderType = null, options) => {
 
     switch (deliveryProviderType) {
         case PACKETERY_TYPE:
-            return packeteryValidationScheme(get(options, 'text.Packetery.validationScheme', "Vyberte odberné miesto"));
+            return packeteryValidationScheme(get(options, 'Packetery', {}));
         default:
             return null;
     }
