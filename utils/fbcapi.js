@@ -25,7 +25,7 @@ const FBCAPI = {
     });
 
     const productData = {
-      content_ids: [get(product, "id")],
+      content_ids: [`${get(product, "id")}`],
       content_name: get(product, "name"),
       content_type: CONTENT_TYPE_PRODUCT,
       content_category: first(categories),
@@ -33,7 +33,7 @@ const FBCAPI = {
       value: get(product, "finalPriceData.price", null),
       contents: [
         {
-          id: get(product, "sku") || product?.id,
+          id: `${get(product, "sku") || product?.id}`,
           quantity: get(additionalData, "quantity", 1),
           item_price: _.get(product, "finalPriceData.price", null)
         },
@@ -63,9 +63,9 @@ const FBCAPI = {
             )
           );
         });
-        productsIds.push(get(product, "id"));
+        productsIds.push(`${get(product, "id")}`);
         contents.push({
-          id: get(product, "sku") || product?.id,
+          id: `${get(product, "sku") || product?.id}`,
           quantity: get(item, "count", 1),
           item_price: get(product, "finalPriceData.price", null)
         });
@@ -102,9 +102,9 @@ const FBCAPI = {
             )
           );
         });
-        productsIds.push(get(item, "productId", get(product, "id")));
+        productsIds.push(`${get(item, "productId") || product?.id}`);
         contents.push({
-          id: get(product, "sku") || product?.id,
+          id: `${get(product, "sku") || product?.id}`,
           quantity: get(item, "count", 1)
         });
       }
