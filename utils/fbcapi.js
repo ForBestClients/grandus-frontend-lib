@@ -3,7 +3,6 @@ import map from "lodash/map";
 import first from "lodash/first";
 import isEmpty from "lodash/isEmpty";
 import forEach from "lodash/forEach";
-import toNumber from "lodash/toNumber";
 
 const CONTENT_TYPE_PRODUCT = "product";
 
@@ -25,19 +24,22 @@ const FBCAPI = {
     });
 
     const productData = {
-      content_ids: [`${get(product, "id")}`],
-      content_name: get(product, "name"),
-      content_type: CONTENT_TYPE_PRODUCT,
-      content_category: first(categories),
-      currency: get(product, "finalPriceData.currency", "EUR"),
-      value: get(product, "finalPriceData.price", null),
-      contents: [
-        {
-          id: `${get(product, "sku") || product?.id}`,
-          quantity: get(additionalData, "quantity", 1),
-          item_price: _.get(product, "finalPriceData.price", null)
-        },
-      ],
+      event_id: `product-${product?.id}`,
+      custom_data: {
+        content_ids: [`${get(product, "sku") || product?.id}`],
+        content_name: get(product, "name"),
+        content_type: CONTENT_TYPE_PRODUCT,
+        content_category: first(categories),
+        currency: get(product, "finalPriceData.currency", "EUR"),
+        value: get(product, "finalPriceData.price", null),
+        contents: [
+          {
+            id: `${get(product, "sku") || product?.id}`,
+            quantity: get(additionalData, "quantity", 1),
+            item_price: _.get(product, "finalPriceData.price", null),
+          },
+        ],
+      },
     };
 
     return productData;
@@ -67,16 +69,19 @@ const FBCAPI = {
         contents.push({
           id: `${get(product, "sku") || product?.id}`,
           quantity: get(item, "count", 1),
-          item_price: get(product, "finalPriceData.price", null)
+          item_price: get(product, "finalPriceData.price", null),
         });
       }
     });
     const cartObject = {
-      content_ids: productsIds,
-      content_type: CONTENT_TYPE_PRODUCT,
-      currency: get(cart, "currency", "EUR"),
-      value: get(cart, "sumTotal", null),
-      contents: contents,
+      event_id: `checkout-${productsIds.join("-")}`,
+      custom_data: {
+        content_ids: productsIds,
+        content_type: CONTENT_TYPE_PRODUCT,
+        currency: get(cart, "currency", "EUR"),
+        value: get(cart, "sumTotal", null),
+        contents: contents,
+      },
     };
     return cartObject;
   },
@@ -105,40 +110,43 @@ const FBCAPI = {
         productsIds.push(`${get(item, "productId") || product?.id}`);
         contents.push({
           id: `${get(product, "sku") || product?.id}`,
-          quantity: get(item, "count", 1)
+          quantity: get(item, "count", 1),
         });
       }
     });
 
     const orderObject = {
-      content_ids: productsIds,
-      content_type: CONTENT_TYPE_PRODUCT,
-      currency: get(order, "currency", "EUR"),
-      value: get(order, "totalSum", null),
-      num_items: orderItems.length,
-      order_number: get(order, "orderNumber", null),
-      contents: contents,
+      event_id: `order-${order?.id}`,
+      custom_data: {
+        content_ids: productsIds,
+        content_type: CONTENT_TYPE_PRODUCT,
+        currency: get(order, "currency", "EUR"),
+        value: get(order, "totalSum", null),
+        num_items: orderItems.length,
+        order_number: get(order, "orderNumber", null),
+        contents: contents,
+      },
     };
 
     return orderObject;
   },
   prepareData: function (data = {}, event = null) {
-    const requestJson = {
+    let requestJson = {
       event_name: event,
     };
 
     if (data) {
-      requestJson.custom_data = data;
+      requestJson = { ...requestJson, ...data };
     }
 
     return requestJson;
   },
   send: function (event, data = {}) {
     const requestData = this.prepareData(data, event);
-    fetch('/api/lib/v1/events/fb-capi', {
-      method: 'POST',
+    fetch("/api/lib/v1/events/fb-capi", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(requestData),
     });
