@@ -22,15 +22,15 @@ const EnhancedEcommerce = {
   },
   detail: (product) => {
     const data = {
-      detail: [
-        {
+      detail: {
+        products: [{
           name: product?.name,
           id: product?.id,
           price: product?.finalPriceData?.price,
           brand: product?.brand?.name,
           category: get(getProductCategory(product), "name", undefined),
-        },
-      ],
+        }]
+      },
     };
     return prepareData(data, null);
   },
