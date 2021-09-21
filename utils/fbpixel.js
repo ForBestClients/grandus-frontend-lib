@@ -60,7 +60,7 @@ const FBPixel = {
     forEach(products, (product) => {
       const itemPrice = toNumber(get(product, "finalPriceData.price", 0));
       const productIdentifier = get(product, "id");
-      productsIds.push(productIdentifier);
+      productsIds.push(`${productIdentifier}`);
       contents.push({
         id: productIdentifier,
         quantity: 1,
@@ -72,6 +72,7 @@ const FBPixel = {
     });
 
     const productsObject = {
+      eventID: `products-${productsIds.join('-')}`,
       content_ids: productsIds,
       currency: currency,
       value: sumTotal.toFixed(2),
@@ -94,7 +95,7 @@ const FBPixel = {
     });
 
     const productData = {
-      content_ids: [get(product, "id")],
+      content_ids: [`${get(product, "sku") || product?.id}`],
       content_name: get(product, "name"),
       content_type: CONTENT_TYPE_PRODUCT,
       content_category: first(categories),
@@ -102,7 +103,7 @@ const FBPixel = {
       value: get(product, "finalPriceData.price", null),
       contents: [
         {
-          id: get(product, "sku", product?.id),
+          id: `${get(product, "sku") || product?.id}`,
           quantity: get(additionalData, "quantity", 1),
           item_price: _.get(product, "finalPriceData.price", null),
           name: get(product, "name", null),
@@ -136,7 +137,7 @@ const FBPixel = {
         );
       });
       const productData = {
-        content_ids: [get(product, "id")],
+        content_ids: [`${get(product, "id")}`],
         content_name: get(product, "name", null),
         content_type: CONTENT_TYPE_PRODUCT,
         content_category: first(categories),
@@ -144,7 +145,7 @@ const FBPixel = {
         value: get(product, "finalPriceData.price", null),
         contents: [
           {
-            id: get(product, "sku", product?.id),
+            id: `${get(product, "sku", product?.id)}`,
             quantity: quantity,
             item_price: get(product, "finalPriceData.price", null),
             name: get(product, "name", null),
@@ -178,9 +179,9 @@ const FBPixel = {
             )
           );
         });
-        productsIds.push(get(product, "id"));
+        productsIds.push(`${get(product, "id")}`);
         contents.push({
-          id: get(product, "id", product?.id),
+          id: `${get(product, "sku") || product?.id}`,
           quantity: get(item, "count", 1),
           item_price: get(product, "finalPriceData.price", null),
           name: get(product, "name", null),
@@ -190,6 +191,7 @@ const FBPixel = {
       }
     });
     const cartObject = {
+      eventID: `checkout-${productsIds.join('-')}`,
       content_ids: productsIds,
       content_type: CONTENT_TYPE_PRODUCT,
       currency: get(cart, "currency", "EUR"),
@@ -220,9 +222,9 @@ const FBPixel = {
             )
           );
         });
-        productsIds.push(get(item, "productId", get(product, "id")));
+        productsIds.push(`${get(item, "productId") || product?.id}`);
         contents.push({
-          id: get(product, "id", product.id),
+          id: `${get(product, "id", product.id)}`,
           quantity: get(item, "count", 1),
           item_price: get(product, "finalPriceData.price", null),
           name: get(product, "name", null),
@@ -233,6 +235,7 @@ const FBPixel = {
     });
 
     const orderObject = {
+      eventID: `order-${order?.id}`,
       content_ids: productsIds,
       content_type: CONTENT_TYPE_PRODUCT,
       currency: get(order, "currency", "EUR"),
