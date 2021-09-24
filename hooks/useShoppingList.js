@@ -117,7 +117,7 @@ export default function useShoppingList(options = {}) {
       return data;
     });
 
-    if (success) {
+    if (success && !options?.skipMutate) {
       await mutate();
     }
     setIsLoading(false);
