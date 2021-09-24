@@ -3,6 +3,9 @@ import useSWR from "swr";
 import isFunction from "lodash/isFunction";
 import find from "lodash/find";
 import filter from "lodash/filter";
+import forEach from "lodash/forEach";
+import map from "lodash/map";
+import intersection from "lodash/intersection";
 
 export default function useShoppingList(options = {}) {
   const [isLoading, setIsLoading] = useState(false);
@@ -158,12 +161,30 @@ export default function useShoppingList(options = {}) {
     setIsLoading(false);
   };
 
-  const getProductLists = (productId) =>
-    productId
+  const getProductLists = (productIds) => {
+    if (Array.isArray(productIds)) {
+      const activeShoppingLists = [];
+      const productsToShoppingList = {};
+      forEach(shoppingLists, shoppingList => {
+        productsToShoppingList[shoppingList?.id] = { listObject: shoppingList, products: map(shoppingList?.items, item => item?.product?.id) };
+      });
+      forEach(productsToShoppingList, shoppingList => {
+        if (shoppingList?.products.length < productIds.length) {
+          return;
+        }
+        if (intersection(shoppingList?.products, productIds).length = productIds.length) {
+          activeShoppingLists.push(shoppingList?.listObject);
+        }
+      })
+
+      return activeShoppingLists;
+    }
+    return productIds
       ? filter(shoppingLists, (list) =>
-          find(list?.items, (item) => item?.product?.id === productId)
+          find(list?.items, (item) => item?.product?.id === productIds)
         )
-      : false;
+      : false
+  };
 
   return {
     shoppingLists,
