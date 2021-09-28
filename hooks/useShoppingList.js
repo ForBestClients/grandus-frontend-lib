@@ -99,13 +99,22 @@ export default function useShoppingList(options = {}) {
     callback,
     options = {}
   ) => {
+    await itemAddCustom(accessToken, { productId, count, sizeId: store }, callback, options);
+  };
+
+  const itemAddCustom = async (
+    accessToken,
+    data,
+    callback,
+    options = {}
+  ) => {
     setIsLoading(true);
     let success = true;
     const shoppingLists = await fetch(
       `/api/lib/v1/shopping-list/${accessToken}/item`,
       {
         method: "POST",
-        body: JSON.stringify({ productId, count, sizeId: store }),
+        body: JSON.stringify(data),
       }
     ).then(async (result) => {
       success = result?.ok;
@@ -195,6 +204,7 @@ export default function useShoppingList(options = {}) {
     update,
     copy,
     itemAdd,
+    itemAddCustom,
     itemRemove,
     itemUpdate,
     getProductLists,
