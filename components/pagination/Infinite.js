@@ -1,12 +1,10 @@
-import { useSWRInfinite } from 'swr'
+import { useSWRInfinite } from "swr";
 import map from "lodash/map";
 import toNumber from "lodash/toNumber";
 import LoadingIcon from "components/_other/icons/LoadingIcon";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { useRouter } from 'next/router';
-
-// import styles from "./Infinite.module.scss";
+import { useRouter } from "next/router";
 
 const Infinite = ({
   totalCount = 0,
@@ -25,11 +23,12 @@ const Infinite = ({
     setSize: setActualPage,
     isValidating,
   } = useSWRInfinite(handleGetKey, (url) => fetch(url).then((r) => r.json()), {
-    initialSize: 0,
+    initialSize: currentPage > 1 ? currentPage - 1 : 0,
   });
 
   const router = useRouter();
   const [isBrowser, setIsBrowser] = useState(false);
+  const [inUse, setInUse] = useState(false);
 
   useEffect(() => {
     setIsBrowser(true);
@@ -37,24 +36,24 @@ const Infinite = ({
 
   useEffect(() => {
     const newPage = toNumber(router?.query?.page) || 1;
-    setActualPage(newPage) 
+    setActualPage(newPage);
   }, [router?.query?.page]);
 
   if (isBrowser) {
     return (
       <>
-        {createPortal(
-          <>
-            {map(data, (page, index) => {
-              if (index === 0) {
-                return;
-              }
+        {inUse
+          ? createPortal(
+              map(data, (page, index) => {
+                if (index < currentPage) {
+                  return;
+                }
 
-              return render(page);
-            })}
-          </>,
-          document.getElementById(destinationElementId)
-        )}
+                return render(page);
+              }),
+              document.getElementById(destinationElementId)
+            )
+          : ""}
         {actualPage < pageCount ? (
           <div className={className}>
             <button
@@ -64,6 +63,7 @@ const Infinite = ({
                 e.preventDefault;
                 setActualPage(newPage);
                 handleGetHref(newPage);
+                setInUse(true);
               }}
             >
               {isValidating ? (

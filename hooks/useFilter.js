@@ -14,6 +14,7 @@ import {
   isString,
   flatten,
   indexOf,
+  isObject,
 } from "lodash";
 import useSWR from "swr";
 import { RESERVED_URI_PARTS } from "grandus-lib/constants/UrlConstants";
@@ -135,18 +136,31 @@ export const queryToQuery = (
   return newQuery;
 };
 
+/* 
+  options = {
+    encode: bool,
+    replace: [{key: newKey}, {key2: newKey2}]
+  }
+*/
 export const queryToQueryString = (
   query,
   dataToChange = {},
   toDelete = ["parameters", "category"],
   options = {}
 ) => {
-  const queryAdjusted = queryToQuery(query, dataToChange, toDelete);
+  const queryAdjusted = queryToQuery(
+    query,
+    isObject(dataToChange) ? dataToChange : {},
+    isArray(toDelete) ? toDelete : []
+  );
+
   let queryParts = [];
 
   map(queryAdjusted, (value, key) => {
     queryParts.push(
-      `${key}=${get(options, "encode") ? encodeURIComponent(value) : value}`
+      `${get(options, ["replace", key], key)}=${
+        get(options, "encode") ? encodeURIComponent(value) : value
+      }`
     );
   });
 
