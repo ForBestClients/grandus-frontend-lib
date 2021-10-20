@@ -18,7 +18,7 @@ const EnhancedEcommerce = {
         position: positionConstant + index + 1,
       })),
     };
-    return prepareData(data, null);
+    return prepareData(data, 'impressions');
   },
   detail: (product) => {
     const data = {
@@ -32,7 +32,7 @@ const EnhancedEcommerce = {
         }]
       },
     };
-    return prepareData(data, null);
+    return prepareData(data, 'detail');
   },
   productClick: (product, list = undefined, options = { page: 1, perPage: 1}) => {
     let positionConstant = 0;
@@ -140,7 +140,7 @@ const EnhancedEcommerce = {
       },
     };
 
-    return prepareData(data);
+    return prepareData(data, 'purchase');
   },
 };
 
