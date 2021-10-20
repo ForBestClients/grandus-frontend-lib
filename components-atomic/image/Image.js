@@ -5,6 +5,18 @@ import useWebInstance from "grandus-lib/hooks/useWebInstance";
 
 const ImageNext = ({ photo, size, type, title, alt, imageProps }) => {
   const dimensions = size.match(/\d+/g).map(Number);
+  const { layout = null } = imageProps;
+
+  if (layout === "fill") {
+    return (
+      <Image
+        src={getImageUrl(photo, size, type)}
+        title={title}
+        alt={alt}
+        {...imageProps}
+      />
+    );
+  }
 
   return (
     <Image
@@ -35,7 +47,7 @@ const ImageComponent = ({
 
   // if photo does not exist, use webinstance placeholder
   if (usePlacehoder && !image && webInstance?.placeholder) {
-    image = {...webInstance?.placeholder};
+    image = { ...webInstance?.placeholder };
     image.path += "/" + image?.id;
   }
 
