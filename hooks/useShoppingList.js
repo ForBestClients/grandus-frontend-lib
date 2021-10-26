@@ -47,7 +47,26 @@ export default function useShoppingList(options = {}) {
     setIsLoading(false);
   };
 
-  const copy = async (accessToken, callback) => {};
+  const copy = async (accessToken, callback) => {
+    setIsLoading(true);
+    try {
+      await fetch(`/api/lib/v1/shopping-list/${accessToken}/copy`, {
+        method: "POST",
+        body: JSON.stringify(data),
+      })
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
+        }),
+        await mutate();
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    }
+    setIsLoading(false);
+  };
 
   const update = async (accessToken, data, callback) => {
     setIsLoading(true);
@@ -99,15 +118,15 @@ export default function useShoppingList(options = {}) {
     callback,
     options = {}
   ) => {
-    await itemAddCustom(accessToken, { productId, count, sizeId: store }, callback, options);
+    await itemAddCustom(
+      accessToken,
+      { productId, count, sizeId: store },
+      callback,
+      options
+    );
   };
 
-  const itemAddCustom = async (
-    accessToken,
-    data,
-    callback,
-    options = {}
-  ) => {
+  const itemAddCustom = async (accessToken, data, callback, options = {}) => {
     setIsLoading(true);
     let success = true;
     const shoppingLists = await fetch(
@@ -174,17 +193,23 @@ export default function useShoppingList(options = {}) {
     if (Array.isArray(productIds)) {
       const activeShoppingLists = [];
       const productsToShoppingList = {};
-      forEach(shoppingLists, shoppingList => {
-        productsToShoppingList[shoppingList?.id] = { listObject: shoppingList, products: map(shoppingList?.items, item => item?.product?.id) };
+      forEach(shoppingLists, (shoppingList) => {
+        productsToShoppingList[shoppingList?.id] = {
+          listObject: shoppingList,
+          products: map(shoppingList?.items, (item) => item?.product?.id),
+        };
       });
-      forEach(productsToShoppingList, shoppingList => {
+      forEach(productsToShoppingList, (shoppingList) => {
         if (shoppingList?.products.length < productIds.length) {
           return;
         }
-        if (intersection(shoppingList?.products, productIds).length = productIds.length) {
+        if (
+          (intersection(shoppingList?.products, productIds).length =
+            productIds.length)
+        ) {
           activeShoppingLists.push(shoppingList?.listObject);
         }
-      })
+      });
 
       return activeShoppingLists;
     }
@@ -192,7 +217,7 @@ export default function useShoppingList(options = {}) {
       ? filter(shoppingLists, (list) =>
           find(list?.items, (item) => item?.product?.id === productIds)
         )
-      : false
+      : false;
   };
 
   return {
