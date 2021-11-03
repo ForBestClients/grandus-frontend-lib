@@ -115,6 +115,23 @@ const EnhancedEcommerce = {
 
     return prepareData(data, "checkout");
   },
+  checkoutOption: (option = null, step = null) => {
+    const data = {
+      checkout_option: {
+        actionField: {}
+      },
+    };
+
+    if (option) {
+      data.checkout_option.actionField.option = option;
+    }
+
+    if (step) {
+      data.checkout_option.actionField.step = step;
+    }
+
+    return prepareData(data, "checkoutOption");
+  },
   purchase: (order) => {
     const items = get(order, 'orderItems', []);
     const couponsString = map(get(order, 'coupons'), coupon => get(coupon, 'hash')).join('|');
