@@ -123,7 +123,7 @@ export default function useCart(initialCart = false, options = {}) {
       items.hash = get(options, "hash", "");
     }
     try {
-      itemsAdd(items, callback);
+      await itemsAdd(items, callback);
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
