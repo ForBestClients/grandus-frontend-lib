@@ -3,7 +3,11 @@ import { Button, Typography } from "antd";
 import useCart from "grandus-lib/hooks/useCart";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import useSessionStorage from "grandus-lib/hooks/useSessionStorage";
-import { isEmpty, get, toString, pick, isFunction } from "lodash";
+import isEmpty from "lodash/isEmpty";
+import get from "lodash/get";
+import toString from "lodash/toString";
+import pick from "lodash/pick";
+import isFunction from "lodash/isFunction";
 import Head from "next/head";
 import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/SessionConstants";
 
@@ -16,12 +20,19 @@ const { Text } = Typography;
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
 
-export const validationScheme = yup.object().shape({
+/*
+Available texts:
+
+options.text : {
+  validationScheme : "Vybrať odberné miesto",
+}
+*/
+export const validationScheme = ( options = {}) => yup.object().shape({
   specificDeliveryType: yup
     .string()
     .nullable()
     .trim()
-    .required("Vyberte odberné miesto"),
+    .required(get(options, "text.validationScheme", "Vyberte odberné miesto"))
 });
 
 

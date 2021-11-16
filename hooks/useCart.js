@@ -31,11 +31,13 @@ export default function useCart(initialCart = false, options = {}) {
     await mutate(
       await fetch(`/api/lib/v1/cart/items/${itemId}`, {
         method: "DELETE",
-      }).then((result) => {
+      })
+      .then((result) => result.json())
+      .then((result) => {
         if (isFunction(callback)) {
           callback(result);
         }
-        return result.json();
+        return result;
       }),
       false
     );

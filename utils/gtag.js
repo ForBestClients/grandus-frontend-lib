@@ -79,6 +79,7 @@ const TagManager = {
   },
   push: async function (data, callback) {
     if (this.isEnabled()) {
+      dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
       dataLayer.push(data);
     }
 
