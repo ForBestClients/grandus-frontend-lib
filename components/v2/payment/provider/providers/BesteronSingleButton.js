@@ -6,7 +6,9 @@ import styles from "./Besteron.module.scss";
 
 const BesteronSingleButton = ({ data, active = false, handleChange }) => {
   return (
-    <label className={`${active ? styles?.active : ""}`}>
+    <label
+      className={`${active ? styles?.active + " besteron_custom_active" : ""}`}
+    >
       <input
         type="radio"
         name="specificPayment"
