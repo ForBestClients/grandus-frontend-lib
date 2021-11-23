@@ -539,7 +539,7 @@ const CartDeliveryAndPayment = (props) => {
                       >
                         {isValid && isSubmitting
                           ? "Odosielam objednávku"
-                          : "Dokončiť objednávku"}
+                          : "Dokončiť objednávku s povinnosťou platby"}
                       </Button>
                       <Link href="/kosik/kontakt" as={`/kosik/kontakt`}>
                         <Button
