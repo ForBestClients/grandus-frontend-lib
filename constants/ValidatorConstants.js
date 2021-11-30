@@ -2,7 +2,7 @@ export const LETTERS_ONLY_REGEX = /^([\s]|[a-zA-Z\-]|[\u00C0-\u00D6]|[\u00D8-\u0
 
 export const BUSINESS_ID_REGEX = /^[0-9]{1,8}$/i;
 export const BUSINESS_ID_REGEX_HU = /^[0-9]{2}-[0-9]{2}-[0-9]{6}$/i;
-export const BUSINESS_ID_REGEX_RO = /^[a-z]{1}[0-9]{2}\/[0-9]{3}\/[0-9]{4}$/i;
+export const BUSINESS_ID_REGEX_RO = /^[a-zA-Z]{1}[0-9]{2}\/[0-9]{3,4}\/[0-9]{4}$/i;
 
 export const VAT_ID_REGEX = /^[0-9]{1,10}$/i;
 export const VAT_ID_REGEX_HU = /^[0-9]{8}-[0-9]{1}-[0-9]{2}$/i;

@@ -41,10 +41,18 @@ const Besteron = ({
       <div className={`${styles.besteron} besteron__custom`}>
         {!isEmpty(firstDataCardPaymentButton) ? (
           <>
-            <div className={styles.specificPaymentOptionHeader}>
+            <div
+              className={
+                styles.specificPaymentOptionHeader + " besteron_custom_label"
+              }
+            >
               {get(options, "cardPaymentText", "Platba kartou")}
             </div>
-            <div className={styles.specificPaymentOption}>
+            <div
+              className={
+                styles.specificPaymentOption + " besteron_custom_option"
+              }
+            >
               <BesteronSingleButton
                 handleChange={onChange}
                 active={
@@ -59,7 +67,11 @@ const Besteron = ({
 
         {!isEmpty(otherPaymentButtons) ? (
           <>
-            <div className={styles.specificPaymentOptionHeader}>
+            <div
+              className={
+                styles.specificPaymentOptionHeader + " besteron_custom_label"
+              }
+            >
               {get(
                 options,
                 "bankButtonsPaymentText",
@@ -69,7 +81,9 @@ const Besteron = ({
             <>
               {map(otherPaymentButtons, (specificPaymentOption, index) => (
                 <div
-                  className={styles.specificPaymentOption}
+                  className={
+                    styles.specificPaymentOption + " besteron_custom_option"
+                  }
                   key={
                     "besteron-specific-payment-" +
                     get(specificPaymentOption, "value", index)
