@@ -1,5 +1,6 @@
 import yup from "grandus-lib/utils/validator";
 import { useFormikContext, Formik } from "formik";
+import parsePhoneNumberFromString from "libphonenumber-js";
 import { get, map, isEmpty, parseInt, toNumber, first } from "lodash";
 import { deburredSearch, scrollToTop } from "grandus-lib/utils";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
@@ -85,6 +86,7 @@ const CartContact = (props) => {
       street: get(contact, "street", get(user, "attributes.street", "")),
       city: get(contact, "city", get(user, "attributes.city", "")),
       zip: get(contact, "zip", get(user, "attributes.zip", "")),
+      phoneCountryCode: get(contact, "phoneCountryCode", ""),
       phone: get(contact, "phone", get(user, "attributes.phone", "")),
       email: get(contact, "email", get(user, "attributes.email", "")),
       countryId: getDefaultCountryValue(),
@@ -110,6 +112,7 @@ const CartContact = (props) => {
       deliveryStreet: get(contact, "deliveryStreet", ""),
       deliveryCity: get(contact, "deliveryCity", ""),
       deliveryZip: get(contact, "deliveryZip", ""),
+      deliveryPhoneCountryCode: get(contact, "deliveryPhoneCountryCode", ""),
       deliveryPhone: get(contact, "deliveryPhone", ""),
       deliveryEmail: get(contact, "deliveryEmail", ""),
       deliveryCountryId: getDefaultCountryValue("deliveryCountryId"),
@@ -327,6 +330,22 @@ const CartContact = (props) => {
         }),
     }),
     onSubmit: (values, { errors }) => {
+      const phoneNumber = parsePhoneNumberFromString(
+        !isEmpty(values?.phone) ? values?.phone : ""
+      );
+
+      if (phoneNumber) {
+        values.phoneCountryCode = phoneNumber?.countryCallingCode || '';
+      }
+
+      const deliveryPhoneNumber = parsePhoneNumberFromString (
+        !isEmpty(values?.deliveryPhone) ? values?.deliveryPhone : ""
+      );
+
+      if (deliveryPhoneNumber) {
+        values.deliveryPhoneCountryCode = deliveryPhoneNumber?.countryCallingCode || '';
+      }
+      
       saveContact(values, (savedValues) => {
         const countryId = get(savedValues, "countryId");
         const deliveryCountryId = get(savedValues, "deliveryCountryId");
