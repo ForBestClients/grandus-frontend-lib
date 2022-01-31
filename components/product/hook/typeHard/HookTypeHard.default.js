@@ -1,5 +1,9 @@
 import Link from "next/link";
-import { get, isEmpty, map } from "lodash";
+
+import get from "lodash/get";
+import isEmpty from "lodash/isEmpty";
+import map from "lodash/map";
+
 import Image from "grandus-lib/components-atomic/image/Image";
 import Price from "grandus-lib/components-atomic/price/Price";
 import { GiftOutlined } from "@ant-design/icons";
@@ -12,7 +16,7 @@ const HookTypeHard = ({ data = [], options = {} }) => {
   }
 
   return (
-    <div>
+    <div className={get(options, "renderWrapper") ? styles?.wrapper : ""}>
       <div className={styles.badge}>
         <GiftOutlined /> {get(options, "title", data?.name)}
       </div>
