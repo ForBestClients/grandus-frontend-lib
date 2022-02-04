@@ -8,8 +8,13 @@
   font-weight: bolder;
   fill: $primary-color;
   color: $primary-color;
-  display: inline-block;
-  margin-bottom: $general-gutter;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: math.div($general-gutter, 2);
+  font-size: 1.2em;
+  span {
+    margin-right: math.div($general-gutter, 2);
+  }
 }
 
 .product {
@@ -17,15 +22,28 @@
   display: flex;
   padding: $general-gutter;
   background-color: white;
-  border: 1px solid white;
+  border: $general-border;
+  transition: $general-transition;
 
   &:hover {
+    border-color: $color-primary;
     box-shadow: $general-shadow;
+    transition: $general-transition;
   }
 
   .content {
     display: flex;
     flex-direction: column;
     margin-left: $general-gutter;
+  }
+}
+
+.wrapper {
+  background-color: $color-primary;
+  padding: $general-gutter;
+  border-radius: $general-radius;
+  .badge {
+    fill: white;
+    color: white;
   }
 }
