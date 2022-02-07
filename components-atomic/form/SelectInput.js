@@ -20,7 +20,8 @@ const SelectInput = (props) => {
     showSearch,
     virtual = true,
     onSelect,
-    dropdownRender
+    dropdownRender,
+    autoComplete = "off",
   } = props;
   return (
     <Form.Item
@@ -48,6 +49,7 @@ const SelectInput = (props) => {
           allowClear={allowClear}
           virtual={virtual}
           dropdownRender={dropdownRender}
+          autoComplete={autoComplete}
           onChange={(val) => {
             if (isFunction(onChange)) {
               onChange(val);
