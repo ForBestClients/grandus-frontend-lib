@@ -1,5 +1,11 @@
 import { omit, set, isFunction, chunk, forEach, get, clone } from "lodash";
 
+import {
+  ANALYTICS_COOKIES,
+  COOKIES_ACCEPTED,
+  RETARGETING_COOKIES,
+} from "grandus-lib/constants/CookieConstants";
+
 const NOSCRIPT_STYLE = { display: "none", visibility: "hidden" };
 
 const TagManager = {
@@ -10,6 +16,20 @@ const TagManager = {
 
     return (
       <>
+        <script>
+          {`// create dataLayer
+          window.dataLayer = window.dataLayer || [];
+          function gtag() {
+              dataLayer.push(arguments);
+          }
+
+          // set „denied" as default for both ad and analytics storage,
+          gtag("consent", "default", {
+              ad_storage: "denied",
+              analytics_storage: "denied",
+              wait_for_update: 2000 // milliseconds to wait for update
+          });`}
+        </script>
         {/* Google Tag Manager */}
         <script
           defer
@@ -79,7 +99,7 @@ const TagManager = {
   },
   push: async function (data, callback) {
     if (this.isEnabled()) {
-      dataLayer.push({ ecommerce: null });  // Clear the previous ecommerce object.
+      dataLayer.push({ ecommerce: null }); // Clear the previous ecommerce object.
       dataLayer.push(data);
     }
 
@@ -109,6 +129,22 @@ const TagManager = {
 
     if (isFunction(callback)) {
       callback(data);
+    }
+  },
+  consentUpdate: function (cookieConsentSettings = null) {
+    if (this.isEnabled() && cookieConsentSettings) {
+      window.gtag("consent", "update", {
+        ad_storage: `${
+          cookieConsentSettings[RETARGETING_COOKIES] === COOKIES_ACCEPTED
+            ? "granted"
+            : "denied"
+        }`,
+        analytics_storage: `${
+          cookieConsentSettings[ANALYTICS_COOKIES] === COOKIES_ACCEPTED
+            ? "granted"
+            : "denied"
+        }`,
+      });
     }
   },
 };

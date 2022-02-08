@@ -3,7 +3,11 @@ import useSWR from "swr";
 
 const useCookieConsent = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: cookieConsent, mutate, isValidating } = useSWR(
+  const {
+    data: cookieConsent,
+    mutate,
+    isValidating,
+  } = useSWR(
     `/api/lib/v1/gdpr/cookie-consent`,
     (url) => fetch(url).then((r) => r.json()),
     {

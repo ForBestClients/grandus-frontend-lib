@@ -1,5 +1,3 @@
-import { omit, set, isFunction, chunk, forEach, get, clone } from "lodash";
-
 const Analytics = {
   init: function (googleAnalyticsCode = "") {
     if (!googleAnalyticsCode) {
@@ -8,10 +6,24 @@ const Analytics = {
 
     return (
       <>
+        {/* Google Consent Mode */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('consent', 'default', {'ad_storage': 'denied', 'analytics_storage': 'denied', 'wait_for_update': 500});
+            `,
+          }}
+        />
+
         {/* Global Site Tag (gtag.js) - Google Analytics */}
         <script
-          async defer
-          src={'https://www.googletagmanager.com/gtag/js?id=' + googleAnalyticsCode}
+          async
+          defer
+          src={
+            "https://www.googletagmanager.com/gtag/js?id=" + googleAnalyticsCode
+          }
         />
         <script
           dangerouslySetInnerHTML={{
