@@ -191,6 +191,17 @@ const staticPage = {
     if (!data?.id) {
       context.res.statusCode = 404;
     }
+
+    if (get(data, "externalUrl")) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: data?.externalUrl,
+        },
+        props: { page: data },
+      };
+    }
+
     return {
       props: { page: data },
     };
