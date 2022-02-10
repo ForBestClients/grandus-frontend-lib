@@ -29,7 +29,7 @@ export const adjustTitle = (
   if (result.length > MAX_LENGTH) {
     result = truncate(title, {
       length: MAX_LENGTH,
-      omission: options?.omission,
+      omission: options?.omission ? options?.omission : "",
     });
   }
 
