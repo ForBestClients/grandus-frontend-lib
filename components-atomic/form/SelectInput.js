@@ -20,7 +20,8 @@ const SelectInput = (props) => {
     showSearch,
     virtual = true,
     onSelect,
-    dropdownRender
+    dropdownRender,
+    optionFilterProp,
   } = props;
   return (
     <Form.Item
@@ -48,6 +49,7 @@ const SelectInput = (props) => {
           allowClear={allowClear}
           virtual={virtual}
           dropdownRender={dropdownRender}
+          optionFilterProp={optionFilterProp}
           onChange={(val) => {
             if (isFunction(onChange)) {
               onChange(val);
@@ -64,13 +66,14 @@ const SelectInput = (props) => {
             }
           }}
           filterOption={(inputValue, option) => {
-            return deburredSearch(get(option, "children"), inputValue);
+            return deburredSearch(get(option, "search"), inputValue);
           }}
         >
           {map(options, (option, index) => (
             <Select.Option
               value={get(option, "value")}
               key={`${fieldName}-option-${index}`}
+              search={get(option, "search")}
             >
               {get(option, "label")}
             </Select.Option>
