@@ -73,7 +73,7 @@ const SelectInput = (props) => {
             <Select.Option
               value={get(option, "value")}
               key={`${fieldName}-option-${index}`}
-              search={get(option, "search")}
+              search={get(option, "search", get(option, "value"))}
             >
               {get(option, "label")}
             </Select.Option>
