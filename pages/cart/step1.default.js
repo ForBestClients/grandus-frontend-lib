@@ -24,31 +24,24 @@ import { Table, InputNumber, Button, Row, Col, Result, Typography } from "antd";
 
 const { Paragraph } = Typography;
 
-const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
+export const ItemCountInput = ({
+  item,
+  itemUpdate,
+  setLoading,
+  inputCountRender,
+}) => {
   const storeId = item?.store?.id;
   const productStore = find(get(item, "product.store"), { id: storeId });
   const [count, setCount] = useState(get(item, "count", 1));
+  const [internalLoading, setInternalLoading] = useState(false);
+  const { webInstance } = useWebInstance();
+  const inlineStyle = { margin: "0 5px" };
 
-  const { settings } = useWebInstance();
-
-  const productStoreCount = toNumber(get(productStore, "count"));
-  const maxPiecesCount = toNumber(get(settings, "cart_max_pieces_count"));
-
-  let maxValue = productStoreCount ? productStoreCount : 1;
-  if (toNumber(get(settings, 'order_out_of_stock_products', 0))) {
-    maxValue = 999;
-  }
-
-  if (maxValue > maxPiecesCount) {
-    maxValue = maxPiecesCount;
-  }
-
-  const handleChange = (value) => setCount(value);
-  const handleBlur = (e) => {
-    const value = e.target.value;
-    setLoading(true);
-    itemUpdate(item?.id, { count: value }, async (response) => {
-      const cart = response;
+  const changeWithUpdate = (value, useLoading) => {
+    setInternalLoading(true);
+    setCount(value);
+    setLoading(useLoading);
+    itemUpdate(item?.id, { count: value }, (cart) => {
       if (cart) {
         const newCount = get(find(cart?.items, { id: item?.id }), "count", 1);
         setCount(newCount);
@@ -67,9 +60,26 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
           );
         }
       }
+      setInternalLoading(false);
       setLoading(false);
     });
   };
+
+  if (!get(item, "count")) {
+    return "";
+  }
+
+  const countMaxLimit = parseInt(
+    get(webInstance, "globalSettings.cart_max_pieces_count", 0)
+  );
+  const countMax =
+    countMaxLimit > 0 && countMaxLimit < productStore?.count
+      ? countMaxLimit
+      : productStore?.count
+      ? productStore?.count
+      : 1;
+
+  const countMin = 1;
 
   if (inputCountRender) {
     return inputCountRender({
@@ -84,15 +94,25 @@ const ItemCountInput = ({ item, itemUpdate, setLoading, inputCountRender }) => {
   return (
     <>
       {get(item, "measureUnit") ? `1 ${get(item, "measureUnit")} x ` : ""}
-      <InputNumber
-        style={{ margin: "0 5px" }}
-        min={1}
-        max={maxValue}
-        defaultValue={get(item, "count", 1)}
-        value={count}
-        onChange={handleChange}
-        onBlur={handleBlur}
-      />
+      {countMax > 1 ? (
+        <>
+          <InputNumber
+            style={inlineStyle}
+            min={countMin}
+            max={countMax}
+            defaultValue={get(item, "count", 1)}
+            value={count}
+            onChange={(value) => changeWithUpdate(value, false)}
+            onBlur={(e) => {
+              changeWithUpdate(e.target.value, true);
+            }}
+          />
+          {internalLoading ? <LoadingOutlined /> : ""}
+        </>
+      ) : (
+        <span style={inlineStyle}>{countMax}</span>
+      )}
+
       {get(item, "store.name")}
     </>
   );
