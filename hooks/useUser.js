@@ -6,16 +6,20 @@ import { get, isFunction } from "lodash";
 export default function useUser({
   redirectTo = false,
   redirectIfFound = false,
-  initialUser = null
+  initialUser = null,
 } = {}) {
-  const { data: user, mutate, isValidating } = useSWR(
+  const {
+    data: user,
+    mutate,
+    isValidating,
+  } = useSWR(
     `/api/lib/v1/auth/profile`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
       shouldRetryOnError: false,
-      initialData: initialUser
+      initialData: initialUser,
     }
   );
 
@@ -44,13 +48,7 @@ export default function useUser({
   const createUser = async (values, callback) => {
     try {
       const reqBody = {
-        user: {
-          name: get(values, "user.firstname"),
-          surname: get(values, "user.surname"),
-          email: get(values, "user.email"),
-          password: get(values, "user.password"),
-          passwordRepeat: get(values, "user.passwordRepeat"),
-        },
+        user: get(values, "user", {}),
       };
       if (get(values, "cart.accessToken")) {
         reqBody.cart = { accessToken: get(values, "cart.accessToken") };
