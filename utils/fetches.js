@@ -74,6 +74,16 @@ const categoryPage = {
       return result.json();
     });
 
+    if (get(data, "category.externalUrl")) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: data?.category?.externalUrl,
+        },
+        props: data,
+      };
+    }
+
     return {
       props: data,
     };
