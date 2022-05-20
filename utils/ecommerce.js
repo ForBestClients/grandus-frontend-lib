@@ -1,11 +1,19 @@
-import { get, map, first, isFunction } from "lodash";
+import get from "lodash/get";
+import map from "lodash/map";
+import first from "lodash/first";
+
 const EnhancedEcommerce = {
-  impressions: (products, list = undefined, options = { page: 1, perPage: 1}) => {
+  // UA analytics: category
+  impressions: (
+    products,
+    list = undefined,
+    options = { page: 1, perPage: 1 }
+  ) => {
     let positionConstant = 0;
     const page = options?.page;
     const perPage = options?.perPage;
     if (page && perPage) {
-      positionConstant = (parseInt(page) - 1) * parseInt(perPage); 
+      positionConstant = (parseInt(page) - 1) * parseInt(perPage);
     }
     const data = {
       impressions: products.map((product, index) => ({
@@ -18,28 +26,89 @@ const EnhancedEcommerce = {
         position: positionConstant + index + 1,
       })),
     };
-    return prepareData(data, 'impressions');
+    return prepareData(data, "impressions");
   },
-  detail: (product) => {
-    const data = {
-      detail: {
-        products: [{
-          name: product?.name,
-          id: product?.id,
-          price: product?.finalPriceData?.price,
-          brand: product?.brand?.name,
-          category: get(getProductCategory(product), "name", undefined),
-        }]
-      },
-    };
-    return prepareData(data, 'detail');
-  },
-  productClick: (product, list = undefined, options = { page: 1, perPage: 1}) => {
+  // G4 analytics: category
+  view_item_list: (products, list = "", options = { page: 1, perPage: 1 }) => {
     let positionConstant = 0;
     const page = options?.page;
     const perPage = options?.perPage;
     if (page && perPage) {
-      positionConstant = (parseInt(page) - 1) * parseInt(perPage); 
+      positionConstant = (parseInt(page) - 1) * parseInt(perPage);
+    }
+    const data = {
+      item_list_id: get(list, "id", list),
+      item_list_name: get(list, "name", list),
+      items: products.map((product, index) => ({
+        item_id: product?.id,
+        item_name: product?.name,
+        currency: product?.finalPriceData?.currency,
+        price: product?.finalPriceData?.price,
+        index: positionConstant + index + 1,
+        item_brand: product?.brand?.name,
+        item_category: get(product, "categories[0].name", undefined),
+        item_category2: get(product, "categories[1].name", undefined),
+        item_category3: get(product, "categories[2].name", undefined),
+        item_category4: get(product, "categories[3].name", undefined),
+        item_category5: get(product, "categories[4].name", undefined),
+      })),
+    };
+
+    return prepareData(data, "view_item_list");
+  },
+
+  // UA analytics: detail
+  detail: (product) => {
+    const data = {
+      detail: {
+        products: [
+          {
+            name: product?.name,
+            id: product?.id,
+            price: product?.finalPriceData?.price,
+            brand: product?.brand?.name,
+            category: get(getProductCategory(product), "name", undefined),
+          },
+        ],
+      },
+    };
+    return prepareData(data, "detail");
+  },
+
+  //G4 analytics:  detail
+  view_item: (product) => {
+    const data = {
+      currency: product?.finalPriceData?.currency,
+      value: product?.finalPriceData?.price,
+      items: [
+        {
+          item_id: product?.id,
+          item_name: product?.name,
+          currency: product?.finalPriceData?.currency,
+          price: product?.finalPriceData?.price,
+          index: 0,
+          item_brand: product?.brand?.name,
+          item_category: get(product, "categories[0].name", undefined),
+          item_category2: get(product, "categories[1].name", undefined),
+          item_category3: get(product, "categories[2].name", undefined),
+          item_category4: get(product, "categories[3].name", undefined),
+          item_category5: get(product, "categories[4].name", undefined),
+        },
+      ],
+    };
+    return prepareData(data, "view_item");
+  },
+
+  productClick: (
+    product,
+    list = undefined,
+    options = { page: 1, perPage: 1 }
+  ) => {
+    let positionConstant = 0;
+    const page = options?.page;
+    const perPage = options?.perPage;
+    if (page && perPage) {
+      positionConstant = (parseInt(page) - 1) * parseInt(perPage);
     }
     const data = {
       click: {
@@ -52,13 +121,15 @@ const EnhancedEcommerce = {
             brand: product?.brand?.name,
             category: get(getProductCategory(product), "name", undefined),
             list: list,
-            position: product?.position + positionConstant
+            position: product?.position + positionConstant,
           },
         ],
       },
     };
     return prepareData(data, "productClick");
   },
+
+  // UA analytics: add to cart
   cartAdd: (product, quantity = 1) => {
     const data = {
       add: {
@@ -77,6 +148,35 @@ const EnhancedEcommerce = {
 
     return prepareData(data, "addToCart");
   },
+
+  // G4 analytics: add to cart
+  add_to_cart: (product, variant, quantity = 1) => {
+    const data = {
+      currency: product?.finalPriceData?.currency,
+      value: product?.finalPriceData?.price,
+      items: [
+        {
+          item_id: product?.id,
+          item_name: product?.name,
+          item_variant: variant,
+          currency: product?.finalPriceData?.currency,
+          price: product?.finalPriceData?.price,
+          index: 0,
+          item_brand: product?.brand?.name,
+          item_category: get(product, "categories[0].name", undefined),
+          item_category2: get(product, "categories[1].name", undefined),
+          item_category3: get(product, "categories[2].name", undefined),
+          item_category4: get(product, "categories[3].name", undefined),
+          item_category5: get(product, "categories[4].name", undefined),
+          quantity: quantity,
+        },
+      ],
+    };
+
+    return prepareData(data, "add_to_cart");
+  },
+
+  // UA analytics: remove from cart
   cartRemove: (product, quantity = 1) => {
     const data = {
       remove: {
@@ -95,6 +195,34 @@ const EnhancedEcommerce = {
 
     return prepareData(data, "removeFromCart");
   },
+
+  // G4 analytics: remove from cart
+  remove_from_cart: (item, quantity = 1) => {
+    const data = {
+      currency: item?.priceData?.currency,
+      value: item?.priceData?.price,
+      items: [
+        {
+          item_id: product?.id,
+          item_name: product?.name,
+          item_variant: item?.store?.name,
+          currency: product?.finalPriceData?.currency,
+          price: product?.finalPriceData?.price,
+          index: 0,
+          item_brand: product?.brand?.name,
+          item_category: get(product, "categories[0].name", undefined),
+          item_category2: get(product, "categories[1].name", undefined),
+          item_category3: get(product, "categories[2].name", undefined),
+          item_category4: get(product, "categories[3].name", undefined),
+          item_category5: get(product, "categories[4].name", undefined),
+          quantity: quantity,
+        },
+      ],
+    };
+
+    return prepareData(data, "remove_from_cart");
+  },
+
   checkout: (items, step = null) => {
     const data = {
       checkout: {
@@ -115,10 +243,117 @@ const EnhancedEcommerce = {
 
     return prepareData(data, "checkout");
   },
+
+  // G4 analytics: view cart / step 1
+  view_cart: (cart) => {
+    const data = {
+      currency: cart?.sumData?.currency,
+      value: cart?.sumData?.price,
+      coupon: cart?.coupon?.hash,
+      items: cart?.items.map((item, index) => ({
+        item_id: item?.product?.id,
+        item_name: item?.product?.name,
+        item_variant: item?.store?.name,
+        currency: item?.priceData?.currency,
+        price: item?.priceData?.price,
+        index: index,
+        item_brand: item?.product?.brand?.name,
+        item_category: get(item, "product.categories[0].name", undefined),
+        item_category2: get(item, "product.categories[1].name", undefined),
+        item_category3: get(item, "product.categories[2].name", undefined),
+        item_category4: get(item, "product.categories[3].name", undefined),
+        item_category5: get(item, "product.categories[4].name", undefined),
+        quantity: item?.count,
+      })),
+    };
+
+    return prepareData(data, "view_cart");
+  },
+
+  // G4 analytics: begin checkout / step 2
+  begin_checkout: (cart) => {
+    const data = {
+      currency: cart?.sumData?.currency,
+      value: cart?.sumData?.price,
+      coupon: cart?.coupon?.hash,
+      items: cart?.items.map((item, index) => ({
+        item_id: item?.product?.id,
+        item_name: item?.product?.name,
+        item_variant: item?.store?.name,
+        currency: item?.priceData?.currency,
+        price: item?.priceData?.price,
+        index: index,
+        item_brand: item?.product?.brand?.name,
+        item_category: get(item, "product.categories[0].name", undefined),
+        item_category2: get(item, "product.categories[1].name", undefined),
+        item_category3: get(item, "product.categories[2].name", undefined),
+        item_category4: get(item, "product.categories[3].name", undefined),
+        item_category5: get(item, "product.categories[4].name", undefined),
+        quantity: item?.count,
+      })),
+    };
+
+    return prepareData(data, "begin_checkout");
+  },
+
+  // G4 analytics: add shipping info / step 3
+  add_shipping_info: (cart) => {
+    const data = {
+      currency: cart?.sumData?.currency,
+      value: cart?.sumData?.price,
+      coupon: cart?.coupon?.hash,
+      shipping_tier: cart?.delivery?.name,
+      items: cart?.items.map((item, index) => ({
+        item_id: item?.product?.id,
+        item_name: item?.product?.name,
+        item_variant: item?.store?.name,
+        currency: item?.priceData?.currency,
+        price: item?.priceData?.price,
+        index: index,
+        item_brand: item?.product?.brand?.name,
+        item_category: get(item, "product.categories[0].name", undefined),
+        item_category2: get(item, "product.categories[1].name", undefined),
+        item_category3: get(item, "product.categories[2].name", undefined),
+        item_category4: get(item, "product.categories[3].name", undefined),
+        item_category5: get(item, "product.categories[4].name", undefined),
+        quantity: item?.count,
+      })),
+    };
+
+    return prepareData(data, "add_shipping_info");
+  },
+
+  // G4 analytics: add payment info / step 3
+  add_payment_info: (cart) => {
+    const data = {
+      currency: cart?.sumData?.currency,
+      value: cart?.sumData?.price,
+      coupon: cart?.coupon?.hash,
+      payemnt_type: cart?.payment?.name,
+      items: cart?.items.map((item, index) => ({
+        item_id: item?.product?.id,
+        item_name: item?.product?.name,
+        item_variant: item?.store?.name,
+        currency: item?.priceData?.currency,
+        price: item?.priceData?.price,
+        index: index,
+        item_brand: item?.product?.brand?.name,
+        item_category: get(item, "product.categories[0].name", undefined),
+        item_category2: get(item, "product.categories[1].name", undefined),
+        item_category3: get(item, "product.categories[2].name", undefined),
+        item_category4: get(item, "product.categories[3].name", undefined),
+        item_category5: get(item, "product.categories[4].name", undefined),
+        quantity: item?.count,
+      })),
+    };
+
+    return prepareData(data, "add_payment_info");
+  },
+
   checkoutOption: (option = null, step = null) => {
     const data = {
       checkout_option: {
-        actionField: {}
+        actionField: {},
       },
     };
 
@@ -132,18 +367,23 @@ const EnhancedEcommerce = {
 
     return prepareData(data, "checkoutOption");
   },
+
   purchase: (order) => {
-    const items = get(order, 'orderItems', []);
-    const couponsString = map(get(order, 'coupons'), coupon => get(coupon, 'hash')).join('|');
+    const items = get(order, "orderItems", []);
+    const couponsString = map(get(order, "coupons"), (coupon) =>
+      get(coupon, "hash")
+    ).join("|");
     const data = {
       purchase: {
         actionField: {
-          id: get(order, 'orderNumber'), // Transaction ID. Required for purchases and refunds.
-          affiliation: '',
-          revenue: parseFloat(_.get(order, 'totalSumData.price', 0)), // Total transaction value (incl. tax and shipping)
-          tax: get(order, 'totalSumData.vatFraction', 0),
-          shipping: (parseFloat(get(order, 'deliveryPrice', 0)) + parseFloat(get(order, 'paymentPrice', 0))),
-          coupon: couponsString
+          id: get(order, "orderNumber"), // Transaction ID. Required for purchases and refunds.
+          affiliation: "",
+          revenue: parseFloat(_.get(order, "totalSumData.price", 0)), // Total transaction value (incl. tax and shipping)
+          tax: get(order, "totalSumData.vatFraction", 0),
+          shipping:
+            parseFloat(get(order, "deliveryPrice", 0)) +
+            parseFloat(get(order, "paymentPrice", 0)),
+          coupon: couponsString,
         },
         products: map(items, (item, index) => ({
           name: item?.name,
@@ -152,12 +392,49 @@ const EnhancedEcommerce = {
           brand: item?.product?.brand?.name,
           category: get(getProductCategory(item?.product), "name", undefined),
           quantity: item?.count,
-          coupon: couponsString
+          coupon: couponsString,
         })),
       },
     };
 
-    return prepareData(data, 'purchase');
+    return prepareData(data, "purchase");
+  },
+
+  // G4 analytics purchase
+
+  purchaseG4: (order) => {
+    const couponsString = map(get(order, "coupons"), (coupon) =>
+      get(coupon, "hash")
+    ).join("|");
+
+    const data = {
+      transaction_id: get(order, "orderNumber"),
+      affiliation: "",
+      value: get(order, "totalSumData.price", 0),
+      tax: get(order, "totalSumData.vatFraction", 0),
+      shipping:
+        get(order, "deliveryPriceData.price", 0) +
+        get(order, "paymentPriceData.price", 0),
+      coupon: couponsString,
+      currency: order?.totalSumData?.currency,
+      items: order?.orderItems.map((item, index) => ({
+        item_id: item?.productId,
+        item_name: item?.product?.name,
+        item_variant: item?.size,
+        currency: item?.unitPriceData?.currency,
+        price: item?.unitPriceData?.price,
+        index: index,
+        item_brand: item?.product?.brand?.name,
+        item_category: get(item, "product.categories[0].name", undefined),
+        item_category2: get(item, "product.categories[1].name", undefined),
+        item_category3: get(item, "product.categories[2].name", undefined),
+        item_category4: get(item, "product.categories[3].name", undefined),
+        item_category5: get(item, "product.categories[4].name", undefined),
+        quantity: item?.count,
+      })),
+    };
+
+    return prepareData(data, "purchase");
   },
 };
 
