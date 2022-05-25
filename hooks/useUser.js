@@ -6,16 +6,20 @@ import { get, isFunction } from "lodash";
 export default function useUser({
   redirectTo = false,
   redirectIfFound = false,
-  initialUser = null
+  initialUser = null,
 } = {}) {
-  const { data: user, mutate, isValidating } = useSWR(
+  const {
+    data: user,
+    mutate,
+    isValidating,
+  } = useSWR(
     `/api/lib/v1/auth/profile`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
       shouldRetryOnError: false,
-      initialData: initialUser
+      initialData: initialUser,
     }
   );
 
@@ -48,6 +52,7 @@ export default function useUser({
           name: get(values, "user.firstname"),
           surname: get(values, "user.surname"),
           email: get(values, "user.email"),
+          phone: get(values, "user.phone", ""),
           password: get(values, "user.password"),
           passwordRepeat: get(values, "user.passwordRepeat"),
         },
