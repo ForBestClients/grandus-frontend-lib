@@ -28,7 +28,7 @@ export default function useShoppingList(options = {}) {
   const create = async (data, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/shopping-list`, {
+      const response = await fetch(`/api/lib/v1/shopping-list`, {
         method: "POST",
         body: JSON.stringify(data),
       })
@@ -41,6 +41,8 @@ export default function useShoppingList(options = {}) {
         });
 
       await mutate();
+
+      return response;
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
@@ -50,17 +52,22 @@ export default function useShoppingList(options = {}) {
   const copy = async (accessToken, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/shopping-list/${accessToken}/copy`, {
-        method: "POST",
-      })
+      const response = await fetch(
+        `/api/lib/v1/shopping-list/${accessToken}/copy`,
+        {
+          method: "POST",
+        }
+      )
         .then((result) => result.json())
         .then((result) => {
           if (isFunction(callback)) {
             callback(result);
           }
           return result;
-        }),
-        await mutate();
+        });
+
+      await mutate();
+      return response;
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
@@ -70,7 +77,7 @@ export default function useShoppingList(options = {}) {
   const update = async (accessToken, data, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/shopping-list/${accessToken}`, {
+      const response = await fetch(`/api/lib/v1/shopping-list/${accessToken}`, {
         method: "PUT",
         body: JSON.stringify(data),
       })
@@ -80,8 +87,9 @@ export default function useShoppingList(options = {}) {
             callback(result);
           }
           return result;
-        }),
-        await mutate();
+        });
+      await mutate();
+      return response;
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
