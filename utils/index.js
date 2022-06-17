@@ -8,17 +8,29 @@ import {
   CATEGORY_PARAMETERS_ADVANCED,
   ATTACHMENT_TYPE_URL,
 } from "grandus-lib/constants/AppConstants";
-import {
-  get,
-  parseInt,
-  toNumber,
-  deburr,
-  toLower,
-  replace,
-  isEmpty,
-  filter,
-  endsWith,
-} from "lodash";
+// import {
+//   get,
+//   parseInt,
+//   toNumber,
+//   deburr,
+//   toLower,
+//   replace,
+//   isEmpty,
+//   filter,
+//   endsWith,
+// } from "lodash";
+
+import get from "lodash/get";
+import parseInt from "lodash/parseInt";
+import toNumber from "lodash/toNumber";
+import deburr from "lodash/deburr";
+import toLower from "lodash/toLower";
+import replace from "lodash/replace";
+import isEmpty from "lodash/isEmpty";
+import filter from "lodash/filter";
+import endsWith from "lodash/endsWith";
+import split from "lodash/split";
+
 import dayjs from "dayjs";
 
 export const getDevMeta = () => {
@@ -174,11 +186,40 @@ export const reqGetHeaders = (req) => {
 
   const user = req.session.get(USER_CONSTANT);
 
-  if (!get(user, "accessToken")) return result;
+  if (get(user, "accessToken")) {
+    Object.assign(result, {
+      Authorization: `Bearer ${get(user, "accessToken")}`,
+    });
+  }
 
-  Object.assign(result, {
-    Authorization: `Bearer ${get(user, "accessToken")}`,
-  });
+  if (!process.env.NEXT_PUBLIC_REQUEST_ADDITIONAL_FIELDS) return result;
+
+  const additionalFields = split(
+    process.env.NEXT_PUBLIC_REQUEST_ADDITIONAL_FIELDS,
+    ","
+  );
+
+  if (!isEmpty(additionalFields)) {
+    const session = req.session.get();
+
+    additionalFields.map((field) => {
+      const fieldExpanded = split(field, "|", 2);
+
+      const key = get(fieldExpanded, "[0]");
+      const value = get(
+        session,
+        get(fieldExpanded, "[1]", get(fieldExpanded, "[0]"))
+      );
+
+      if (value) {
+        const data = {};
+        data[key] = value;
+
+        Object.assign(result, data);
+      }
+    });
+  }
+
   return result;
 };
 
