@@ -134,7 +134,7 @@ const DeliveryForm = ({
                   />
                 ) : null}
                 <b>{get(option, "name")}</b>{" "}
-                {option?.priceData?.priceFormatted
+                {!option?.priceToBeSpecified && option?.priceData?.priceFormatted
                   ? ` - ${option?.priceData?.priceFormatted}`
                   : ""}
               </Radio>
