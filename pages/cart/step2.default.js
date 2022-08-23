@@ -611,7 +611,7 @@ const ContactForm = ({ countries, towns = [], user }) => {
             errors={errors}
             handleChange={handleChange}
             handleBlur={handleBlur}
-            autocomplete="email"
+            autoComplete="email"
           />
         </Col>
       </Row>
