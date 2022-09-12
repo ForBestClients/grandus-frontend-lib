@@ -1,5 +1,12 @@
 import get from "lodash/get";
-import { reqGetHost, reqGetHeadersFront } from "grandus-lib/utils";
+
+import {
+  reqGetHeaders,
+  reqApiHost,
+  reqGetHost,
+  reqGetHeadersFront,
+} from "grandus-lib/utils";
+
 import { arrayToPath, queryToQueryString } from "grandus-lib/hooks/useFilter";
 import { getCleanedUrl } from "grandus-lib/utils/url";
 
@@ -135,6 +142,47 @@ const searchPage = {
 };
 
 const blogPage = {
+  staticPaths: async () => {
+    const blogs = await fetch(
+      `${reqApiHost()}/api/v2/blogs?fields=urlTitle,id&per-page=999`,
+      {
+        headers: reqGetHeaders(),
+      }
+    )
+      .then((result) => result.json())
+      .then((r) => r.data);
+
+    const paths = blogs.map((blog) => ({
+      params: { id: blog?.urlTitle },
+    }));
+
+    return { paths, fallback: "blocking" };
+  },
+  staticProps: async (context) => {
+    let metaData = {};
+    const req = {};
+    const page = await fetch(
+      `${reqApiHost(req)}/api/v2/blogs/${
+        context?.params?.id
+      }?expand=tags,category,text,gallery,products`,
+      {
+        headers: reqGetHeaders(req),
+      }
+    )
+      .then((result) => result.json())
+      .then((r) => {
+        metaData = r.meta;
+        return r.data;
+      });
+
+    return {
+      props: {
+        meta: metaData,
+        blog: page,
+      },
+      revalidate: 5,
+    };
+  },
   serverSideProps: async (context, options = {}) => {
     const data = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/blogs/${
