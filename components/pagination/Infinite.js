@@ -1,4 +1,4 @@
-import { useSWRInfinite } from "swr";
+import useSWRInfinite from "swr/infinite";
 import map from "lodash/map";
 import toNumber from "lodash/toNumber";
 import LoadingIcon from "components/_other/icons/LoadingIcon";
