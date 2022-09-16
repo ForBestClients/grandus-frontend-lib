@@ -2,6 +2,7 @@ import get from "lodash/get";
 import { reqGetHost, reqGetHeadersFront } from "grandus-lib/utils";
 import { arrayToPath, queryToQueryString } from "grandus-lib/hooks/useFilter";
 import { getCleanedUrl } from "grandus-lib/utils/url";
+import isEmpty from "lodash/isEmpty";
 
 const indexPage = {
   // staticProps: async () => { //TODO next 9.5 static optimization
@@ -73,6 +74,12 @@ const categoryPage = {
     }).then((result) => {
       return result.json();
     });
+
+    if (isEmpty(get(data, "category"))) {
+      return {
+        notFound: true
+      }
+    }
 
     if (get(data, "category.externalUrl")) {
       return {
