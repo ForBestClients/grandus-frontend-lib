@@ -32,13 +32,13 @@ export default function useCart(initialCart = false, options = {}) {
       await fetch(`/api/lib/v1/cart/items/${itemId}`, {
         method: "DELETE",
       })
-      .then((result) => result.json())
-      .then((result) => {
-        if (isFunction(callback)) {
-          callback(result);
-        }
-        return result;
-      }),
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
+        }),
       false
     );
     setIsLoading(false);
@@ -326,6 +326,16 @@ export default function useCart(initialCart = false, options = {}) {
     }
   };
 
+  const isProductAdded = (productId) => {
+    const cartItem = cart?.items?.find(
+      (item) => item?.product?.id === productId
+    );
+
+    const amount = cartItem ? cartItem?.count || 1 : 0;
+
+    return amount;
+  };
+
   return {
     cart: get(cart, "accessToken") ? cart : null,
     mutateCart: mutate,
@@ -344,5 +354,6 @@ export default function useCart(initialCart = false, options = {}) {
     removeCoupon,
     applyCredits,
     applyIsic,
+    isProductAdded,
   };
 }
