@@ -30,6 +30,7 @@ export const extractSessionUser = (user) => {
     ico: get(user, 'attributes.ico'),
     dic: get(user, 'attributes.dic'),
     icDPH: get(user, 'attributes.icDPH'),
+    fatturistaIdentifier: get(user, 'fatturistaIdentifier'),
   };
 };
 
