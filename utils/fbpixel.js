@@ -5,6 +5,11 @@ import isEmpty from "lodash/isEmpty";
 import forEach from "lodash/forEach";
 import toNumber from "lodash/toNumber";
 
+import {
+  MARKETING_COOKIES,
+  COOKIES_ACCEPTED,
+} from "grandus-lib/constants/CookieConstants";
+
 const CONTENT_TYPE_PRODUCT = "product";
 
 const FBPixel = {
@@ -26,6 +31,7 @@ const FBPixel = {
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window,document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('consent', 'revoke');
             fbq('init', '${fbPixelCode}');
             fbq('track', 'PageView');
             `,
@@ -72,7 +78,7 @@ const FBPixel = {
     });
 
     const productsObject = {
-      eventID: `products-${productsIds.join('-')}`,
+      eventID: `products-${productsIds.join("-")}`,
       content_ids: productsIds,
       currency: currency,
       value: sumTotal.toFixed(2),
@@ -191,7 +197,7 @@ const FBPixel = {
       }
     });
     const cartObject = {
-      eventID: `checkout-${productsIds.join('-')}`,
+      eventID: `checkout-${productsIds.join("-")}`,
       content_ids: productsIds,
       content_type: CONTENT_TYPE_PRODUCT,
       currency: get(cart, "currency", "EUR"),
@@ -250,6 +256,16 @@ const FBPixel = {
   track: function (event, data = {}) {
     if (this.isEnabled()) {
       fbq("track", event, data);
+    }
+  },
+  consentUpdate: function (cookieConsentSettings = null) {
+    if (this.isEnabled() && cookieConsentSettings) {
+      fbq(
+        "consent",
+        cookieConsentSettings[MARKETING_COOKIES] === COOKIES_ACCEPTED
+          ? "grant"
+          : "revoke"
+      );
     }
   },
 };

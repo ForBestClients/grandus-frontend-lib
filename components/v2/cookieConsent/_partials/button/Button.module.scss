@@ -1,0 +1,150 @@
+@import "styles/variables";
+
+// .button {
+//   height: 50px;
+//   background: var(--c_alt2);
+//   color: var(--c_secondary);
+//   display: inline-flex;
+//   align-items: center;
+//   border-radius: 4px;
+//   padding: 0 40px;
+//   text-decoration: none;
+//   cursor: pointer;
+//   line-height: 1;
+//   border: none;
+//   transition: all .2s;
+//   &:hover {
+//     background: #10D635;
+//   }
+//   &.ghost {
+//     background: var(--c_secondary);
+//     border: 1px solid var(--c_grey);
+//     color: var(--c_primary);
+//     padding: 0 25px;
+//     font-family: var(--f_headings);
+//     & > div {
+//       margin-left: 8px !important;
+//       transition: all .2s;
+//     }
+//     &:hover {
+//       & > div {
+//         transform: translateX(4px);
+//       }
+//     }
+//   }
+//   &.flat {
+//     width: 100%;
+//   }
+// }
+
+.button {
+  line-height: 1;
+  border: none;
+  cursor: pointer;
+  height: 50px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 40px;
+  transition: all 0.2s;
+  font-family: var(--f_headings);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+
+  &[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+
+    &:hover {
+      color: inherit;
+    }
+  }
+
+  &.loading {
+    > svg {
+      margin-left: 0 !important;
+      height: auto;
+      max-height: 20%;
+      width: 100%;
+    }
+
+    &:hover > svg {
+      transform: translateX(0) !important;
+    }
+  }
+
+  > svg {
+    margin-left: 8px;
+    transition: all 0.2s;
+  }
+
+  &:hover {
+    > svg {
+      transform: translateX(4px);
+    }
+  }
+
+  &.fullWidth {
+    width: 100%;
+  }
+
+  &.small {
+    height: 40px !important;
+    padding: 0 15px !important;
+    font-size: 13px !important;
+
+    > svg {
+      width: 1em;
+    }
+  }
+
+  &.roundCorners {
+    border-radius: 4px;
+  }
+
+  &.ghost {
+    background: var(--c_secondary);
+    border: 1px solid var(--c_grey);
+    color: var(--c_primary);
+    padding: 0 25px;
+    font-family: var(--f_headings);
+
+    & > svg {
+      color: var(--c_grey);
+    }
+  }
+
+  &.default {
+    background: $grey-light-color;
+    color: var(--c_secondary);
+    color: var(--c_primary);
+    padding: 0 25px;
+    font-family: var(--f_headings);
+
+    &:hover {
+      background: darken($grey-light-color, 5%);
+    }
+  }
+
+  &.primary {
+    background: var(--c_alt2);
+    color: var(--c_secondary);
+    font-size: 16px;
+
+    &:hover {
+      background: #10d635;
+    }
+  }
+
+  &.text {
+    border: none;
+    background: transparent;
+    padding: 0;
+    height: auto;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
