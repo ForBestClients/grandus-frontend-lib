@@ -1,6 +1,11 @@
 import { useState } from "react";
 import useSWR from "swr";
-import { isFunction, find, get, parseInt } from "lodash";
+
+import get from "lodash/get";
+import find from "lodash/find";
+import parseInt from "lodash/parseInt";
+import isFunction from "lodash/isFunction";
+
 import { transformWishlist } from "grandus-lib/utils/transformers";
 
 const useWishlist = () => {
@@ -55,14 +60,14 @@ const useWishlist = () => {
       await fetch(`/api/lib/v1/wishlist/items/${wishlistItem?.id}`, {
         method: "DELETE",
       })
-      .then((result) => result.json())
-      .then((result) => {
-        if (isFunction(callback)) {
-          callback(result);
-        }
-        setIsLoading(false);
-        return result;
-      }),
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          setIsLoading(false);
+          return result;
+        }),
       false
     );
 
@@ -83,14 +88,14 @@ const useWishlist = () => {
         await fetch(`/api/lib/v1/wishlist/items/${productId}`, {
           method: "POST",
         })
-        .then((result) => result.json())
-        .then((result) => {
-          if (isFunction(callback)) {
-            callback(result);
-          }
-          setIsLoading(false);
-          return result;
-        }),
+          .then((result) => result.json())
+          .then((result) => {
+            if (isFunction(callback)) {
+              callback(result);
+            }
+            setIsLoading(false);
+            return result;
+          }),
         false
       );
     } catch (error) {

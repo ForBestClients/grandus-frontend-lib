@@ -1,6 +1,9 @@
 import { useState } from "react";
 import useSWR from "swr";
-import { get, isFunction, filter, isArray, map } from "lodash";
+
+import get from "lodash/get";
+import isFunction from "lodash/isFunction";
+import filter from "lodash/filter";
 
 export default function useCart(initialCart = false, options = {}) {
   const swrOptions = {

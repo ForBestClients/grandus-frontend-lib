@@ -1,18 +1,19 @@
 import { useState } from "react";
 import useSWR from "swr";
-import { get, isFunction } from "lodash";
+import get from "lodash/get";
+import isFunction from "lodash/isFunction";
 
 const useCompare = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: compare, mutate, isValidating } = useSWR(
-    `/api/lib/v1/compare`,
-    (url) => fetch(url).then((r) => r.json()),
-    {
-      revalidateOnReconnect: false,
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
-    }
-  );
+  const {
+    data: compare,
+    mutate,
+    isValidating,
+  } = useSWR(`/api/lib/v1/compare`, (url) => fetch(url).then((r) => r.json()), {
+    revalidateOnReconnect: false,
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  });
 
   const itemExists = (productId) => {
     return (
@@ -28,13 +29,13 @@ const useCompare = () => {
       await fetch(`/api/lib/v1/compare/items/${productId}`, {
         method: "DELETE",
       })
-      .then((result) => result.json())
-      .then((result) => {
-        if (isFunction(callback)) {
-          callback(result);
-        }
-        return result;
-      }),
+        .then((result) => result.json())
+        .then((result) => {
+          if (isFunction(callback)) {
+            callback(result);
+          }
+          return result;
+        }),
       false
     );
     setIsLoading(false);
@@ -47,13 +48,13 @@ const useCompare = () => {
         await fetch(`/api/lib/v1/compare/items/${productId}`, {
           method: "PUT",
         })
-        .then((result) => result.json())
-        .then((result) => {
-          if (isFunction(callback)) {
-            callback(result);
-          }
-          return result;
-        }),
+          .then((result) => result.json())
+          .then((result) => {
+            if (isFunction(callback)) {
+              callback(result);
+            }
+            return result;
+          }),
         false
       );
     } catch (error) {
@@ -68,7 +69,7 @@ const useCompare = () => {
     isLoading: isValidating || isLoading,
     itemAdd,
     itemRemove,
-    itemExists
+    itemExists,
   };
 };
 

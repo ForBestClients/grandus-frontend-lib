@@ -1,23 +1,23 @@
 import { useState } from "react";
 import useSWR from "swr";
-import { get, isFunction } from "lodash";
+
+import get from "lodash/get";
+import isFunction from "lodash/isFunction";
 
 const useSessionStorage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const { data: session, mutate, isValidating } = useSWR(
-    `/api/lib/v1/session`,
-    (url) => fetch(url).then((r) => r.json()),
-    {
-      revalidateOnReconnect: false,
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
-    }
-  );
+  const {
+    data: session,
+    mutate,
+    isValidating,
+  } = useSWR(`/api/lib/v1/session`, (url) => fetch(url).then((r) => r.json()), {
+    revalidateOnReconnect: false,
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  });
 
   const itemExists = (name) => {
-    return (
-      get(session, name, null)
-    );
+    return get(session, name, null);
   };
 
   const itemRemove = async (name, callback) => {

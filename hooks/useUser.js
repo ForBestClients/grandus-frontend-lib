@@ -1,7 +1,9 @@
 import { useEffect } from "react";
 import Router from "next/router";
 import useSWR from "swr";
-import { get, isFunction } from "lodash";
+
+import get from "lodash/get";
+import isFunction from "lodash/isFunction";
 
 export default function useUser({
   redirectTo = false,
