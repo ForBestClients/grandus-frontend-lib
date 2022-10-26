@@ -55,9 +55,7 @@ const authSectionContentList = {
 const CartContact = (props) => {
   const { countries, towns = [], contact } = props;
   const { settings } = useWebInstance();
-  const [authSectionActiveTab, toggleAuthSectionActiveTab] = useState(
-    "login"
-  );
+  const [authSectionActiveTab, toggleAuthSectionActiveTab] = useState("login");
   const [authSectionVisible, toggleAuthSection] = useState(false);
   const { cart, cartUpdate, saveContact, isLoading } = useCart();
   const { user, isLoading: isLoadingUser } = useUser();
@@ -162,7 +160,11 @@ const CartContact = (props) => {
         .trim()
         .required("Povinné pole")
         .matches(ZIP_REGEX, "Nesprávny tvar PSČ. Zadajte v tvare XXX XX."),
-      phone: yup.string().nullable().trim().required("Povinné pole")
+      phone: yup
+        .string()
+        .nullable()
+        .trim()
+        .required("Povinné pole")
         .validatePhoneNumber(
           "Zadané telefónne číslo nie je v správnom formáte. Zadajte číslo vo formáte +421 (0)901 XXX XXX"
         ),
@@ -306,7 +308,9 @@ const CartContact = (props) => {
         .trim()
         .when("isDifferentDeliveryAddress", {
           is: true,
-          then: yup.string().required("Povinné pole")
+          then: yup
+            .string()
+            .required("Povinné pole")
             .validatePhoneNumber(
               "Zadané telefónne číslo nie je v správnom formáte. Zadajte číslo vo formáte +421 (0)901 XXX XXX"
             ),
@@ -335,17 +339,18 @@ const CartContact = (props) => {
       );
 
       if (phoneNumber) {
-        values.phoneCountryCode = phoneNumber?.countryCallingCode || '';
+        values.phoneCountryCode = phoneNumber?.countryCallingCode || "";
       }
 
-      const deliveryPhoneNumber = parsePhoneNumberFromString (
+      const deliveryPhoneNumber = parsePhoneNumberFromString(
         !isEmpty(values?.deliveryPhone) ? values?.deliveryPhone : ""
       );
 
       if (deliveryPhoneNumber) {
-        values.deliveryPhoneCountryCode = deliveryPhoneNumber?.countryCallingCode || '';
+        values.deliveryPhoneCountryCode =
+          deliveryPhoneNumber?.countryCallingCode || "";
       }
-      
+
       saveContact(values, (savedValues) => {
         const countryId = get(savedValues, "countryId");
         const deliveryCountryId = get(savedValues, "deliveryCountryId");

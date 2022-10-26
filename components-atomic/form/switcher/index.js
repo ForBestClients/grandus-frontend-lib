@@ -12,7 +12,6 @@ const Switcher = ({
   onChange = null,
   disabled = false,
   error,
-  inputSize = "normal",
 }) => {
   const [selectedValue, setSelectedValue] = useState("");
   const onClick = (selectedValue) => (e) => {
@@ -53,12 +52,7 @@ const Switcher = ({
 
   return (
     <div className={styles["switcher-wrapper"]}>
-      <div
-        className={styles.switcher}
-        inputSize={inputSize}
-        error={error}
-        disabled={disabled}
-      >
+      <div className={styles.switcher} error={error} disabled={disabled}>
         {map(options, (option) => {
           const { label, value } = option;
           return (
@@ -67,7 +61,11 @@ const Switcher = ({
               href="#"
               onClick={onClick(value)}
               disabled={disabled}
-              className={`${styles["switcher__button"]} ${(selectedValue === value ? styles["switcher__button--active"] : '')}`}
+              className={`${styles["switcher__button"]} ${
+                selectedValue === value
+                  ? styles["switcher__button--active"]
+                  : ""
+              }`}
             >
               {label}
             </a>
