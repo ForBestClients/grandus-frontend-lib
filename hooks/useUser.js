@@ -1,15 +1,17 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Router from "next/router";
 import useSWR from "swr";
 
 import get from "lodash/get";
 import isFunction from "lodash/isFunction";
+import find from "lodash/find";
 
 export default function useUser({
   redirectTo = false,
   redirectIfFound = false,
   initialUser = null,
 } = {}) {
+  const [isLoading, setIsLoading] = useState(false);
   const {
     data: user,
     mutate,
@@ -42,12 +44,41 @@ export default function useUser({
   }, [user, redirectIfFound, redirectTo]);
 
   const logoutUser = async () => {
+    setIsLoading(true);
     await mutate(
       await fetch(`/api/lib/v1/auth/signout`).then((result) => result.json())
     );
+    setIsLoading(false);
+  };
+
+  const hasParameter = (parameterId, parameterValue = null) => {
+    const parameters = user?.parameters;
+    const searchObj = { parameterId: parameterId };
+    if (parameterValue) {
+      searchObj["value"] = parameterValue;
+    }
+
+    const found = find(parameters, searchObj);
+
+    return found?.id ? true : false;
+  };
+
+  const addParameter = async (parameterId, parameterValue) => {
+    setIsLoading(true);
+    const data = {
+      user: { params: { ...user?.parameters, [parameterId]: parameterValue } },
+    };
+    const response = await fetch(`/api/lib/v1/auth/profile`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    }).then((response) => response.json());
+
+    setIsLoading(false);
+    mutate(response);
   };
 
   const createUser = async (values, callback) => {
+    setIsLoading(true);
     try {
       const reqBody = {
         user: {
@@ -74,6 +105,8 @@ export default function useUser({
         method: "POST",
         body: JSON.stringify(reqBody),
       }).then((response) => response.json());
+
+      setIsLoading(false);
       if (get(user, "success", false)) {
         await mutate(get(user, "data"), false);
       }
@@ -81,6 +114,7 @@ export default function useUser({
         callback(user);
       }
     } catch (error) {
+      setIsLoading(false);
       console.error("An unexpected error happened:", error);
     }
   };
@@ -90,6 +124,8 @@ export default function useUser({
     mutateUser: mutate,
     createUser,
     logoutUser,
-    isLoading: isValidating,
+    addParameter,
+    hasParameter,
+    isLoading: isValidating || isLoading,
   };
 }
