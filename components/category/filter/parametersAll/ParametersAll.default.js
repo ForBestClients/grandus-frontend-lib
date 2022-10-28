@@ -7,7 +7,7 @@ import useFilter, {
 } from "grandus-lib/hooks/useFilter";
 import get from "lodash/get";
 import groupBy from "lodash/groupBy";
-import map from "lodash/map"
+import map from "lodash/map";
 
 import ElementCheckbox from "components/category/categoryElements/CategoryElementCheckbox";
 import ElementRadio from "components/category/categoryElements/CategoryElementRadio";
@@ -47,7 +47,6 @@ options.filter : {
 */
 
 const ParametersAll = ({ selected, handleChange, styles, options }) => {
-
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => {
@@ -71,7 +70,9 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
   const groupedParameters = groupBy(
     get(categoryData, "parameters", []),
     (parameter) =>
-      get(parameter, "group") ? get(parameter, "group") : get(options, 'text.nonGroupedParametersLabel', "Ostatné")
+      get(parameter, "group")
+        ? get(parameter, "group")
+        : get(options, "text.nonGroupedParametersLabel", "Ostatné")
   );
 
   let iterator = 1;
@@ -79,7 +80,7 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
   return (
     <div className={stylesDefault.wrapper}>
       <Button type="primary" block loading={isLoading} onClick={showModal}>
-        {get(options, 'text.allParametersButtonLabel', "Všetky parametre")}
+        {get(options, "text.allParametersButtonLabel", "Všetky parametre")}
       </Button>
 
       <Link
@@ -89,7 +90,11 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
         )}`}
       >
         <Button type="text" block>
-          {get(options, 'text.cancelAllFiltrationsButtonLabel', "zrušiť všetky filtre")}
+          {get(
+            options,
+            "text.cancelAllFiltrationsButtonLabel",
+            "zrušiť všetky filtre"
+          )}
         </Button>
       </Link>
 
@@ -108,7 +113,11 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
             )}`}
           >
             <Button type="text">
-              {get(options, 'text.cancelAllFiltrationsButtonLabel', "zrušiť všetky filtre")}
+              {get(
+                options,
+                "text.cancelAllFiltrationsButtonLabel",
+                "zrušiť všetky filtre"
+              )}
             </Button>
           </Link>,
           <Button
@@ -117,25 +126,26 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
             loading={isLoading}
             onClick={handleOk}
           >
-            {get(options, 'text.showCount', "Zobraziť")}{" "}
+            {get(options, "text.showCount", "Zobraziť")}{" "}
             {get(categoryData, "productsCount")
-              ? `${get(categoryData, "productsCount")} ${get(categoryData, "productsCount") == 1
-                ? get(options, 'text.itemsCountOne', "položku")
-                : get(categoryData, "productsCount") < 5
-                  ? get(options, 'text.itemsCountLessThan5', "položky")
-                  : get(options, 'text.itemsCountMoreThan5', "položiek")
-              }`
+              ? `${get(categoryData, "productsCount")} ${
+                  get(categoryData, "productsCount") == 1
+                    ? get(options, "text.itemsCountOne", "položku")
+                    : get(categoryData, "productsCount") < 5
+                    ? get(options, "text.itemsCountLessThan5", "položky")
+                    : get(options, "text.itemsCountMoreThan5", "položiek")
+                }`
               : ""}
           </Button>,
         ]}
       >
         <Tabs type="card" tabPosition="left">
-
-          {(get(options, 'filter.systemFilter', true)) ? (
-
-            <TabPane tab={get(options, 'text.basicParametersLabel', "Základné")} key="1">
-
-              {(get(options, 'filter.systemFilter_price', true)) ? (
+          {get(options, "filter.systemFilter", true) ? (
+            <TabPane
+              tab={get(options, "text.basicParametersLabel", "Základné")}
+              key="1"
+            >
+              {get(options, "filter.systemFilter_price", true) ? (
                 <ElementPrice
                   selected={{
                     min: get(
@@ -156,9 +166,11 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
                     styles,
                   }}
                 />
-              ) : ("")}
+              ) : (
+                ""
+              )}
 
-              {(get(options, 'filter.systemFilter_storeLocation', true)) ? (
+              {get(options, "filter.systemFilter_storeLocation", true) ? (
                 <ElementSelect
                   {...getSystemFilterAttributes(
                     get(categoryData, "storeLocations", []),
@@ -172,12 +184,18 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
                   attributes={{
                     showSearch: true,
                     mode: "tags",
-                    placeholder: get(options, 'text.chooseStoreLabel', "Vyberte predajňu"),
+                    placeholder: get(
+                      options,
+                      "text.chooseStoreLabel",
+                      "Vyberte predajňu"
+                    ),
                   }}
                 />
-              ) : ("")}
+              ) : (
+                ""
+              )}
 
-              {(get(options, 'filter.systemFilter_status', true)) ? (
+              {get(options, "filter.systemFilter_status", true) ? (
                 <ElementCheckbox
                   {...getSystemFilterAttributes(
                     get(categoryData, "statuses", []),
@@ -189,11 +207,13 @@ const ParametersAll = ({ selected, handleChange, styles, options }) => {
                     }
                   )}
                 />
-              ) : ("")}
-
+              ) : (
+                ""
+              )}
             </TabPane>
-
-          ) : ("")}
+          ) : (
+            ""
+          )}
 
           {map(groupedParameters, (group, index) => {
             iterator = iterator + 1;
