@@ -203,18 +203,18 @@ const EnhancedEcommerce = {
       value: item?.priceData?.price,
       items: [
         {
-          item_id: product?.id,
-          item_name: product?.name,
+          item_id: get(item, 'product.id'),
+          item_name: get(item, 'product.name'),
           item_variant: item?.store?.name,
-          currency: product?.finalPriceData?.currency,
-          price: product?.finalPriceData?.price,
+          currency: get(item, 'priceData.currency'),
+          price: get(item, 'priceData.price'),
           index: 0,
-          item_brand: product?.brand?.name,
-          item_category: get(product, "categories[0].name", undefined),
-          item_category2: get(product, "categories[1].name", undefined),
-          item_category3: get(product, "categories[2].name", undefined),
-          item_category4: get(product, "categories[3].name", undefined),
-          item_category5: get(product, "categories[4].name", undefined),
+          item_brand: get(item, 'product.brand.name'),
+          item_category: get(item, "product.categories[0].name", undefined),
+          item_category2: get(item, "product.categories[1].name", undefined),
+          item_category3: get(item, "product.categories[2].name", undefined),
+          item_category4: get(item, "product.categories[3].name", undefined),
+          item_category5: get(item, "product.categories[4].name", undefined),
           quantity: quantity,
         },
       ],
@@ -401,7 +401,6 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics purchase
-
   purchaseG4: (order) => {
     const couponsString = map(get(order, "coupons"), (coupon) =>
       get(coupon, "hash")
@@ -436,6 +435,84 @@ const EnhancedEcommerce = {
 
     return prepareData(data, "purchase");
   },
+
+  // G4 add to wishlist
+  add_to_wishlist(product, variant) {
+    const data = {
+      currency: product?.finalPriceData?.currency,
+      value: product?.finalPriceData?.price,
+      items: [{
+        item_id: product?.id,
+        item_name: product?.name,
+        item_variant: variant?.name,
+        currency: product?.finalPriceData?.currency,
+        price: product?.finalPriceData?.price,
+        index: 0,
+        item_brand: product?.brand?.name,
+        item_category: get(product, "categories[0].name", undefined),
+        item_category2: get(product, "categories[1].name", undefined),
+        item_category3: get(product, "categories[2].name", undefined),
+        item_category4: get(product, "categories[3].name", undefined),
+        item_category5: get(product, "categories[4].name", undefined),
+        quantity: 1,
+      }],
+    }
+
+    return prepareData(data, "add_to_wishlist")
+  },
+
+  // G4 view banner / promotion
+  view_promotion: (banners, name) => {
+    const data = {
+      creative_name: name,
+      items: map(banners, (banner) => {
+        return {
+          item_id: banner?.id,
+          item_name: banner?.title,
+        }
+      }),
+    }
+
+    return prepareData(data, "view_promotion")
+  },
+
+  // G4 click banner / promotion
+  select_promotion: (banner, name) => {
+    const data = {
+      creative_name: name ?? "",
+      items: [{
+        item_id: banner?.id,
+        item_name: banner?.title,
+      }],
+    }
+
+    return prepareData(data, "select_promotion")
+  },
+
+  // G4 click product
+  select_item: (product, list) => {
+    const data = {
+      item_list_id: list?.id,
+      item_list_name: list?.name,
+      items: [{
+        item_id: product?.id,
+        item_name: product?.name,
+        item_variant: variant?.name,
+        currency: product?.finalPriceData?.currency,
+        price: product?.finalPriceData?.price,
+        index: 0,
+        item_brand: product?.brand?.name,
+        item_category: get(product, "categories[0].name", undefined),
+        item_category2: get(product, "categories[1].name", undefined),
+        item_category3: get(product, "categories[2].name", undefined),
+        item_category4: get(product, "categories[3].name", undefined),
+        item_category5: get(product, "categories[4].name", undefined),
+        quantity: 1,
+      }],
+    }
+
+    return prepareData(data, "select_item")
+  }
 };
 
 const getProductCategory = (product) => {
