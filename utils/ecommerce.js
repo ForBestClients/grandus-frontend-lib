@@ -490,7 +490,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 click product
-  select_item: (product, list) => {
+  select_item: (product, variant, list) => {
     const data = {
       item_list_id: list?.id,
       item_list_name: list?.name,
