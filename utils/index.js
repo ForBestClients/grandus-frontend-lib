@@ -169,6 +169,12 @@ export const reqGetHeaders = (req) => {
     "Webinstance-Token": process.env.GRANDUS_TOKEN_WEBINSTANCE,
   };
 
+  const locale = get(req, 'cookies.NEXT_LOCALE');
+
+  if (locale) {
+    result['Accept-Language'] = locale;
+  }
+
   const uriToForward = getFrontendUrlFromHeaders(req?.headers);
   if (uriToForward) {
     const removedProtocol = replace(
