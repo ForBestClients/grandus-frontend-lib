@@ -2,7 +2,7 @@ import useSWR from "swr";
 import find from "lodash/find";
 
 export default function useStaticBlock() {
-  const { data = null } = useSWR(
+  const { data = null, isValidating } = useSWR(
     "/api/lib/v1/blocks?expand=customCss,customJavascript&per-page=999",
     (url) => fetch(url).then((r) => r.json()),
     {
@@ -22,6 +22,7 @@ export default function useStaticBlock() {
 
   return {
     staticBlocks: data,
+    isValidating,
     getByHash,
     getBy,
   };
