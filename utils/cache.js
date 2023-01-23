@@ -159,9 +159,13 @@ export const saveDataToCache = async (req, cache, data, options = {}) => {
     cacheTime = process.env.CACHE_TIME ? process.env.CACHE_TIME : 60;
   }
 
+  const locale = get(req, 'cookies.NEXT_LOCALE');
+  const cacheKey = getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options })
+    + (locale ? `.${locale}`: "");
+
   try {
     cache.set(
-      getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options }),
+      cacheKey,
       JSON.stringify(data),
       "EX",
       cacheTime
