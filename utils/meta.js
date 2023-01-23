@@ -1,5 +1,6 @@
 import truncate from "lodash/truncate";
 import isEmpty from "lodash/isEmpty";
+import trim from "lodash/trim";
 
 const TITLE_LENGTH_MAX = 60;
 const DESCRIPTION_LENGTH_MAX = 155;
@@ -11,7 +12,8 @@ export const adjustTitle = (
   prefix = "",
   options = { maxLength: TITLE_LENGTH_MAX, omission: "" }
 ) => {
-  let result = isEmpty(title) ? "" : title;
+  let result = isEmpty(title) ? "" : trim(title, " ");
+
   const MAX_LENGTH = options?.maxLength ? options.maxLength : TITLE_LENGTH_MAX;
 
   if (result.length <= MAX_LENGTH - suffix.length + 1 && !isEmpty(suffix)) {
