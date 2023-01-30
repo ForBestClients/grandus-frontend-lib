@@ -10,6 +10,8 @@ import {
 import { arrayToPath, queryToQueryString } from "grandus-lib/hooks/useFilter";
 import { getCleanedUrl } from "grandus-lib/utils/url";
 
+const REVALIDATE_INTERVAL = 5;
+
 const indexPage = {
   // staticProps: async () => { //TODO next 9.5 static optimization
   //   const homepageData = await fetch(`${reqGetHost()}/api/pages/homepage`);
@@ -180,7 +182,7 @@ const blogPage = {
         meta: metaData,
         blog: page,
       },
-      revalidate: 5,
+      revalidate: REVALIDATE_INTERVAL,
     };
   },
   serverSideProps: async (context, options = {}) => {
@@ -242,6 +244,53 @@ const campaignPage = {
 };
 
 const staticPage = {
+  staticPaths: async () => {
+    const pages = await fetch(
+      `${reqApiHost()}/api/v2/pages?fields=urlTitle,id&per-page=999`,
+      {
+        headers: reqGetHeaders(),
+      }
+    )
+      .then((result) => result.json())
+      .then((r) => r.data);
+
+    const paths = pages.map((page) => ({
+      params: { id: page?.urlTitle },
+    }));
+
+    return { paths, fallback: "blocking" };
+  },
+  staticProps: async(context) => {
+    const req = {};
+    const data = await fetch(
+      `${reqApiHost(req)}/api/v2/pages/${context?.params?.id}?expand=photo,content,customCss,customJavascript,attachments,products`,
+      {
+        headers: reqGetHeaders(req),
+      })
+      .then((result) => result.json())
+      .then(r => r?.data);
+
+    if (!data?.id) {
+      return {
+        notFound: true
+      };
+    }
+
+    if (get(data, "externalUrl")) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: data?.externalUrl,
+        },
+        props: { page: data },
+      };
+    }
+
+    return {
+      props: { page: data },
+      revalidate: REVALIDATE_INTERVAL,
+    };
+  },
   serverSideProps: async (context) => {
     const data = await fetch(
       `${reqGetHost(context?.req)}/api/lib/v1/statics/${context?.params?.id}`
