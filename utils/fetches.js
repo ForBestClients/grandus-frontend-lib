@@ -276,16 +276,6 @@ const staticPage = {
       };
     }
 
-    if (get(data, "externalUrl")) {
-      return {
-        redirect: {
-          permanent: false,
-          destination: data?.externalUrl,
-        },
-        props: { page: data },
-      };
-    }
-
     return {
       props: { page: data },
       revalidate: REVALIDATE_INTERVAL,
