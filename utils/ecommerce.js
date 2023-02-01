@@ -512,6 +512,25 @@ const EnhancedEcommerce = {
     }
 
     return prepareData(data, "select_item")
+  },
+
+  // GA3
+  user: (user, group) => {
+    const data = {
+      UserID: user?.id || 0,
+      UserType: group,
+    };
+
+    return prepareData(data, 'UserGroup')
+  },
+
+  // G4 join_group
+  join_group: (group) => {
+    const data = {
+      group_id: group,
+    }
+
+    return prepareData(data, 'join_group')
   }
 };
 
