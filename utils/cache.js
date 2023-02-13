@@ -111,8 +111,11 @@ export const getCacheKeyByType = (type = "request", options = {}) => {
  */
 export const getCachedData = async (req, cache, options = {}) => {
   if (!cache) return false;
+
+  const cacheKey = getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options })
+    + (getLocalSuffix(req));
   const data = await cache.get(
-    getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options })
+    cacheKey
     // (err) => console.error(err)
   );
 
@@ -159,9 +162,8 @@ export const saveDataToCache = async (req, cache, data, options = {}) => {
     cacheTime = process.env.CACHE_TIME ? process.env.CACHE_TIME : 60;
   }
 
-  const locale = get(req, 'cookies.NEXT_LOCALE');
   const cacheKey = getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options })
-    + (locale ? `.${locale}`: "");
+    + (getLocalSuffix(req));
 
   try {
     cache.set(
@@ -174,3 +176,8 @@ export const saveDataToCache = async (req, cache, data, options = {}) => {
     console.error(error);
   }
 };
+
+const getLocalSuffix = (req) => {
+  const locale = get(req, 'cookies.NEXT_LOCALE');
+  return locale ? `.${locale}`: "";
+}
