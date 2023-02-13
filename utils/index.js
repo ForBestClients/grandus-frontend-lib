@@ -73,7 +73,7 @@ export const getDocumentInitialProps = (webInstance = null) => {
 };
 
 export const reqExtractUri = (url) => {
-  const uriPosition = url.indexOf("?");
+  const uriPosition = url?.indexOf("?");
   return uriPosition > 0 ? url.slice(uriPosition) : "";
 };
 
@@ -169,10 +169,10 @@ export const reqGetHeaders = (req) => {
     "Webinstance-Token": process.env.GRANDUS_TOKEN_WEBINSTANCE,
   };
 
-  const locale = get(req, 'cookies.NEXT_LOCALE');
+  const locale = get(req, "cookies.NEXT_LOCALE");
 
   if (locale) {
-    result['Accept-Language'] = locale;
+    result["Accept-Language"] = locale;
   }
 
   const uriToForward = getFrontendUrlFromHeaders(req?.headers);
