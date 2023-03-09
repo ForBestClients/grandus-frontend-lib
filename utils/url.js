@@ -1,21 +1,21 @@
-import without from "lodash/without";
-import isEmpty from "lodash/isEmpty";
-import isObject from "lodash/isObject";
-import isArray from "lodash/isArray";
-import union from "lodash/union";
-import uniq from "lodash/uniq";
-import sortedUniq from "lodash/sortedUniq";
-import isString from "lodash/isString";
-import keys from "lodash/keys";
-import split from "lodash/split";
+import without from 'lodash/without';
+import isEmpty from 'lodash/isEmpty';
+import isObject from 'lodash/isObject';
+import isArray from 'lodash/isArray';
+import union from 'lodash/union';
+import uniq from 'lodash/uniq';
+import sortedUniq from 'lodash/sortedUniq';
+import isString from 'lodash/isString';
+import keys from 'lodash/keys';
+import split from 'lodash/split';
 
-import { queryToQueryString } from "grandus-lib/hooks/useFilter";
+import { queryToQueryString } from './filter';
 
 //tested
 export const removeParameter = (
   parameters,
   parameterKey,
-  parameterValue = false
+  parameterValue = false,
 ) => {
   if (isEmpty(parameters)) {
     return {};
@@ -30,7 +30,7 @@ export const removeParameter = (
   if (parameterValue) {
     const removed = without(
       parametersActual[parameterKey],
-      encodeURIComponent(parameterValue)
+      encodeURIComponent(parameterValue),
     );
 
     if (isEmpty(removed)) {
@@ -51,7 +51,7 @@ export const addParameter = (
   parameterKey,
   parameterValues,
   replace = true,
-  sort = true
+  sort = true,
 ) => {
   if (!isObject(parameters)) {
     return {};
@@ -72,16 +72,17 @@ export const addParameter = (
   } else {
     parametersActual[parameterKey] = union(
       parametersActual[parameterKey],
-      parameterValuesActual
+      parameterValuesActual,
     );
   }
 
   if (sort) {
-    parametersActual[parameterKey] = sortedUniq(parametersActual[parameterKey].sort());
+    parametersActual[parameterKey] = sortedUniq(
+      parametersActual[parameterKey].sort(),
+    );
   } else {
     parametersActual[parameterKey] = uniq(parametersActual[parameterKey]);
   }
-  
 
   return { ...parametersActual };
 };
@@ -92,9 +93,9 @@ export const getCleanedUrl = (path, parameters = {}, query = {}) => {
     return false;
   }
 
-  const pathParts = split(path, "?", 1)[0];
+  const pathParts = split(path, '?', 1)[0];
 
   const queryString = queryToQueryString(query, {}, keys(parameters));
 
-  return pathParts + (queryString ? `?${queryString}` : "");
+  return pathParts + (queryString ? `?${queryString}` : '');
 };
