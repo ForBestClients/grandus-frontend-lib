@@ -6,15 +6,17 @@ import filter from "lodash/filter";
 import forEach from "lodash/forEach";
 import map from "lodash/map";
 import intersection from "lodash/intersection";
+import useUser from "./useUser";
 
 export default function useShoppingList(options = {}) {
   const [isLoading, setIsLoading] = useState(false);
+  const { user } = useUser();
   const {
     data: shoppingLists,
     mutate,
     isValidating,
   } = useSWR(
-    `/api/lib/v1/shopping-list`,
+    user ? `/api/lib/v1/shopping-list` : false,
     (url) => fetch(url).then((r) => r.json()),
     {
       ...{
