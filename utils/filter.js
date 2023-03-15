@@ -404,7 +404,7 @@ export const getFilterUrl = (
   isReplace = false,
   sortValues = true,
 ) => {
-  return getCategoryLinkAttributes(
+  const urlSegments = getCategoryLinkAttributes(
     category,
     paramsToPath(
       isRemove
@@ -420,4 +420,6 @@ export const getFilterUrl = (
     parameters, //query
     { toDelete: ['category', 'parameters', 'page'] },
   );
+
+  return get(urlSegments, 'as', '');
 };
