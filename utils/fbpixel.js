@@ -4,6 +4,7 @@ import first from "lodash/first";
 import isEmpty from "lodash/isEmpty";
 import forEach from "lodash/forEach";
 import toNumber from "lodash/toNumber";
+import isArray from "lodash/isArray";
 
 const CONTENT_TYPE_PRODUCT = "product";
 
@@ -88,11 +89,17 @@ const FBPixel = {
 
     let categories = [];
     const productCategories = get(product, "categories", []);
-    forEach(productCategories, (categoryTree) => {
+    if (isArray(get(productCategories, '[0]'))) {
+      forEach(productCategories, (categoryTree) => {
+        categories.push(
+          map(categoryTree, (category) => get(category, "name", "")).join(" / ")
+        );
+      });
+    } else {
       categories.push(
-        map(categoryTree, (category) => get(category, "name", "")).join(" / ")
+        map(productCategories, (category) => get(category, "name", "")).join(" / ")
       );
-    });
+    }
 
     const productData = {
       content_ids: [`${get(product, "sku") || product?.id}`],
@@ -251,6 +258,89 @@ const FBPixel = {
     if (this.isEnabled()) {
       fbq("track", event, data);
     }
+  },
+
+  prepareProductData: function (product, additionalData) {
+    return this.productDetail(product, additionalData);
+  },
+
+  addToCart: function (product, additionalData) {
+    const productData = this.prepareProductData(product, additionalData);
+
+    if (!productData) {
+      return;
+    }
+
+    this.track("AddToCart", productData);
+  },
+
+  prepareCartData: function (cart) {
+    if (!cart?.items) {
+      return null;
+    }
+
+    const contents = [];
+    const contentIds = [];
+
+    forEach(cart?.items, (item) => {
+      contentIds.push(get(item, "product.id"));
+      contents.push({
+        id: `${get(item, "product.id")}`,
+        quantity: get(item, "count", 1),
+        item_price: get(item, "finalPriceData.price", null),
+        name: get(item, "product.name", null),
+        brand: get(item, "brand.name", null),
+      });
+    });
+
+    return {
+      currency: get(cart, "sumData.currency"),
+      value: get(cart, "sumData.price"),
+      content_ids: contentIds,
+      contents: contents,
+    };
+  },
+
+  initiateCheckout: function (cart) {
+    const cartObject = this.prepareCartData(cart);
+
+    if (!cartObject) {
+      return;
+    }
+
+    cartObject.num_items = cart?.items?.length ?? 0;
+
+    this.track("InitiateCheckout", cartObject);
+  },
+
+  addPaymentInfo: function (cart) {
+    const cartObject = this.prepareCartData(cart);
+
+    if (!cartObject) {
+      return;
+    }
+
+    this.track("AddPaymentInfo", cartObject);
+  },
+
+  addPurchase: function (order) {
+    const data = this.purchase(order);
+
+    if (isEmpty(data)) {
+      return;
+    }
+
+    this.track("Purchase", data);
+  },
+
+  viewProduct: function (product) {
+    const productData = this.prepareProductData(product)
+
+    if (!productData) {
+      return;
+    }
+
+    this.track("ViewContent", productData);
   },
 };
 
