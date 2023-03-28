@@ -1,37 +1,40 @@
-import truncate from "lodash/truncate";
-import isEmpty from "lodash/isEmpty";
-import trim from "lodash/trim";
+import truncate from 'lodash/truncate';
+import isEmpty from 'lodash/isEmpty';
+import trim from 'lodash/trim';
+import get from 'lodash/get';
+
+import { getImageUrl } from 'grandus-lib/utils';
 
 const TITLE_LENGTH_MAX = 60;
 const DESCRIPTION_LENGTH_MAX = 155;
 
 export const adjustTitle = (
   title,
-  branding = "",
-  suffix = "",
-  prefix = "",
-  options = { maxLength: TITLE_LENGTH_MAX, omission: "" }
+  branding = '',
+  suffix = '',
+  prefix = '',
+  options = { maxLength: TITLE_LENGTH_MAX, omission: '' },
 ) => {
-  let result = isEmpty(title) ? "" : trim(title, " ");
+  let result = isEmpty(title) ? '' : trim(title, ' ');
 
   const MAX_LENGTH = options?.maxLength ? options.maxLength : TITLE_LENGTH_MAX;
 
   if (result.length <= MAX_LENGTH - suffix.length + 1 && !isEmpty(suffix)) {
-    result = result + (result ? " " : "") + suffix.toString();
+    result = result + (result ? ' ' : '') + suffix.toString();
   }
 
   if (result.length <= MAX_LENGTH - branding.length + 1 && !isEmpty(branding)) {
-    result = result + (result ? " " : "") + branding.toString();
+    result = result + (result ? ' ' : '') + branding.toString();
   }
 
   if (result.length <= MAX_LENGTH - prefix.length + 1 && !isEmpty(prefix)) {
-    result = prefix + (result ? " " : "") + result.toString();
+    result = prefix + (result ? ' ' : '') + result.toString();
   }
 
   if (result.length > MAX_LENGTH) {
     result = truncate(title, {
       length: MAX_LENGTH,
-      omission: options?.omission ? options?.omission : "",
+      omission: options?.omission ? options?.omission : '',
     });
   }
 
@@ -41,6 +44,115 @@ export const adjustTitle = (
 export const adjustDescription = (content, prefix, suffix, branding) => {
   return adjustTitle(content, prefix, suffix, branding, {
     maxLength: DESCRIPTION_LENGTH_MAX,
-    omission: "...",
+    omission: '...',
   });
+};
+
+export const getMetaData = (
+  title,
+  description,
+  branding = '',
+  photo,
+  options,
+) => {
+  const metaTitle = adjustTitle(
+    title,
+    get(options, 'title.branding', branding),
+    get(options, 'title.suffix'),
+    get(options, 'title.prefix'),
+    {
+      maxLength: get(options, 'title.maxLength'),
+    },
+  );
+  const metaDescription = adjustDescription(
+    description,
+    get(options, 'description.branding'),
+    get(options, 'description.suffix'),
+    get(options, 'description.prefix'),
+  );
+
+  const metaDataGeneral = {
+    title: metaTitle,
+    description: metaDescription,
+    referrer: 'origin-when-cross-origin',
+    viewport: {
+      width: 'device-width',
+      initialScale: 1,
+      maximumScale: 1,
+    },
+  };
+  const metaDataOg = {
+    title: metaTitle,
+    description: metaDescription,
+    type: 'website',
+  };
+
+  if (options?.keywords) {
+    metaDataGeneral.keywords = options?.keywords;
+    metaDataOg.keywords = options?.keywords;
+  }
+
+  if (options?.themeColor) {
+    metaDataGeneral.themeColor = options?.themeColor;
+  }
+
+  if (options?.colorScheme) {
+    metaDataGeneral.colorScheme = options?.colorScheme;
+  }
+
+  if (options?.authors) {
+    metaDataGeneral.authors = options?.authors;
+    metaDataGeneral.authors.push({
+      name: 'For Best Clients, s.r.o.',
+      url: 'https://www.forbestclients.com',
+    });
+  } else {
+    metaDataGeneral.authors = [
+      {
+        name: 'For Best Clients, s.r.o.',
+        url: 'https://www.forbestclients.com',
+      },
+    ];
+  }
+
+  if (branding) {
+    metaDataGeneral.generator = branding;
+    metaDataGeneral.applicationName = branding;
+    metaDataOg.siteName = branding;
+  }
+
+  if (options?.icons) {
+    metaDataGeneral.icons = options.icons;
+  }
+
+  if (photo) {
+    const imageData = {
+      url: getImageUrl(
+        photo,
+        get(options, 'image.dimensions', '1200x630'),
+        'jpg',
+      ),
+    };
+
+    if (get(options, 'image.width') !== -1) {
+      imageData.width = get(options, 'image.width', 1200);
+    }
+
+    if (get(options, 'image.height') !== -1) {
+      imageData.height = get(options, 'image.height', 630);
+    }
+
+    metaDataOg.images = [
+      {
+        url: 'https://nextjs.org/og.png',
+        width: 800,
+        height: 600,
+      },
+    ];
+  }
+
+  return {
+    ...metaDataGeneral,
+    openGraph: metaDataOg,
+  };
 };
