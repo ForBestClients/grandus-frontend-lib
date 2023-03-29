@@ -142,13 +142,7 @@ export const getMetaData = (
       imageData.height = get(options, 'image.height', 630);
     }
 
-    metaDataOg.images = [
-      {
-        url: 'https://nextjs.org/og.png',
-        width: 800,
-        height: 600,
-      },
-    ];
+    metaDataOg.images = [imageData];
   }
 
   return {
