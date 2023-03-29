@@ -1,4 +1,4 @@
-import styles from "./Content.module.scss";
+import styles from './Content.module.scss';
 
 const Content = ({ content, css, js, className }) => {
   return (
@@ -10,12 +10,16 @@ const Content = ({ content, css, js, className }) => {
           }}
         />
       ) : null}
-      <section
-        className={`${styles.wrapper} ${className ? className : ""}`}
-        dangerouslySetInnerHTML={{
-          __html: content,
-        }}
-      />
+      {content ? (
+        <section
+          className={`${styles.wrapper} ${className ? className : ''}`}
+          dangerouslySetInnerHTML={{
+            __html: content,
+          }}
+        />
+      ) : (
+        ''
+      )}
       {js ? (
         <div
           dangerouslySetInnerHTML={{
