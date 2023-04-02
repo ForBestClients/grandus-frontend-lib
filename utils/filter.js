@@ -13,6 +13,7 @@ import isString from 'lodash/isString';
 import flatten from 'lodash/flatten';
 import indexOf from 'lodash/indexOf';
 import isObject from 'lodash/isObject';
+import assign from 'lodash/assign';
 
 import { removeParameter, addParameter } from 'grandus-lib/utils/url';
 
@@ -375,6 +376,10 @@ export const paramsToPath = params => {
 export const isActive = (parameterTitle, parameterValueTitle, selected) => {
   const parameterSelected = get(selected, [parameterTitle], []);
   return indexOf(parameterSelected, parameterValueTitle) >= 0;
+};
+
+export const queryMerge = (queryActual, queryNew) => {
+  return assign({}, queryActual, queryNew);
 };
 
 export const getFilterUrl = (
