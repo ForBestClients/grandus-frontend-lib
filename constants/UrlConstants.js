@@ -34,7 +34,7 @@ export const RESERVED_URI_PARTS = [
   },
   {
     key: 'status',
-    urlTitle: 'status',
+    urlTitle: 'stav',
     title: 'Status', //@todo translation
     priority: 6,
   },
