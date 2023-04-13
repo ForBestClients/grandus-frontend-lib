@@ -55,25 +55,28 @@ export const getMetaData = (
   photo,
   options,
 ) => {
-  const metaTitle = adjustTitle(
-    title,
-    get(options, 'title.branding', branding),
-    get(options, 'title.suffix'),
-    get(options, 'title.prefix'),
-    {
-      maxLength: get(options, 'title.maxLength'),
-    },
-  );
-  const metaDescription = adjustDescription(
-    description,
-    get(options, 'description.branding'),
-    get(options, 'description.suffix'),
-    get(options, 'description.prefix'),
-  );
+  const metaTitle = title
+    ? adjustTitle(
+        title,
+        get(options, 'title.branding', branding),
+        get(options, 'title.suffix'),
+        get(options, 'title.prefix'),
+        {
+          maxLength: get(options, 'title.maxLength'),
+        },
+      )
+    : false;
+
+  const metaDescription = description
+    ? adjustDescription(
+        description,
+        get(options, 'description.branding'),
+        get(options, 'description.suffix'),
+        get(options, 'description.prefix'),
+      )
+    : false;
 
   const metaDataGeneral = {
-    title: metaTitle,
-    description: metaDescription,
     referrer: 'origin-when-cross-origin',
     viewport: {
       width: 'device-width',
@@ -82,10 +85,18 @@ export const getMetaData = (
     },
   };
   const metaDataOg = {
-    title: metaTitle,
-    description: metaDescription,
     type: 'website',
   };
+
+  if (metaTitle) {
+    metaDataOg.title = metaTitle;
+    metaDataGeneral.title = metaTitle;
+  }
+
+  if (metaDescription) {
+    metaDataOg.description = metaDescription;
+    metaDataGeneral.description = metaDescription;
+  }
 
   if (options?.keywords) {
     metaDataGeneral.keywords = options?.keywords;
