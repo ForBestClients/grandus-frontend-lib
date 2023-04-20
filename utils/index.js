@@ -1,4 +1,4 @@
-import { USER_CONSTANT } from "grandus-lib/constants/SessionConstants";
+import { USER_CONSTANT } from 'grandus-lib/constants/SessionConstants';
 import {
   ESHOP_TYPE_B2B,
   ESHOP_TYPE_B2C,
@@ -7,36 +7,29 @@ import {
   CATEGORY_PARAMETERS_BASIC,
   CATEGORY_PARAMETERS_ADVANCED,
   ATTACHMENT_TYPE_URL,
-} from "grandus-lib/constants/AppConstants";
-// import {
-//   get,
-//   parseInt,
-//   toNumber,
-//   deburr,
-//   toLower,
-//   replace,
-//   isEmpty,
-//   filter,
-//   endsWith,
-// } from "lodash";
+} from 'grandus-lib/constants/AppConstants';
 
-import get from "lodash/get";
-import parseInt from "lodash/parseInt";
-import toNumber from "lodash/toNumber";
-import deburr from "lodash/deburr";
-import toLower from "lodash/toLower";
-import replace from "lodash/replace";
-import isEmpty from "lodash/isEmpty";
-import filter from "lodash/filter";
-import endsWith from "lodash/endsWith";
-import split from "lodash/split";
+import get from 'lodash/get';
+import parseInt from 'lodash/parseInt';
+import toNumber from 'lodash/toNumber';
+import deburr from 'lodash/deburr';
+import toLower from 'lodash/toLower';
+import replace from 'lodash/replace';
+import isEmpty from 'lodash/isEmpty';
+import filter from 'lodash/filter';
+import split from 'lodash/split';
 
-import dayjs from "dayjs";
+// edge runtime compatibility
+import {
+  getImageUrl as getImageUrlEdge,
+  reqApiHost as reqApiHostEdge,
+  reqGetHeadersBasic as reqGetHeadersBasicEdge,
+} from 'grandus-lib/utils/edge/index';
 
 export const getDevMeta = () => {
   if (
-    process.env.NODE_ENV !== "production" ||
-    process.env.APP_ENV !== "production"
+    process.env.NODE_ENV !== 'production' ||
+    process.env.APP_ENV !== 'production'
   ) {
     return (
       <>
@@ -46,7 +39,7 @@ export const getDevMeta = () => {
     );
   }
 
-  return "";
+  return '';
 };
 
 export const getDocumentInitialProps = (webInstance = null) => {
@@ -55,146 +48,142 @@ export const getDocumentInitialProps = (webInstance = null) => {
   }
 
   return {
-    favicon: get(webInstance, "favicon"),
-    customScripts: get(webInstance, "globalSettings.custom_javascript", ""),
-    customStyles: get(webInstance, "globalSettings.custom_css", ""),
+    favicon: get(webInstance, 'favicon'),
+    customScripts: get(webInstance, 'globalSettings.custom_javascript', ''),
+    customStyles: get(webInstance, 'globalSettings.custom_css', ''),
     googleAnalyticsCode: get(
       webInstance,
-      "globalSettings.google_analytics_code",
-      ""
+      'globalSettings.google_analytics_code',
+      '',
     ),
     googleTagManagerCode: get(
       webInstance,
-      "globalSettings.google_tag_manager_code",
-      ""
+      'globalSettings.google_tag_manager_code',
+      '',
     ),
-    fbPixelCode: get(webInstance, "globalSettings.facebook_remarketing_id", ""),
+    fbPixelCode: get(webInstance, 'globalSettings.facebook_remarketing_id', ''),
   };
 };
 
-export const reqExtractUri = (url) => {
-  const uriPosition = url?.indexOf("?");
-  return uriPosition > 0 ? url.slice(uriPosition) : "";
+export const reqExtractUri = url => {
+  const uriPosition = url?.indexOf('?');
+  return uriPosition > 0 ? url.slice(uriPosition) : '';
 };
 
-export const reqGetHost = (req) => {
+export const reqGetHost = req => {
   if (process.env.HOST) {
     return process.env.HOST;
   }
 
-  let protocol = "https://";
-  const host = get(req, "headers.host", "");
-  if (host.indexOf("localhost") > -1) {
-    protocol = "http://";
+  let protocol = 'https://';
+  const host = get(req, 'headers.host', '');
+  if (host.indexOf('localhost') > -1) {
+    protocol = 'http://';
   }
 
   return protocol + host;
 };
 
-export const reqApiHost = (req) => {
-  return process.env.HOST_API;
+export const reqApiHost = req => {
+  return reqApiHostEdge(req);
 };
 
 export const getApiExpand = (
-  type = "",
+  type = '',
   asUriPart = false,
-  uriType = "EXPAND"
+  uriType = 'EXPAND',
 ) => {
   if (!type) {
-    return "";
+    return '';
   }
 
   const expandPrepend = asUriPart
-    ? `${toLower(uriType ? uriType : "EXPAND")}=`
-    : "";
+    ? `${toLower(uriType ? uriType : 'EXPAND')}=`
+    : '';
   const expandData =
-    process.env[`NEXT_PUBLIC_${type}_${uriType ? uriType : "EXPAND"}`];
+    process.env[`NEXT_PUBLIC_${type}_${uriType ? uriType : 'EXPAND'}`];
 
   return expandPrepend + expandData;
 };
 
-export const getApiFields = (type = "", asUriPart = false) => {
-  return getApiExpand(type, asUriPart, "FIELDS");
+export const getApiFields = (type = '', asUriPart = false) => {
+  return getApiExpand(type, asUriPart, 'FIELDS');
 };
 
 /* @TODO deprecated */
 export const getProductDetailExpand = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_DETAIL_EXPAND
-    ? `${asUriPart ? `expand=` : ""}${
+    ? `${asUriPart ? `expand=` : ''}${
         process.env.NEXT_PUBLIC_PRODUCT_DETAIL_EXPAND
       }`
-    : "";
+    : '';
 };
 
 /* @TODO deprecated */
 export const getProductDetailFields = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_DETAIL_FIELDS
-    ? `${asUriPart ? `fields=` : ""}${
+    ? `${asUriPart ? `fields=` : ''}${
         process.env.NEXT_PUBLIC_PRODUCT_DETAIL_FIELDS
       }`
-    : "";
+    : '';
 };
 
 /* @TODO deprecated */
 export const getProductCardFields = (asUriPart = false) => {
   return process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
-    ? `${asUriPart ? `fields=` : ""}${
+    ? `${asUriPart ? `fields=` : ''}${
         process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
       }`
     : `${
-        asUriPart ? `fields=` : ""
+        asUriPart ? `fields=` : ''
       }id,name,urlTitle,storeStatus,finalPriceData,photo`;
 };
 
 export const reqGetHeadersFront = (req, options = {}) => {
   return {
-    ...get(req, "headers"),
-    host: get(req, "headers.host"),
-    "grandus-frontend-url": get(options, "forwardUrl", get(req, "url")),
+    ...get(req, 'headers'),
+    host: get(req, 'headers.host'),
+    'grandus-frontend-url': get(options, 'forwardUrl', get(req, 'url')),
   };
 };
 
-export const getFrontendUrlFromHeaders = (headers) => {
+export const getFrontendUrlFromHeaders = headers => {
   return get(
     headers,
-    "Grandus-Frontend-Url",
-    get(headers, "grandus-frontend-url")
+    'Grandus-Frontend-Url',
+    get(headers, 'grandus-frontend-url'),
   );
 };
 
-export const reqGetHeaders = (req) => {
-  const result = {
-    "Content-Type": "application/json",
-    "Owner-Token": process.env.GRANDUS_TOKEN_OWNER,
-    "Webinstance-Token": process.env.GRANDUS_TOKEN_WEBINSTANCE,
-  };
+export const reqGetHeaders = req => {
+  const result = reqGetHeadersBasicEdge(req);
 
-  const locale = get(req, "cookies.NEXT_LOCALE");
+  const locale = get(req, 'cookies.NEXT_LOCALE');
 
   if (locale) {
-    result["Accept-Language"] = locale;
+    result['Accept-Language'] = locale;
   }
 
   const uriToForward = getFrontendUrlFromHeaders(req?.headers);
   if (uriToForward) {
     const removedProtocol = replace(
-      replace(uriToForward, "http://", ""),
-      "https://",
-      ""
+      replace(uriToForward, 'http://', ''),
+      'https://',
+      '',
     );
 
     Object.assign(result, {
-      URI: replace(removedProtocol, get(req, "headers.host"), ""),
+      URI: replace(removedProtocol, get(req, 'headers.host'), ''),
     });
   }
 
-  if (!get(req, "session")) return result;
+  if (!get(req, 'session')) return result;
 
   const user = req.session.get(USER_CONSTANT);
 
-  if (get(user, "accessToken")) {
+  if (get(user, 'accessToken')) {
     Object.assign(result, {
-      Authorization: `Bearer ${get(user, "accessToken")}`,
+      Authorization: `Bearer ${get(user, 'accessToken')}`,
     });
   }
 
@@ -202,19 +191,19 @@ export const reqGetHeaders = (req) => {
 
   const additionalFields = split(
     process.env.NEXT_PUBLIC_REQUEST_ADDITIONAL_FIELDS,
-    ","
+    ',',
   );
 
   if (!isEmpty(additionalFields)) {
     const session = req.session.get();
 
-    additionalFields.map((field) => {
-      const fieldExpanded = split(field, "|", 2);
+    additionalFields.map(field => {
+      const fieldExpanded = split(field, '|', 2);
 
-      const key = get(fieldExpanded, "[0]");
+      const key = get(fieldExpanded, '[0]');
       const value = get(
         session,
-        get(fieldExpanded, "[1]", get(fieldExpanded, "[0]"))
+        get(fieldExpanded, '[1]', get(fieldExpanded, '[0]')),
       );
 
       if (value) {
@@ -230,7 +219,7 @@ export const reqGetHeaders = (req) => {
 };
 
 export const scrollToTop = () => {
-  if (typeof window !== "undefined") window.scrollTo(0, 0);
+  if (typeof window !== 'undefined') window.scrollTo(0, 0);
 };
 
 /**
@@ -247,23 +236,7 @@ export const scrollToTop = () => {
  * @param {string} type
  */
 export const getImageUrl = (image, size, type) => {
-  const host = process.env.NEXT_PUBLIC_IMAGE_HOST
-    ? process.env.NEXT_PUBLIC_IMAGE_HOST
-    : "";
-
-  if (!image) {
-    return false;
-  }
-
-  const updateTimeTimestamp = image?.updateTime
-    ? "?v=" + dayjs(image?.updateTime, "YYYY-MM-DD HH:mm:ss").valueOf()
-    : "";
-
-  const imagePath = endsWith(image?.path, "_")
-    ? image?.path
-    : image?.path + "/";
-
-  return host + imagePath + size + "." + type + updateTimeTimestamp;
+  return getImageUrlEdge(image, size, type);
 };
 
 /**
@@ -272,22 +245,22 @@ export const getImageUrl = (image, size, type) => {
  *
  * @param {object} attachment
  */
-export const getAttachmentUrl = (attachment) => {
+export const getAttachmentUrl = attachment => {
   const host = process.env.NEXT_PUBLIC_IMAGE_HOST
     ? process.env.NEXT_PUBLIC_IMAGE_HOST
-    : "";
+    : '';
 
   if (!attachment) {
     return false;
   }
 
   return (
-    (attachment?.type !== ATTACHMENT_TYPE_URL ? host : "") + attachment.fileUrl
+    (attachment?.type !== ATTACHMENT_TYPE_URL ? host : '') + attachment.fileUrl
   );
 };
 
-export const convertToNumber = (numberCandidate) => {
-  return parseFloat(numberCandidate.replace(",", "."));
+export const convertToNumber = numberCandidate => {
+  return parseFloat(numberCandidate.replace(',', '.'));
 };
 
 export const isB2B = (eshopType = ESHOP_TYPE_B2C, user) => {
@@ -295,7 +268,7 @@ export const isB2B = (eshopType = ESHOP_TYPE_B2C, user) => {
     toNumber(eshopType) === ESHOP_TYPE_B2B ||
     toNumber(eshopType) === ESHOP_TYPE_B2B_LOCKED ||
     (toNumber(eshopType) === ESHOP_TYPE_MIXED &&
-      get(user, "company.vatNumber", false))
+      get(user, 'company.vatNumber', false))
   );
 };
 
@@ -320,12 +293,12 @@ export const rotateArray = (arrayToRotate, timesToRotate) => {
  *
  * @param {object} headers
  */
-export const getPaginationFromHeaders = (headers) => {
+export const getPaginationFromHeaders = headers => {
   return {
-    totalCount: parseInt(headers.get("x-pagination-total-count")),
-    pageCount: parseInt(headers.get("x-pagination-page-count")),
-    currentPage: parseInt(headers.get("x-pagination-current-page")),
-    perPage: parseInt(headers.get("x-pagination-per-page")),
+    totalCount: parseInt(headers.get('x-pagination-total-count')),
+    pageCount: parseInt(headers.get('x-pagination-page-count')),
+    currentPage: parseInt(headers.get('x-pagination-current-page')),
+    perPage: parseInt(headers.get('x-pagination-per-page')),
   };
 };
 
@@ -339,7 +312,7 @@ export const getPaginationFromHeaders = (headers) => {
 export const getCategoryParameters = (
   data,
   type = null,
-  path = "parameters"
+  path = 'parameters',
 ) => {
   if (!data) {
     return [];
@@ -351,22 +324,22 @@ export const getCategoryParameters = (
 
   let parameters = [];
 
-  if (path && path !== "") {
-    parameters = get(data, "parameters", []);
+  if (path && path !== '') {
+    parameters = get(data, 'parameters', []);
   } else {
     parameters = data;
   }
 
   switch (type) {
     case CATEGORY_PARAMETERS_BASIC:
-      return filter(parameters, (parameter) =>
-        extractType(parameter, CATEGORY_PARAMETERS_BASIC)
+      return filter(parameters, parameter =>
+        extractType(parameter, CATEGORY_PARAMETERS_BASIC),
       );
       break;
 
     case CATEGORY_PARAMETERS_ADVANCED:
-      return filter(parameters, (parameter) =>
-        extractType(parameter, CATEGORY_PARAMETERS_ADVANCED)
+      return filter(parameters, parameter =>
+        extractType(parameter, CATEGORY_PARAMETERS_ADVANCED),
       );
       break;
 
@@ -376,11 +349,11 @@ export const getCategoryParameters = (
   }
 };
 
-export const getCategoryParametersBasic = (data, path = "parameters") => {
+export const getCategoryParametersBasic = (data, path = 'parameters') => {
   return getCategoryParameters(data, CATEGORY_PARAMETERS_BASIC, path);
 };
 
-export const getCategoryParametersAdvanced = (data, path = "parameters") => {
+export const getCategoryParametersAdvanced = (data, path = 'parameters') => {
   return getCategoryParameters(data, CATEGORY_PARAMETERS_ADVANCED, path);
 };
 
@@ -391,9 +364,9 @@ export const generateRandomString = (length = 10) => {
   }
 
   const chars = [
-    ..."ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
+    ...'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
   ];
   return [...Array(stringLength)].map(
-    (i) => chars[(Math.random() * chars.length) | 0]
+    i => chars[(Math.random() * chars.length) | 0],
   ).join``;
 };
