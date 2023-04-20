@@ -136,12 +136,12 @@ export const getMetaData = (
     metaDataGeneral.icons = options.icons;
   }
 
-  if (photo) {
+  if (photo?.path || options?.image) {
     const imageData = {
-      url: getImageUrl(
-        photo,
-        get(options, 'image.dimensions', '1200x630'),
-        'jpg',
+      url: get(
+        options,
+        'image.url',
+        getImageUrl(photo, get(options, 'image.dimensions', '1200x630'), 'jpg'),
       ),
     };
 
