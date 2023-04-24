@@ -207,7 +207,7 @@ const FBPixel = {
     };
     return cartObject;
   },
-  purchase: function (order) {
+  purchase: function (order, withVat = true) {
     if (isEmpty(order)) {
       return [];
     }
@@ -233,7 +233,7 @@ const FBPixel = {
         contents.push({
           id: `${get(product, "id", product.id)}`,
           quantity: get(item, "count", 1),
-          item_price: get(product, "finalPriceData.price", null),
+          item_price: get(item, ["unitPriceData", withVat ? "price" : "priceWithoutVat"], null),
           name: get(product, "name", null),
           brand: get(product, "brand.name", null),
           categories,
@@ -245,8 +245,8 @@ const FBPixel = {
       eventID: `order-${order?.id}`,
       content_ids: productsIds,
       content_type: CONTENT_TYPE_PRODUCT,
-      currency: get(order, "currency", "EUR"),
-      value: get(order, "totalSum", null),
+      currency: get(order, "itemsSumData.currency", "EUR"),
+      value: get(order, ["itemsSumData", withVat ? "price" : "priceWithoutVat"], null),
       num_items: orderItems.length,
       order_number: get(order, "orderNumber", null),
       contents: contents,
@@ -281,21 +281,23 @@ const FBPixel = {
 
     const contents = [];
     const contentIds = [];
+    let priceTotal = 0;
 
     forEach(cart?.items, (item) => {
       contentIds.push(get(item, "product.id"));
       contents.push({
         id: `${get(item, "product.id")}`,
         quantity: get(item, "count", 1),
-        item_price: get(item, "finalPriceData.price", null),
+        item_price: get(item, "priceData.price", null),
         name: get(item, "product.name", null),
         brand: get(item, "brand.name", null),
       });
+      priceTotal += get(item, "priceTotalData.price", 0);
     });
 
     return {
       currency: get(cart, "sumData.currency"),
-      value: get(cart, "sumData.price"),
+      value: priceTotal,
       content_ids: contentIds,
       contents: contents,
     };
@@ -324,7 +326,7 @@ const FBPixel = {
   },
 
   addPurchase: function (order) {
-    const data = this.purchase(order);
+    const data = this.purchase(order, false);
 
     if (isEmpty(data)) {
       return;
@@ -342,6 +344,16 @@ const FBPixel = {
 
     this.track("ViewContent", productData);
   },
+
+  addToWishlist: function (product) {
+    const productData = this.prepareProductData(product)
+
+    if (!productData) {
+      return;
+    }
+
+    this.track("AddToWishlist", productData);
+  }
 };
 
 export default FBPixel;
