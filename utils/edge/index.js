@@ -1,3 +1,5 @@
+import replace from "lodash/replace";
+
 /**
  * Generates image path for certain image.
  * Automaticaly add host and construct path by provided attributes.
@@ -21,7 +23,7 @@ export const getImageUrl = (image, size, type) => {
   }
 
   const updateTimeTimestamp = image?.updateTime
-    ? '?v=' + encodeURIComponent(image?.updateTime).replaceAll('%', '-')
+    ? '?v=' + replace(encodeURIComponent(image?.updateTime) ?? '', new RegExp('%', 'g'), '-')
     : '';
 
   const imagePath = image?.path?.endsWith('_')
