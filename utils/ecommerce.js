@@ -93,6 +93,7 @@ const EnhancedEcommerce = {
           item_category3: get(product, "categories[2].name", undefined),
           item_category4: get(product, "categories[3].name", undefined),
           item_category5: get(product, "categories[4].name", undefined),
+          quantity: 1,
         },
       ],
     };
