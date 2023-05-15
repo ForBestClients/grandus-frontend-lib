@@ -330,7 +330,7 @@ const EnhancedEcommerce = {
       currency: cart?.sumData?.currency,
       value: cart?.sumData?.price,
       coupon: cart?.coupon?.hash,
-      payemnt_type: cart?.payment?.name,
+      payment_type: cart?.payment?.name,
       items: cart?.items.map((item, index) => ({
         item_id: item?.product?.id,
         item_name: item?.product?.name,
