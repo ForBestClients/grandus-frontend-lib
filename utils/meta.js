@@ -156,8 +156,13 @@ export const getMetaData = (
     metaDataOg.images = [imageData];
   }
 
+  const alternates = {
+    canonical: get(options, 'alternates.canonical', '/'),
+  };
+
   return {
     ...metaDataGeneral,
     openGraph: metaDataOg,
+    alternates: alternates,
   };
 };
