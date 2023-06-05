@@ -29,15 +29,6 @@ const useStaticBlock = (options = {}) => {
     );
   }
 
-  console.log(
-    'old',
-    '/api/lib/v1/blocks?expand=customCss,customJavascript&per-page=999',
-  );
-  console.log(
-    'new',
-    '/api/lib/v1/blocks' + (isEmpty(uri) ? '' : '?' + join(uri, '&')),
-  );
-
   const { data = null, isValidating } = useSWR(
     '/api/lib/v1/blocks' + (isEmpty(uri) ? '' : '?' + join(uri, '&')),
     url => fetch(url).then(r => r.json()),
