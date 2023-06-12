@@ -353,6 +353,16 @@ const FBPixel = {
     }
 
     this.track("AddToWishlist", productData);
+  },
+
+  reservation: function (product) {
+    const productData = this.prepareProductData(product)
+
+    if (!productData) {
+      return;
+    }
+
+    this.track("Reservation", productData);
   }
 };
 
