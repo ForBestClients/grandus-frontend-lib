@@ -20,10 +20,10 @@ import { removeParameter, addParameter } from 'grandus-lib/utils/url';
 import { RESERVED_URI_PARTS } from 'grandus-lib/constants/UrlConstants';
 import { CATEGORY_PARAMETERS_SHOW_LIMIT } from 'grandus-lib/constants/AppConstants';
 
-const replaceKeyForUrlTitle = key =>
+export const replaceKeyForUrlTitle = key =>
   get(find(RESERVED_URI_PARTS, ['key', key]), 'urlTitle', key);
 
-const replaceUrlTitleForKey = urlTitle =>
+export const replaceUrlTitleForKey = urlTitle =>
   get(find(RESERVED_URI_PARTS, ['urlTitle', urlTitle]), 'key', urlTitle);
 
 const sortChunks = chunks => sortBy(chunks, pair => pair[0]);
