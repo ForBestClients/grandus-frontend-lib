@@ -1,8 +1,9 @@
-import useSWR from 'swr';
+import { useState } from "react";
+import useSWR from "swr";
 
-import get from 'lodash/get';
-import isFunction from 'lodash/isFunction';
-import filter from 'lodash/filter';
+import get from "lodash/get";
+import isFunction from "lodash/isFunction";
+import filter from "lodash/filter";
 
 export default function useCart(initialCart = false, options = {}) {
   const swrOptions = {
@@ -14,42 +15,46 @@ export default function useCart(initialCart = false, options = {}) {
     swrOptions.revalidateOnMount = true;
   }
 
+  const [isLoading, setIsLoading] = useState(false);
   const {
     data: cart,
     mutate,
     isValidating,
-    isLoading,
-  } = useSWR(`/api/lib/v1/cart`, url => fetch(url).then(r => r.json()), {
+    isLoading: isCartLoading,
+  } = useSWR(`/api/lib/v1/cart`, (url) => fetch(url).then((r) => r.json()), {
     ...swrOptions,
     ...options,
   });
 
   const itemRemove = async (itemId, callback) => {
+    setIsLoading(true);
     mutate(
-      { ...cart, items: filter(cart?.items, item => item?.id !== itemId) },
-      false,
+      { ...cart, items: filter(cart?.items, (item) => item?.id !== itemId) },
+      false
     );
     await mutate(
       await fetch(`/api/lib/v1/cart/items/${itemId}`, {
-        method: 'DELETE',
+        method: "DELETE",
       })
-        .then(result => result.json())
-        .then(result => {
+        .then((result) => result.json())
+        .then((result) => {
           if (isFunction(callback)) {
             callback(result);
           }
           return result;
         }),
-      false,
+      false
     );
+    setIsLoading(false);
   };
 
   const itemsRemove = async (itemsIds, callback) => {
+    setIsLoading(true);
     let success = true;
     const cart = await fetch(`/api/lib/v1/cart/items/bulk`, {
-      method: 'DELETE',
+      method: "DELETE",
       body: JSON.stringify({ items: itemsIds }),
-    }).then(async result => {
+    }).then(async (result) => {
       success = result?.ok;
       const data = await result.json();
       data.success = success;
@@ -62,40 +67,44 @@ export default function useCart(initialCart = false, options = {}) {
     if (success) {
       await mutate(cart, false);
     }
+    setIsLoading(false);
   };
 
   const cartUpdate = async (data, callback) => {
+    setIsLoading(true);
     try {
       await mutate(
         await fetch(`/api/lib/v1/cart`, {
-          method: 'POST',
+          method: "POST",
           body: JSON.stringify({
             cart: {
               ...data,
             },
           }),
         })
-          .then(result => result.json())
-          .then(result => {
+          .then((result) => result.json())
+          .then((result) => {
             if (isFunction(callback)) {
               callback(result);
             }
             return result;
           }),
-        false,
+        false
       );
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
-  const cartDestroy = async callback => {
+  const cartDestroy = async (callback) => {
+    setIsLoading(true);
     try {
       await mutate(
         await fetch(`/api/lib/v1/cart`, {
-          method: 'DELETE',
-        }).then(result => {
-          result.json().then(data => {
+          method: "DELETE",
+        }).then((result) => {
+          result.json().then((data) => {
             if (isFunction(callback)) {
               callback(data);
             }
@@ -103,31 +112,35 @@ export default function useCart(initialCart = false, options = {}) {
             return data;
           });
         }),
-        false,
+        false
       );
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
   const itemAdd = async (count, store, productId, callback, options = {}) => {
+    setIsLoading(true);
     const items = { count: count, sizeId: store, productId: productId };
     if (options?.hash) {
-      items.hash = get(options, 'hash', '');
+      items.hash = get(options, "hash", "");
     }
     try {
       await itemsAdd(items, callback);
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
   const itemsAdd = async (items, callback) => {
+    setIsLoading(true);
     let success = true;
     const cart = await fetch(`/api/lib/v1/cart`, {
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ items }),
-    }).then(async result => {
+    }).then(async (result) => {
       success = result?.ok;
       const data = await result.json();
       data.success = success;
@@ -140,16 +153,18 @@ export default function useCart(initialCart = false, options = {}) {
     if (success) {
       await mutate(cart, false);
     }
+    setIsLoading(false);
   };
 
   const itemUpdate = async (itemId, body, callback) => {
+    setIsLoading(true);
     let success = true;
     const cart = await fetch(`/api/lib/v1/cart/items/${itemId}`, {
-      method: 'PUT',
+      method: "PUT",
       body: JSON.stringify({
         item: body,
       }),
-    }).then(async result => {
+    }).then(async (result) => {
       success = result?.ok;
       const data = await result.json();
       data.success = success;
@@ -162,15 +177,17 @@ export default function useCart(initialCart = false, options = {}) {
     if (success) {
       await mutate(cart, false);
     }
+    setIsLoading(false);
   };
 
   const saveContact = async (values, callback) => {
+    setIsLoading(true);
     try {
       await fetch(`/api/lib/v1/cart/contact`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(values),
-      }).then(result => {
-        result.json().then(data => {
+      }).then((result) => {
+        result.json().then((data) => {
           if (isFunction(callback)) {
             callback(data);
           }
@@ -179,16 +196,18 @@ export default function useCart(initialCart = false, options = {}) {
         });
       });
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
-  const removeContact = async callback => {
+  const removeContact = async (callback) => {
+    setIsLoading(true);
     try {
       await fetch(`/api/lib/v1/cart/contact`, {
-        method: 'DELETE',
-      }).then(result => {
-        result.json().then(data => {
+        method: "DELETE",
+      }).then((result) => {
+        result.json().then((data) => {
           if (isFunction(callback)) {
             callback(data);
           }
@@ -197,16 +216,18 @@ export default function useCart(initialCart = false, options = {}) {
         });
       });
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
   const createOrder = async (values, callback) => {
+    setIsLoading(true);
     try {
       await fetch(`/api/lib/v1/order/create`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify(values),
-      }).then(result => {
+      }).then((result) => {
         const data = result.json();
         if (isFunction(callback)) {
           callback(data);
@@ -214,16 +235,18 @@ export default function useCart(initialCart = false, options = {}) {
         return data;
       });
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
     }
+    setIsLoading(false);
   };
 
   const applyCoupon = async (couponHash, callback) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`/api/lib/v1/cart/coupon`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ couponHash }),
-      }).then(result => {
+      }).then((result) => {
         if (isFunction(callback)) {
           callback(result);
         }
@@ -231,16 +254,18 @@ export default function useCart(initialCart = false, options = {}) {
       });
       return response;
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
     } finally {
+      setIsLoading(false);
     }
   };
 
-  const removeCoupon = async callback => {
+  const removeCoupon = async (callback) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`/api/lib/v1/cart/coupon`, {
-        method: 'DELETE',
-      }).then(result => {
+        method: "DELETE",
+      }).then((result) => {
         if (isFunction(callback)) {
           callback(result);
         }
@@ -249,18 +274,21 @@ export default function useCart(initialCart = false, options = {}) {
 
       return response;
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const applyCredits = async (value, callback) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`/api/lib/v1/cart/credits`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({ credit: value }),
       })
-        .then(result => result.json())
-        .then(result => {
+        .then((result) => result.json())
+        .then((result) => {
           if (isFunction(callback)) {
             callback(result);
           }
@@ -269,14 +297,16 @@ export default function useCart(initialCart = false, options = {}) {
       setIsLoading(false);
       return response;
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
+      setIsLoading(false);
     }
   };
 
   const applyIsic = async (surname, code, callback) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`/api/lib/v1/cart/isic`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           isic: {
             surname,
@@ -284,8 +314,8 @@ export default function useCart(initialCart = false, options = {}) {
           },
         }),
       })
-        .then(result => result.json())
-        .then(result => {
+        .then((result) => result.json())
+        .then((result) => {
           if (isFunction(callback)) {
             callback(result);
           }
@@ -294,12 +324,16 @@ export default function useCart(initialCart = false, options = {}) {
 
       return response;
     } catch (error) {
-      console.error('An unexpected error happened:', error);
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const isProductAdded = productId => {
-    const cartItem = cart?.items?.find(item => item?.product?.id === productId);
+  const isProductAdded = (productId) => {
+    const cartItem = cart?.items?.find(
+      (item) => item?.product?.id === productId
+    );
 
     const amount = cartItem ? cartItem?.count || 1 : 0;
 
@@ -307,10 +341,11 @@ export default function useCart(initialCart = false, options = {}) {
   };
 
   return {
-    cart: get(cart, 'accessToken') ? cart : null,
+    cart: get(cart, "accessToken") ? cart : null,
     mutateCart: mutate,
-    isLoading: isLoading,
-    isValidating: isValidating,
+    isValidating,
+    isLoading,
+    isCartLoading,
     itemsAdd,
     itemAdd,
     itemRemove,
