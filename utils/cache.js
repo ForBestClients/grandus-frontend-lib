@@ -1,4 +1,10 @@
-import { get, split, zip, zipObject, map, isNull } from "lodash";
+import get from "lodash/get";
+import split from "lodash/split";
+import zip from "lodash/zip";
+import zipObject from "lodash/zipObject";
+import map from "lodash/map";
+import isNull from "lodash/isNull";
+
 import Redis from "ioredis";
 import {
   USER_CONSTANT,
@@ -112,8 +118,9 @@ export const getCacheKeyByType = (type = "request", options = {}) => {
 export const getCachedData = async (req, cache, options = {}) => {
   if (!cache) return false;
 
-  const cacheKey = getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options })
-    + (getLocalSuffix(req));
+  const cacheKey =
+    getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options }) +
+    getLocalSuffix(req);
   const data = await cache.get(
     cacheKey
     // (err) => console.error(err)
@@ -157,27 +164,23 @@ export const outputCachedData = async (req, res, cache, options = {}) => {
 export const saveDataToCache = async (req, cache, data, options = {}) => {
   if (!cache) return false;
 
-  let cacheTime = get(options, 'time');
+  let cacheTime = get(options, "time");
   if (!cacheTime) {
     cacheTime = process.env.CACHE_TIME ? process.env.CACHE_TIME : 60;
   }
 
-  const cacheKey = getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options })
-    + (getLocalSuffix(req));
+  const cacheKey =
+    getCacheKeyByType(get(options, "cacheKeyType"), { req: req, ...options }) +
+    getLocalSuffix(req);
 
   try {
-    cache.set(
-      cacheKey,
-      JSON.stringify(data),
-      "EX",
-      cacheTime
-    );
+    cache.set(cacheKey, JSON.stringify(data), "EX", cacheTime);
   } catch (error) {
     console.error(error);
   }
 };
 
 const getLocalSuffix = (req) => {
-  const locale = get(req, 'cookies.NEXT_LOCALE');
-  return locale ? `.${locale}`: "";
-}
+  const locale = get(req, "cookies.NEXT_LOCALE");
+  return locale ? `.${locale}` : "";
+};
