@@ -125,8 +125,12 @@ export const getCacheKeyByType = (type = 'request', options = {}) => {
  * @param {instance} cache sinstance of previosly initiated redis client
  * @param {object} options specified options which variate specific options
  */
-export const getCachedDataProps = async (cache, props = {}) => {
-  return await getCachedData({}, cache, { cacheKeyType: 'props', ...props });
+export const getCachedDataProps = async (cache, props = {}, cacheId = '') => {
+  return await getCachedData({}, cache, {
+    cacheKeyType: 'props',
+    cacheId: cacheId,
+    ...props,
+  });
 };
 
 /**
@@ -184,9 +188,15 @@ export const outputCachedData = async (req, res, cache, options = {}) => {
  * @param {object} data data to be saved in cache
  * @param {object} options specified options which variate specific options
  */
-export const saveDataToCacheProps = async (cache, data, props = {}) => {
+export const saveDataToCacheProps = async (
+  cache,
+  data,
+  props = {},
+  cacheId = '',
+) => {
   return await saveDataToCache({}, cache, data, {
     cacheKeyType: 'props',
+    cacheId: cacheId,
     ...props,
   });
 };
