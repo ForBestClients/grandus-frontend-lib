@@ -6,7 +6,6 @@ import map from 'lodash/map';
 import isNull from 'lodash/isNull';
 
 import Redis from 'ioredis';
-import crypto from 'crypto';
 
 import {
   USER_CONSTANT,
@@ -79,10 +78,7 @@ export const getCacheKeyByRequest = req => {
 };
 
 export const getCacheKeyByProps = props => {
-  return getCacheKey([
-    'props',
-    crypto.createHash('md5').update(JSON.stringify(props)).digest('hex'),
-  ]);
+  return getCacheKey(['props', JSON.stringify(props)]);
 };
 
 /**
