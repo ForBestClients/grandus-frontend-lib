@@ -1,6 +1,8 @@
 import { useState } from "react";
 import useSWR from "swr";
 import { get, isFunction } from "lodash";
+import isEmpty from 'lodash/isEmpty';
+import filter from 'lodash/filter';
 
 const useWishlist = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -12,6 +14,29 @@ const useWishlist = () => {
       revalidateOnFocus: false,
       shouldRetryOnError: false,
     }
+  );
+
+  const productIds = filter(get(wishlist, 'productIds', []), (item) => item);
+
+  const productsUrl = !isEmpty(productIds)
+    ? `productIds=${productIds.join('&productIds=')}`
+    : false;
+
+  const {
+    data: productsData,
+    isLoading: isLoadingProducts,
+  } = useSWR(
+    productsUrl
+      ? `/api/lib/v1/products?${productsUrl}&fields=${
+        process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
+      }&perPage=${get(wishlist, 'productIds', []).length}`
+      : null,
+    url => fetch(url).then(r => r.json()),
+    {
+      revalidateOnReconnect: false,
+      revalidateOnFocus: false,
+      shouldRetryOnError: false,
+    },
   );
 
   const itemExists = (productId) => {
@@ -86,8 +111,9 @@ const useWishlist = () => {
 
   return {
     wishlist,
+    products: productsData?.products ?? [],
     mutateWishlist: mutate,
-    isLoading: isValidating || isLoading,
+    isLoading: isValidating || isLoading || isLoadingProducts,
     itemAdd,
     itemRemove,
     itemExists,
