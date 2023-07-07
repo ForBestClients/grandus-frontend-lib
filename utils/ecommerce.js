@@ -532,6 +532,15 @@ const EnhancedEcommerce = {
     }
 
     return prepareData(data, 'join_group')
+  },
+
+
+  form_submit: (form) => {
+    const data = {
+      form_id: form?.id,
+    };
+
+    return prepareData(data, "form_submit");
   }
 };
 
