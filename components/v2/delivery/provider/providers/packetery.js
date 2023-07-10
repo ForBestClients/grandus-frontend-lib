@@ -41,7 +41,7 @@ const Packetery = ({ errors, delivery, onSelect }) => {
 
   useEffect(() => {
     setSelectedPickupPoint(get(session, DELIVERY_DATA_SESSION_STORAGE_KEY));
-  },[session])
+  },[session?.deliveryProviderData?.nameStreet])
 
   const apiKey = get(settings, "packetery_merchant_key");
   if (isEmpty(apiKey)) {
