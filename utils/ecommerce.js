@@ -541,6 +541,16 @@ const EnhancedEcommerce = {
     };
 
     return prepareData(data, "form_submit");
+  },
+
+  //GA4 product inquiry
+  product_inquiry: (product) => {
+    const data = {
+      id: product?.id,
+      name: product?.name
+    };
+
+    return prepareData(data, "product_inquiry");
   }
 };
 
