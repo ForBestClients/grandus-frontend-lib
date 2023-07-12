@@ -12,7 +12,7 @@ import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/Session
 
 import styles from "./packetery.module.scss";
 import * as yup from "yup";
-import { useState } from "react";
+import {useEffect, useState } from "react";
 
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
@@ -38,6 +38,10 @@ const Packetery = ({ errors, delivery, onSelect }) => {
   const [selectedPickupPoint, setSelectedPickupPoint] = useState(
     get(session, DELIVERY_DATA_SESSION_STORAGE_KEY)
   );
+
+  useEffect(() => {
+    setSelectedPickupPoint(get(session, DELIVERY_DATA_SESSION_STORAGE_KEY));
+  },[session?.deliveryProviderData?.nameStreet])
 
   const apiKey = get(settings, "packetery_merchant_key");
   if (isEmpty(apiKey)) {
