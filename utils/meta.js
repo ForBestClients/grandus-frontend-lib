@@ -156,9 +156,11 @@ export const getMetaData = (
     metaDataOg.images = [imageData];
   }
 
-  const alternates = {
-    canonical: get(options, 'alternates.canonical', '/'),
-  };
+  const alternates = {};
+  const canonical = get(options, 'alternates.canonical', false);
+  if (canonical) {
+    alternates.canonical = canonical;
+  }
 
   return {
     ...metaDataGeneral,
