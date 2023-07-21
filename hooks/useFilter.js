@@ -23,12 +23,6 @@ import {
   getApiBodyFromParams as getApiBodyFromParamsMoved,
 } from 'grandus-lib/utils/filter';
 
-const replaceKeyForUrlTitle = key =>
-  get(find(RESERVED_URI_PARTS, ['key', key]), 'urlTitle', key);
-
-const replaceUrlTitleForKey = urlTitle =>
-  get(find(RESERVED_URI_PARTS, ['urlTitle', urlTitle]), 'key', urlTitle);
-
 const sortChunks = chunks => chunks; // temporary disabled sortingsortBy(chunks, (pair) => pair[0]);
 
 // Moved
