@@ -264,6 +264,9 @@ export default function useCart(initialCart = false, options = {}) {
     try {
       const response = await fetch(`/api/lib/v1/cart/coupon`, {
         method: "DELETE",
+        headers: {
+          'Content-Type': 'application/json',
+        },
       }).then((result) => {
         if (isFunction(callback)) {
           callback(result);
