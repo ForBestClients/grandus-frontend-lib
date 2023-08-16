@@ -229,9 +229,10 @@ const FBPixel = {
             )
           );
         });
-        productsIds.push(`${get(item, "productId") || product?.id}`);
+        const productId = `${get(item, "product.sku") || product?.id}`;
+        productsIds.push(productId);
         contents.push({
-          id: `${get(product, "id", product.id)}`,
+          id: productId,
           quantity: get(item, "count", 1),
           item_price: get(item, ["unitPriceData", withVat ? "price" : "priceWithoutVat"], null),
           name: get(product, "name", null),
@@ -284,9 +285,10 @@ const FBPixel = {
     let priceTotal = 0;
 
     forEach(cart?.items, (item) => {
-      contentIds.push(get(item, "product.id"));
+      const productId = `${get(item, "product.sku") || item?.product?.id}`;
+      contentIds.push(productId);
       contents.push({
-        id: `${get(item, "product.id")}`,
+        id: productId,
         quantity: get(item, "count", 1),
         item_price: get(item, "priceData.price", null),
         name: get(item, "product.name", null),
