@@ -127,20 +127,22 @@ export const getCategoryLinkAttributes = (
     return emptyResult;
   }
 
-  const newQuery = get(options, 'toDelete')
+  const categoryUrl = process.env.NEXT_PUBLIC_CATEGORY_URL ? process.env.NEXT_PUBLIC_CATEGORY_URL : "kategoria"
+
+  const newQuery = get(options, "toDelete")
     ? queryToQuery(
-        query,
-        get(options, 'dataToChange', {}),
-        get(options, 'toDelete'),
-      )
-    : queryToQuery(query, get(options, 'dataToChange', {}));
+      query,
+      get(options, "dataToChange", {}),
+      get(options, "toDelete")
+    )
+    : queryToQuery(query, get(options, "dataToChange", {}));
   return {
     href: {
-      pathname: `/kategoria/[category]/[[...parameters]]`,
+      pathname: `/${categoryUrl}/[category]/[[...parameters]]`,
       query: newQuery,
     },
     as: {
-      pathname: `/kategoria/${category}/${parameters}`,
+      pathname: `/${categoryUrl}/${category}/${parameters}`,
       query: newQuery,
     },
   };
