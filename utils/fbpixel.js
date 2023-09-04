@@ -112,7 +112,7 @@ const FBPixel = {
         {
           id: `${get(product, "sku") || product?.id}`,
           quantity: get(additionalData, "quantity", 1),
-          item_price: _.get(product, "finalPriceData.price", null),
+          item_price: get(product, "finalPriceData.price", null),
           name: get(product, "name", null),
           brand: get(product, "brand.name", null),
           categories,
