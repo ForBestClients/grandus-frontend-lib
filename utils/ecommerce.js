@@ -551,6 +551,35 @@ const EnhancedEcommerce = {
     };
 
     return prepareData(data, "product_inquiry");
+  },
+
+  //GA4 sign_up
+  sign_up: (email,method = "email") => {
+    const data = {
+      email: email,
+      method: method
+    };
+
+    return prepareData(data, "sign_up");
+  },
+
+  //GA4 login
+  login: (email,method = "email") => {
+    const data = {
+      email: email,
+      method: method
+    };
+
+    return prepareData(data, "login");
+  },
+
+  //GA4 login
+  search: (search) => {
+    const data = {
+      search_term: search,
+    };
+
+    return prepareData(data, "search");
   }
 };
 
