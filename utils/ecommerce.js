@@ -1,6 +1,12 @@
 import get from "lodash/get";
 import map from "lodash/map";
 import first from "lodash/first";
+import pickBy from 'lodash/pickBy';
+import includes from 'lodash/includes';
+
+const ALLOWED_CUSTOM_FIELDS = [
+  'custom_label_3',
+];
 
 const EnhancedEcommerce = {
   // UA analytics: category
@@ -29,7 +35,7 @@ const EnhancedEcommerce = {
     return prepareData(data, "impressions");
   },
   // G4 analytics: category
-  view_item_list: (products, list = "", options = { page: 1, perPage: 1 }) => {
+  view_item_list: function (products, list = "", options = { page: 1, perPage: 1 }) {
     let positionConstant = 0;
     const page = options?.page;
     const perPage = options?.perPage;
@@ -51,10 +57,15 @@ const EnhancedEcommerce = {
         item_category3: get(product, "categories[2].name", undefined),
         item_category4: get(product, "categories[3].name", undefined),
         item_category5: get(product, "categories[4].name", undefined),
+        ...this.getProductCustomKeys(product),
       })),
     };
 
     return prepareData(data, "view_item_list");
+  },
+
+  getProductCustomKeys: function (product) {
+    return pickBy(product, (value, key) => includes(ALLOWED_CUSTOM_FIELDS, key));
   },
 
   // UA analytics: detail
@@ -76,7 +87,7 @@ const EnhancedEcommerce = {
   },
 
   //G4 analytics:  detail
-  view_item: (product) => {
+  view_item: function (product){
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
@@ -94,6 +105,7 @@ const EnhancedEcommerce = {
           item_category4: get(product, "categories[3].name", undefined),
           item_category5: get(product, "categories[4].name", undefined),
           quantity: 1,
+          ...this.getProductCustomKeys(product),
         },
       ],
     };
@@ -151,7 +163,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics: add to cart
-  add_to_cart: (product, variant, quantity = 1) => {
+  add_to_cart: function (product, variant, quantity = 1) {
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
@@ -170,6 +182,7 @@ const EnhancedEcommerce = {
           item_category4: get(product, "categories[3].name", undefined),
           item_category5: get(product, "categories[4].name", undefined),
           quantity: quantity,
+          ...this.getProductCustomKeys(product),
         },
       ],
     };
@@ -178,7 +191,7 @@ const EnhancedEcommerce = {
   },
 
   // UA analytics: remove from cart
-  cartRemove: (product, quantity = 1) => {
+  cartRemove: function (product, quantity = 1) {
     const data = {
       remove: {
         products: [
@@ -189,6 +202,7 @@ const EnhancedEcommerce = {
             brand: product?.brand?.name,
             category: get(getProductCategory(product), "name", undefined),
             quantity: quantity,
+            ...this.getProductCustomKeys(product),
           },
         ],
       },
@@ -431,6 +445,7 @@ const EnhancedEcommerce = {
         item_category4: get(item, "product.categories[3].name", undefined),
         item_category5: get(item, "product.categories[4].name", undefined),
         quantity: item?.count,
+        ...this.getProductCustomKeys(item?.product),
       })),
     };
 
