@@ -416,7 +416,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics purchase
-  purchaseG4: (order) => {
+  purchaseG4: function( order) {
     const couponsString = map(get(order, "coupons"), (coupon) =>
       get(coupon, "hash")
     ).join("|");
