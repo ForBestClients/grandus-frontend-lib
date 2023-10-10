@@ -6,6 +6,7 @@ import includes from 'lodash/includes';
 
 const ALLOWED_CUSTOM_FIELDS = [
   'custom_label_3',
+  'custom_label_4'
 ];
 
 const EnhancedEcommerce = {
