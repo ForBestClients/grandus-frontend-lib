@@ -7,7 +7,7 @@ import {
 } from "@ant-design/icons";
 import useCart from "grandus-lib/hooks/useCart";
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
-import { get, find, toNumber, isEmpty } from "lodash";
+import { get, find, toNumber, isEmpty, first } from "lodash";
 import EnhancedEcommerce from "grandus-lib/utils/ecommerce";
 import TagManager from "grandus-lib/utils/gtag";
 
@@ -19,6 +19,7 @@ import Isic from "components/cart/Isic";
 import Steps from "components/cart/steps/CartSteps";
 import Link from "next/link";
 import CartSummary from "components/cart/summary/CartSummary";
+import {formatCart, formatedVariant, formatItem, formatProduct} from "grandus-lib/utils/helperFunctions";
 
 import { Table, InputNumber, Button, Row, Col, Result, Typography } from "antd";
 
@@ -54,10 +55,17 @@ export const ItemCountInput = ({
               Math.abs(itemsDifference)
             )
           );
+          TagManager.push(
+            EnhancedEcommerce.remove_from_cart(formatItem(item)),
+            Math.abs(itemsDifference)
+          );
         } else if (itemsDifference > 0) {
           TagManager.push(
             EnhancedEcommerce.cartAdd(item?.product, Math.abs(itemsDifference))
           );
+          TagManager.push(
+            EnhancedEcommerce.add_to_cart(formatProduct(item?.product),
+            formatedVariant(first(item?.product.store)?.name), Math.abs(itemsDifference)));
         }
       }
       setInternalLoading(false);
@@ -130,6 +138,9 @@ const ItemRemove = ({ item, itemRemove, setLoading, style = {} }) => {
           TagManager.push(
             EnhancedEcommerce.cartRemove(item?.product, get(item, "count", 1))
           );
+          TagManager.push(
+            EnhancedEcommerce.remove_from_cart(formatItem(item)), item?.count
+          );
           setLoading(false);
         });
       }}
@@ -147,8 +158,11 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
   const isProcessing = isLoading || loading;
 
   useEffect(() => {
-    TagManager.push(EnhancedEcommerce.checkout(get(cart, "items", []), 1));
-  }, []);
+    if(cart){
+      TagManager.push(EnhancedEcommerce.checkout(get(cart, "items", []), 1));
+      TagManager.push(EnhancedEcommerce.view_cart(formatCart(cart)));
+    }
+  }, [cart]);
 
   if (isEmpty(get(cart, "items", [])) && isProcessing) {
     return (
