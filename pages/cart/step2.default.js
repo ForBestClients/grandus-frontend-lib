@@ -45,6 +45,7 @@ import {
   STREET_REGEX,
 } from "grandus-lib/constants/ValidatorConstants";
 import { useState, useRef, useEffect } from "react";
+import {formatCart} from "grandus-lib/utils/helperFunctions";
 const { Option } = Select;
 
 const authSectionContentList = {
@@ -372,6 +373,7 @@ const CartContact = (props) => {
   };
   useEffect(() => {
     TagManager.push(EnhancedEcommerce.checkout(cart, 2));
+    TagManager.push(EnhancedEcommerce.begin_checkout(formatCart(cart)));
   }, []);
 
   if (isEmpty(get(cart, "items", [])) && isLoading) {
