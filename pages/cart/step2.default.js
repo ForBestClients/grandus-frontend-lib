@@ -376,6 +376,29 @@ const CartContact = (props) => {
     TagManager.push(EnhancedEcommerce.begin_checkout(formatCart(cart)));
   }, []);
 
+  const [isInViewport, setIsInViewport] = useState(false);
+  const buttonRef = useRef();
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInViewport(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0,
+      }
+    );
+    if (buttonRef.current) {
+      observer.observe(buttonRef.current);
+    }
+    return () => {
+      if (buttonRef.current) {
+        observer.unobserve(buttonRef.current);
+      }
+    };
+  }, [buttonRef]);
+
   if (isEmpty(get(cart, "items", [])) && isLoading) {
     return (
       <div className={"container guttered"}>
@@ -489,7 +512,7 @@ const CartContact = (props) => {
           <CartSummary
             actions={[
               <Link href="/kosik" as={`/kosik`}>
-                <Button type={"text"} icon={<ArrowLeftOutlined />}>
+                <Button ref={buttonRef} type={"text"} icon={<ArrowLeftOutlined />}>
                   späť do košíka
                 </Button>
               </Link>,
@@ -498,6 +521,7 @@ const CartContact = (props) => {
                 size={"large"}
                 onClick={() => formRef?.current?.handleSubmit()}
                 type={"primary"}
+                className={isInViewport  ? "afixed-cart-btn" : ""}
               >
                 {formRef?.current?.isSubmitting
                   ? "Spracovávam zadané údaje"
