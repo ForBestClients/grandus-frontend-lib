@@ -78,6 +78,9 @@ export const ItemCountInput = ({
     return "";
   }
 
+  let handleChange;
+  let handleBlur;
+
   const countMaxLimit = parseInt(
     get(webInstance, "globalSettings.cart_max_pieces_count", 0)
   );
