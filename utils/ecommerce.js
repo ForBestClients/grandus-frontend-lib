@@ -5,6 +5,7 @@ import pickBy from 'lodash/pickBy';
 import includes from 'lodash/includes';
 
 const ALLOWED_CUSTOM_FIELDS = [
+  'custom_label_2',
   'custom_label_3',
   'custom_label_4'
 ];
