@@ -78,11 +78,11 @@ export const getMetaData = (
 
   const metaDataGeneral = {
     referrer: 'origin-when-cross-origin',
-    viewport: {
-      width: 'device-width',
-      initialScale: 1,
-      maximumScale: 1,
-    },
+    // viewport: {
+    //   width: 'device-width',
+    //   initialScale: 1,
+    //   maximumScale: 1,
+    // },
   };
   const metaDataOg = {
     type: 'website',
@@ -103,9 +103,9 @@ export const getMetaData = (
     metaDataOg.keywords = options?.keywords;
   }
 
-  if (options?.themeColor) {
-    metaDataGeneral.themeColor = options?.themeColor;
-  }
+  // if (options?.themeColor) {
+  //   metaDataGeneral.themeColor = options?.themeColor;
+  // }
 
   if (options?.colorScheme) {
     metaDataGeneral.colorScheme = options?.colorScheme;
