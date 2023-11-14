@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+"use client";
+import {useEffect, useRef, useState} from "react";
 import {
   DeleteOutlined,
   FrownOutlined,
@@ -76,6 +77,9 @@ export const ItemCountInput = ({
   if (!get(item, "count")) {
     return "";
   }
+
+  let handleChange;
+  let handleBlur;
 
   const countMaxLimit = parseInt(
     get(webInstance, "globalSettings.cart_max_pieces_count", 0)
@@ -164,6 +168,31 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
     }
   }, [cart]);
 
+  const [isInViewport, setIsInViewport] = useState(false);
+  const buttonRef = useRef();
+
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInViewport(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0,
+      }
+    );
+    if (buttonRef.current) {
+      observer.observe(buttonRef.current);
+    }
+    return () => {
+      if (buttonRef.current) {
+        observer.unobserve(buttonRef.current);
+      }
+    };
+  }, [buttonRef]);
+
+
   if (isEmpty(get(cart, "items", [])) && isProcessing) {
     return (
       <div className={"container guttered"}>
@@ -197,7 +226,6 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
     {
       title: "",
       key: "productImage",
-      responsive: ["sm"],
       render: (item) => {
         return (
           <Link
@@ -339,12 +367,17 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
             showProducts={false}
             actions={[
               <Link href="/" as={`/`}>
-                <Button type={"text"} icon={<ArrowLeftOutlined />}>
+                <Button type={"text"} ref={buttonRef} icon={<ArrowLeftOutlined />}>
                   späť do obchodu
                 </Button>
               </Link>,
               <Link href="/kosik/kontakt" as={`/kosik/kontakt`}>
-                <Button size={"large"} type={"primary"} disabled={loading}>
+                <Button
+                  size={"large"}
+                  type={"primary"}
+                  disabled={loading}
+                  className={isInViewport  ? "afixed-cart-btn" : ""}
+                >
                   Pokračovať v objednávke
                 </Button>
               </Link>,
