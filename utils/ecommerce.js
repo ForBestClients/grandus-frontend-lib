@@ -262,7 +262,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics: view cart / step 1
-  view_cart: (cart) => {
+  view_cart: function (cart) {
     const data = {
       currency: cart?.sumData?.currency,
       value: cart?.sumData?.price,
@@ -281,6 +281,7 @@ const EnhancedEcommerce = {
         item_category4: get(item, "product.categories[3].name", ""),
         item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
+        ...this.getProductCustomKeys(item?.product),
       })),
     };
 
@@ -288,7 +289,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics: begin checkout / step 2
-  begin_checkout: (cart) => {
+  begin_checkout: function (cart) {
     const data = {
       currency: cart?.sumData?.currency,
       value: cart?.sumData?.price,
@@ -307,6 +308,7 @@ const EnhancedEcommerce = {
         item_category4: get(item, "product.categories[3].name", ""),
         item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
+        ...this.getProductCustomKeys(item?.product),
       })),
     };
 
@@ -314,7 +316,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics: add shipping info / step 3
-  add_shipping_info: (cart) => {
+  add_shipping_info: function (cart) {
     const data = {
       currency: cart?.sumData?.currency,
       value: cart?.sumData?.price,
@@ -334,6 +336,7 @@ const EnhancedEcommerce = {
         item_category4: get(item, "product.categories[3].name", ""),
         item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
+        ...this.getProductCustomKeys(item?.product),
       })),
     };
 
@@ -341,7 +344,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics: add payment info / step 3
-  add_payment_info: (cart) => {
+  add_payment_info: function (cart) {
     const data = {
       currency: cart?.sumData?.currency,
       value: cart?.sumData?.price,
@@ -361,6 +364,7 @@ const EnhancedEcommerce = {
         item_category4: get(item, "product.categories[3].name", ""),
         item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
+        ...this.getProductCustomKeys(item?.product),
       })),
     };
 
