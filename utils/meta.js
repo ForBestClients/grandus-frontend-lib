@@ -78,11 +78,11 @@ export const getMetaData = (
 
   const metaDataGeneral = {
     referrer: 'origin-when-cross-origin',
-    // viewport: {
-    //   width: 'device-width',
-    //   initialScale: 1,
-    //   maximumScale: 1,
-    // },
+    viewport: {
+      width: 'device-width',
+      initialScale: 1,
+      maximumScale: 5,
+    },
   };
   const metaDataOg = {
     type: 'website',

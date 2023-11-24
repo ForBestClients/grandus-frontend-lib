@@ -1,8 +1,8 @@
-import useWebInstance from "grandus-lib/hooks/useWebInstance";
-import { getDevMeta, getDocumentInitialProps } from "grandus-lib/utils";
-import TagManager from "grandus-lib/utils/gtag";
-import FBPixel from "grandus-lib/utils/fbpixel";
-import Analytics from "grandus-lib/utils/analytics";
+import useWebInstance from 'grandus-lib/hooks/useWebInstance';
+import { getDevMeta, getDocumentInitialProps } from 'grandus-lib/utils';
+import TagManager from 'grandus-lib/utils/gtag';
+import FBPixel from 'grandus-lib/utils/fbpixel';
+import Analytics from 'grandus-lib/utils/analytics';
 
 const MetaHead = ({ children }) => {
   const { webInstance } = useWebInstance();
@@ -21,7 +21,7 @@ const MetaHead = ({ children }) => {
     <>
       <meta
         name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+        content="width=device-width, initial-scale=1, maximum-scale=5"
       />
       {getDevMeta()}
       {process.env.NEXT_PUBLIC_IMAGE_HOST ? (
@@ -30,9 +30,9 @@ const MetaHead = ({ children }) => {
           <link rel="preconnect" href={process.env.NEXT_PUBLIC_IMAGE_HOST} />
         </>
       ) : (
-        ""
+        ''
       )}
-      <link rel="icon" href={favicon || "/favicon.ico"} />
+      <link rel="icon" href={favicon || '/favicon.ico'} />
       {Analytics.init(googleAnalyticsCode)}
       {TagManager.init(googleTagManagerCode)}
       {FBPixel.init(fbPixelCode)}
@@ -46,7 +46,7 @@ const MetaHead = ({ children }) => {
           }}
         />
       ) : (
-        ""
+        ''
       )}
     </>
   );

@@ -370,3 +370,7 @@ export const generateRandomString = (length = 10) => {
     i => chars[(Math.random() * chars.length) | 0],
   ).join``;
 };
+
+export const remove4ByteChars = (str) => {
+  return str?.replace(/[\u{010000}-\u{10FFFF}]/gu, '');
+}

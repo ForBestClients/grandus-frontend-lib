@@ -80,16 +80,23 @@ export default function useUser({
   const createUser = async (values, callback) => {
     setIsLoading(true);
     try {
+      const userData = {
+        name: get(values, "user.firstname"),
+        surname: get(values, "user.surname"),
+        email: get(values, "user.email"),
+        phone: get(values, "user.phone", ""),
+        password: get(values, "user.password"),
+        passwordRepeat: get(values, "user.passwordRepeat"),
+      }
+
+      if (get(values, "user.params")) {
+        userData.params = get(values, "user.params");
+      }
+
       const reqBody = {
-        user: {
-          name: get(values, "user.firstname"),
-          surname: get(values, "user.surname"),
-          email: get(values, "user.email"),
-          phone: get(values, "user.phone", ""),
-          password: get(values, "user.password"),
-          passwordRepeat: get(values, "user.passwordRepeat"),
-        },
+        user: userData,
       };
+
       if (get(values, "cart.accessToken")) {
         reqBody.cart = { accessToken: get(values, "cart.accessToken") };
       }

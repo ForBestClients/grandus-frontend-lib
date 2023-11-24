@@ -1,6 +1,14 @@
 import get from "lodash/get";
 import map from "lodash/map";
 import first from "lodash/first";
+import pickBy from 'lodash/pickBy';
+import includes from 'lodash/includes';
+
+const ALLOWED_CUSTOM_FIELDS = [
+  'custom_label_2',
+  'custom_label_3',
+  'custom_label_4'
+];
 
 const EnhancedEcommerce = {
   // UA analytics: category
@@ -29,7 +37,7 @@ const EnhancedEcommerce = {
     return prepareData(data, "impressions");
   },
   // G4 analytics: category
-  view_item_list: (products, list = "", options = { page: 1, perPage: 1 }) => {
+  view_item_list: function (products, list = "", options = { page: 1, perPage: 1 }) {
     let positionConstant = 0;
     const page = options?.page;
     const perPage = options?.perPage;
@@ -46,15 +54,20 @@ const EnhancedEcommerce = {
         price: product?.finalPriceData?.price,
         index: positionConstant + index + 1,
         item_brand: product?.brand?.name,
-        item_category: get(product, "categories[0].name", undefined),
-        item_category2: get(product, "categories[1].name", undefined),
-        item_category3: get(product, "categories[2].name", undefined),
-        item_category4: get(product, "categories[3].name", undefined),
-        item_category5: get(product, "categories[4].name", undefined),
+        item_category: get(product, "categories[0].name", ""),
+        item_category2: get(product, "categories[1].name", ""),
+        item_category3: get(product, "categories[2].name", ""),
+        item_category4: get(product, "categories[3].name", ""),
+        item_category5: get(product, "categories[4].name", ""),
+        ...this.getProductCustomKeys(product),
       })),
     };
 
     return prepareData(data, "view_item_list");
+  },
+
+  getProductCustomKeys: function (product) {
+    return pickBy(product, (value, key) => includes(ALLOWED_CUSTOM_FIELDS, key));
   },
 
   // UA analytics: detail
@@ -67,7 +80,7 @@ const EnhancedEcommerce = {
             id: product?.id,
             price: product?.finalPriceData?.price,
             brand: product?.brand?.name,
-            category: get(getProductCategory(product), "name", undefined),
+            category: get(getProductCategory(product), "name", ""),
           },
         ],
       },
@@ -76,7 +89,7 @@ const EnhancedEcommerce = {
   },
 
   //G4 analytics:  detail
-  view_item: (product) => {
+  view_item: function (product){
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
@@ -88,12 +101,13 @@ const EnhancedEcommerce = {
           price: product?.finalPriceData?.price,
           index: 0,
           item_brand: product?.brand?.name,
-          item_category: get(product, "categories[0].name", undefined),
-          item_category2: get(product, "categories[1].name", undefined),
-          item_category3: get(product, "categories[2].name", undefined),
-          item_category4: get(product, "categories[3].name", undefined),
-          item_category5: get(product, "categories[4].name", undefined),
+          item_category: get(product, "categories[0].name", ""),
+          item_category2: get(product, "categories[1].name", ""),
+          item_category3: get(product, "categories[2].name", ""),
+          item_category4: get(product, "categories[3].name", ""),
+          item_category5: get(product, "categories[4].name", ""),
           quantity: 1,
+          ...this.getProductCustomKeys(product),
         },
       ],
     };
@@ -120,7 +134,7 @@ const EnhancedEcommerce = {
             id: product?.id,
             price: product?.finalPriceData?.price,
             brand: product?.brand?.name,
-            category: get(getProductCategory(product), "name", undefined),
+            category: get(getProductCategory(product), "name", ""),
             list: list,
             position: product?.position + positionConstant,
           },
@@ -140,7 +154,7 @@ const EnhancedEcommerce = {
             id: product?.id,
             price: product?.finalPriceData?.price,
             brand: product?.brand?.name,
-            category: get(getProductCategory(product), "name", undefined),
+            category: get(getProductCategory(product), "name", ""),
             quantity: quantity,
           },
         ],
@@ -151,7 +165,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics: add to cart
-  add_to_cart: (product, variant, quantity = 1) => {
+  add_to_cart: function (product, variant, quantity = 1) {
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
@@ -164,12 +178,13 @@ const EnhancedEcommerce = {
           price: product?.finalPriceData?.price,
           index: 0,
           item_brand: product?.brand?.name,
-          item_category: get(product, "categories[0].name", undefined),
-          item_category2: get(product, "categories[1].name", undefined),
-          item_category3: get(product, "categories[2].name", undefined),
-          item_category4: get(product, "categories[3].name", undefined),
-          item_category5: get(product, "categories[4].name", undefined),
+          item_category: get(product, "categories[0].name", ""),
+          item_category2: get(product, "categories[1].name", ""),
+          item_category3: get(product, "categories[2].name", ""),
+          item_category4: get(product, "categories[3].name", ""),
+          item_category5: get(product, "categories[4].name", ""),
           quantity: quantity,
+          ...this.getProductCustomKeys(product),
         },
       ],
     };
@@ -178,7 +193,7 @@ const EnhancedEcommerce = {
   },
 
   // UA analytics: remove from cart
-  cartRemove: (product, quantity = 1) => {
+  cartRemove: function (product, quantity = 1) {
     const data = {
       remove: {
         products: [
@@ -187,8 +202,9 @@ const EnhancedEcommerce = {
             id: product?.id,
             price: product?.finalPriceData?.price,
             brand: product?.brand?.name,
-            category: get(getProductCategory(product), "name", undefined),
+            category: get(getProductCategory(product), "name", ""),
             quantity: quantity,
+            ...this.getProductCustomKeys(product),
           },
         ],
       },
@@ -211,11 +227,11 @@ const EnhancedEcommerce = {
           price: get(item, 'priceData.price'),
           index: 0,
           item_brand: get(item, 'product.brand.name'),
-          item_category: get(item, "product.categories[0].name", undefined),
-          item_category2: get(item, "product.categories[1].name", undefined),
-          item_category3: get(item, "product.categories[2].name", undefined),
-          item_category4: get(item, "product.categories[3].name", undefined),
-          item_category5: get(item, "product.categories[4].name", undefined),
+          item_category: get(item, "product.categories[0].name", ""),
+          item_category2: get(item, "product.categories[1].name", ""),
+          item_category3: get(item, "product.categories[2].name", ""),
+          item_category4: get(item, "product.categories[3].name", ""),
+          item_category5: get(item, "product.categories[4].name", ""),
           quantity: quantity,
         },
       ],
@@ -232,7 +248,7 @@ const EnhancedEcommerce = {
           id: item?.product?.id,
           price: item?.priceTotalData?.price,
           brand: item?.product?.brand?.name,
-          category: get(getProductCategory(item?.product), "name", undefined),
+          category: get(getProductCategory(item?.product), "name", ""),
           quantity: item?.count,
         })),
       },
@@ -259,11 +275,11 @@ const EnhancedEcommerce = {
         price: item?.priceData?.price,
         index: index,
         item_brand: item?.product?.brand?.name,
-        item_category: get(item, "product.categories[0].name", undefined),
-        item_category2: get(item, "product.categories[1].name", undefined),
-        item_category3: get(item, "product.categories[2].name", undefined),
-        item_category4: get(item, "product.categories[3].name", undefined),
-        item_category5: get(item, "product.categories[4].name", undefined),
+        item_category: get(item, "product.categories[0].name", ""),
+        item_category2: get(item, "product.categories[1].name", ""),
+        item_category3: get(item, "product.categories[2].name", ""),
+        item_category4: get(item, "product.categories[3].name", ""),
+        item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
       })),
     };
@@ -285,11 +301,11 @@ const EnhancedEcommerce = {
         price: item?.priceData?.price,
         index: index,
         item_brand: item?.product?.brand?.name,
-        item_category: get(item, "product.categories[0].name", undefined),
-        item_category2: get(item, "product.categories[1].name", undefined),
-        item_category3: get(item, "product.categories[2].name", undefined),
-        item_category4: get(item, "product.categories[3].name", undefined),
-        item_category5: get(item, "product.categories[4].name", undefined),
+        item_category: get(item, "product.categories[0].name", ""),
+        item_category2: get(item, "product.categories[1].name", ""),
+        item_category3: get(item, "product.categories[2].name", ""),
+        item_category4: get(item, "product.categories[3].name", ""),
+        item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
       })),
     };
@@ -312,11 +328,11 @@ const EnhancedEcommerce = {
         price: item?.priceData?.price,
         index: index,
         item_brand: item?.product?.brand?.name,
-        item_category: get(item, "product.categories[0].name", undefined),
-        item_category2: get(item, "product.categories[1].name", undefined),
-        item_category3: get(item, "product.categories[2].name", undefined),
-        item_category4: get(item, "product.categories[3].name", undefined),
-        item_category5: get(item, "product.categories[4].name", undefined),
+        item_category: get(item, "product.categories[0].name", ""),
+        item_category2: get(item, "product.categories[1].name", ""),
+        item_category3: get(item, "product.categories[2].name", ""),
+        item_category4: get(item, "product.categories[3].name", ""),
+        item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
       })),
     };
@@ -339,11 +355,11 @@ const EnhancedEcommerce = {
         price: item?.priceData?.price,
         index: index,
         item_brand: item?.product?.brand?.name,
-        item_category: get(item, "product.categories[0].name", undefined),
-        item_category2: get(item, "product.categories[1].name", undefined),
-        item_category3: get(item, "product.categories[2].name", undefined),
-        item_category4: get(item, "product.categories[3].name", undefined),
-        item_category5: get(item, "product.categories[4].name", undefined),
+        item_category: get(item, "product.categories[0].name", ""),
+        item_category2: get(item, "product.categories[1].name", ""),
+        item_category3: get(item, "product.categories[2].name", ""),
+        item_category4: get(item, "product.categories[3].name", ""),
+        item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
       })),
     };
@@ -391,7 +407,7 @@ const EnhancedEcommerce = {
           id: item?.productId,
           price: item?.totalPriceData?.price,
           brand: item?.product?.brand?.name,
-          category: get(getProductCategory(item?.product), "name", undefined),
+          category: get(getProductCategory(item?.product), "name", ""),
           quantity: item?.count,
           coupon: couponsString,
         })),
@@ -402,7 +418,7 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics purchase
-  purchaseG4: (order) => {
+  purchaseG4: function( order) {
     const couponsString = map(get(order, "coupons"), (coupon) =>
       get(coupon, "hash")
     ).join("|");
@@ -425,12 +441,13 @@ const EnhancedEcommerce = {
         price: item?.unitPriceData?.price,
         index: index,
         item_brand: item?.product?.brand?.name,
-        item_category: get(item, "product.categories[0].name", undefined),
-        item_category2: get(item, "product.categories[1].name", undefined),
-        item_category3: get(item, "product.categories[2].name", undefined),
-        item_category4: get(item, "product.categories[3].name", undefined),
-        item_category5: get(item, "product.categories[4].name", undefined),
+        item_category: get(item, "product.categories[0].name", ""),
+        item_category2: get(item, "product.categories[1].name", ""),
+        item_category3: get(item, "product.categories[2].name", ""),
+        item_category4: get(item, "product.categories[3].name", ""),
+        item_category5: get(item, "product.categories[4].name", ""),
         quantity: item?.count,
+        ...this.getProductCustomKeys(item?.product),
       })),
     };
 
@@ -450,11 +467,11 @@ const EnhancedEcommerce = {
         price: product?.finalPriceData?.price,
         index: 0,
         item_brand: product?.brand?.name,
-        item_category: get(product, "categories[0].name", undefined),
-        item_category2: get(product, "categories[1].name", undefined),
-        item_category3: get(product, "categories[2].name", undefined),
-        item_category4: get(product, "categories[3].name", undefined),
-        item_category5: get(product, "categories[4].name", undefined),
+        item_category: get(product, "categories[0].name", ""),
+        item_category2: get(product, "categories[1].name", ""),
+        item_category3: get(product, "categories[2].name", ""),
+        item_category4: get(product, "categories[3].name", ""),
+        item_category5: get(product, "categories[4].name", ""),
         quantity: 1,
       }],
     }
@@ -503,11 +520,11 @@ const EnhancedEcommerce = {
         price: product?.finalPriceData?.price,
         index: 0,
         item_brand: product?.brand?.name,
-        item_category: get(product, "categories[0].name", undefined),
-        item_category2: get(product, "categories[1].name", undefined),
-        item_category3: get(product, "categories[2].name", undefined),
-        item_category4: get(product, "categories[3].name", undefined),
-        item_category5: get(product, "categories[4].name", undefined),
+        item_category: get(product, "categories[0].name", ""),
+        item_category2: get(product, "categories[1].name", ""),
+        item_category3: get(product, "categories[2].name", ""),
+        item_category4: get(product, "categories[3].name", ""),
+        item_category5: get(product, "categories[4].name", ""),
         quantity: 1,
       }],
     }
@@ -551,6 +568,35 @@ const EnhancedEcommerce = {
     };
 
     return prepareData(data, "product_inquiry");
+  },
+
+  //GA4 sign_up
+  sign_up: (email,method = "email") => {
+    const data = {
+      email: email,
+      method: method
+    };
+
+    return prepareData(data, "sign_up");
+  },
+
+  //GA4 login
+  login: (email,method = "email") => {
+    const data = {
+      email: email,
+      method: method
+    };
+
+    return prepareData(data, "login");
+  },
+
+  //GA4 login
+  search: (search) => {
+    const data = {
+      search_term: search,
+    };
+
+    return prepareData(data, "search");
   }
 };
 
