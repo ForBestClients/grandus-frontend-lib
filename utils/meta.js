@@ -78,12 +78,23 @@ export const getMetaData = (
 
   const metaDataGeneral = {
     referrer: 'origin-when-cross-origin',
-    viewport: {
+  };
+
+  if (!options?.viewport?.disable) {
+    metaDataGeneral.viewport = {
       width: 'device-width',
       initialScale: 1,
       maximumScale: 5,
-    },
-  };
+    };
+
+    if (!isEmpty(options?.viewport)) {
+      metaDataGeneral.viewport = {
+        ...metaDataGeneral?.viewport,
+        ...options?.viewport,
+      };
+    }
+  }
+
   const metaDataOg = {
     type: 'website',
   };
