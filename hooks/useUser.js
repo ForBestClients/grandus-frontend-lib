@@ -89,6 +89,10 @@ export default function useUser({
         passwordRepeat: get(values, "user.passwordRepeat"),
       }
 
+      if (get(values, "user.countryId")) {
+        userData.countryId = get(values, "user.countryId");
+      }
+
       if (get(values, "user.params")) {
         userData.params = get(values, "user.params");
       }
