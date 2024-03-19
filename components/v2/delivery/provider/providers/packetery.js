@@ -13,6 +13,7 @@ import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/Session
 import styles from "./packetery.module.scss";
 import * as yup from "yup";
 import {useEffect, useState } from "react";
+import assign from "lodash/assign";
 
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
@@ -25,7 +26,7 @@ export const validationScheme = yup.object().shape({
     .required("Vyberte odberné miesto"),
 });
 
-const Packetery = ({ errors, delivery, onSelect }) => {
+const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
   const {
     session,
     itemAdd,
@@ -58,6 +59,8 @@ const Packetery = ({ errors, delivery, onSelect }) => {
   } catch (e) {
     // do nothing
   }
+
+  packetaOptions = assign(packetaOptions, config);
 
   const handlePickupPointSelection = async (selected) => {
     let pickupPointId = get(selected, "id") || null;
