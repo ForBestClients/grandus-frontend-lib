@@ -139,8 +139,8 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
               onClick={showModal}
             >
               {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint)
-                ? "Zmeniť"
-                : "Vybrať odberné miesto"}
+                ? get(config, 'text.changePlaceLabel', "Zmeniť")
+                :  get(config, 'text.choosePlaceLabel', "Vybrať odberné miesto")}
             </button>
           </div>
         )}
