@@ -16,6 +16,7 @@ const Infinite = ({
   render,
   className = "",
   destinationElementId = null,
+  loadMoreDescription,
 }) => {
   const {
     data,
@@ -70,9 +71,8 @@ const Infinite = ({
                 <>
                   <LoadingIcon />
                 </>
-              ) : (
-                "Zobraziť ďalšie produkty"
-              )}
+              ) :  loadMoreDescription?? "Zobraziť ďalšie produkty"
+              }
             </button>
           </div>
         ) : (
