@@ -89,7 +89,12 @@ const MetaData = (props) => {
           <meta key={"robots"} name="robots" content="noindex, follow" />
           <meta key={"googlebot"} name="googlebot" content="noindex" />
         </>
-      ) : null}
+      ) :
+          <>
+            <meta key={"robots"} name="robots" content="index, follow" />
+            <meta key={"googlebot"} name="googlebot" content="index" />
+          </>
+      }
 
       {get(photo, "path") ? (
         <>
