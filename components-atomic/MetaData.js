@@ -45,7 +45,6 @@ const MetaData = (props) => {
 
   const canonicalUrl = useAbsoluteCanonical?`${get(webInstance, "domain")}${relativeCanonicalUrl}`:relativeCanonicalUrl
 
-  console.log(canonicalUrl)
   return (
     <Head>
       {metaTitle ? (
