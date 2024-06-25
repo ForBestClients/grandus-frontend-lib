@@ -6,7 +6,7 @@ import get from "lodash/get";
 import split from "lodash/split";
 
 import { adjustTitle, adjustDescription } from "grandus-lib/utils/meta";
-import useWebInstance from "grandus-lib/hooks/useWebInstance";
+
 
 const MetaData = (props) => {
   const {
@@ -16,12 +16,11 @@ const MetaData = (props) => {
     photo = {},
     noindex = false,
     options = {},
-      useAbsoluteCanonical = false
+      useAbsoluteCanonical = true
   } = props;
 
   const router = useRouter();
   const routerPage = get(router, "query.page");
-  const { webInstance } = useWebInstance();
 
   const metaTitle = adjustTitle(
     title,
@@ -43,7 +42,7 @@ const MetaData = (props) => {
     get(split(router?.asPath, "?"), "[0]", "") +
     (routerPage && routerPage > 1 ? `?page=${routerPage}` : "");
 
-  const canonicalUrl = useAbsoluteCanonical?`${get(webInstance, "domain")}${relativeCanonicalUrl}`:relativeCanonicalUrl
+  const canonicalUrl = useAbsoluteCanonical?`${process.env.NEXT_PUBLIC_HOST}${relativeCanonicalUrl}`:relativeCanonicalUrl
 
   return (
     <Head>
