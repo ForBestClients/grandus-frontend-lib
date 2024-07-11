@@ -246,7 +246,7 @@ const EnhancedEcommerce = {
         products: map(items, (item, index) => ({
           name: item?.product?.name,
           id: item?.product?.id,
-          price: item?.priceTotalData?.price,
+          price: item?.priceData?.price,
           brand: item?.product?.brand?.name,
           category: get(getProductCategory(item?.product), 'name', ''),
           quantity: item?.count,
