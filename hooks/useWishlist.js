@@ -1,3 +1,5 @@
+import filter from "lodash/filter";
+import isEmpty from "lodash/isEmpty";
 import { useState } from "react";
 import useSWR from "swr";
 
@@ -20,6 +22,15 @@ const useWishlist = () => {
       shouldRetryOnError: false,
     }
   );
+
+  if(!isEmpty(data?.items)){
+    const nonEmptyItems= filter(data.items, item => item?.product?.id);
+    if(data.count!= nonEmptyItems.length){
+      data.count =nonEmptyItems.length
+      data.items = nonEmptyItems
+      mutate(data)
+    }
+  }
 
   let wishlist = transformWishlist(data);
 
