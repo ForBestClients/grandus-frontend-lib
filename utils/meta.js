@@ -173,6 +173,13 @@ export const getMetaData = (
     alternates.canonical = canonical;
   }
 
+  if (process.env?.SEO_DISABLED_ROBOTS) {
+    metaDataGeneral.robots = {
+      index: false,
+      follow: false,
+    };
+  }
+
   return {
     ...metaDataGeneral,
     openGraph: metaDataOg,
