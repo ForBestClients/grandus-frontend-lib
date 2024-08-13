@@ -169,20 +169,22 @@ export const getMetaData = (
 
   const alternates = {};
   const canonical = get(options, 'alternates.canonical', false);
+  
   if (canonical) {
     alternates.canonical = canonical;
   }
 
-  if (process.env?.SEO_DISABLED_ROBOTS) {
-    metaDataGeneral.robots = {
-      index: false,
-      follow: false,
-    };
-  }
+  const robotsDefault = !(process.env.NODE_ENV !== 'production' || process.env.APP_ENV !== 'production');
 
+  const robots = {
+    index: get(options, 'robots.index', robotsDefault),
+    follow: get(options, 'robots.follow', robotsDefault),
+  }
+  
   return {
     ...metaDataGeneral,
     openGraph: metaDataOg,
     alternates: alternates,
+    robots: robots,
   };
 };
