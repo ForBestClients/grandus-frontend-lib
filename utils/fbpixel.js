@@ -1,15 +1,16 @@
-import get from "lodash/get";
-import map from "lodash/map";
-import first from "lodash/first";
-import isEmpty from "lodash/isEmpty";
-import forEach from "lodash/forEach";
-import toNumber from "lodash/toNumber";
-import isArray from "lodash/isArray";
+import get from 'lodash/get';
+import map from 'lodash/map';
+import first from 'lodash/first';
+import isEmpty from 'lodash/isEmpty';
+import forEach from 'lodash/forEach';
+import toNumber from 'lodash/toNumber';
+import isArray from 'lodash/isArray';
+import join from 'lodash/join';
 
-const CONTENT_TYPE_PRODUCT = "product";
+const CONTENT_TYPE_PRODUCT = 'product';
 
 const FBPixel = {
-  init: function (fbPixelCode = "") {
+  init: function(fbPixelCode = '') {
     if (!fbPixelCode) {
       return null;
     }
@@ -34,40 +35,40 @@ const FBPixel = {
       />
     );
   },
-  registerPageViewTracking: function (router) {
+  registerPageViewTracking: function(router) {
     if (this.isEnabled()) {
-      router.events.on("routeChangeComplete", this.pageView.bind(this));
+      router.events.on('routeChangeComplete', this.pageView.bind(this));
       return () => {
-        router.events.off("routeChangeComplete", this.pageView.bind(this));
+        router.events.off('routeChangeComplete', this.pageView.bind(this));
       };
     }
   },
-  isEnabled: function () {
-    return typeof window !== "undefined" && !!window.fbq;
+  isEnabled: function() {
+    return typeof window !== 'undefined' && !!window.fbq;
   },
-  pageView: function () {
+  pageView: function() {
     if (this.isEnabled()) {
-      fbq("track", "PageView");
+      fbq('track', 'PageView');
     }
   },
-  products: function (products) {
+  products: function(products) {
     if (isEmpty(products)) {
       return [];
     }
-    const currency = get(first(products), "finalPriceData.currency", "EUR");
+    const currency = get(first(products), 'finalPriceData.currency', 'EUR');
     let sumTotal = 0;
     const productsIds = [];
     const contents = [];
     forEach(products, (product) => {
-      const itemPrice = toNumber(get(product, "finalPriceData.price", 0));
-      const productIdentifier = get(product, "id");
+      const itemPrice = toNumber(get(product, 'finalPriceData.price', 0));
+      const productIdentifier = get(product, 'id');
       productsIds.push(`${productIdentifier}`);
       contents.push({
         id: productIdentifier,
         quantity: 1,
         item_price: itemPrice,
-        name: get(product, "name", null),
-        brand: get(product, "brand.name", null),
+        name: get(product, 'name', null),
+        brand: get(product, 'brand.name', null),
       });
       sumTotal += itemPrice;
     });
@@ -82,39 +83,39 @@ const FBPixel = {
 
     return productsObject;
   },
-  productDetail: function (product, additionalData) {
+  productDetail: function(product, additionalData) {
     if (isEmpty(product)) {
       return null;
     }
 
     let categories = [];
-    const productCategories = get(product, "categories", []);
+    const productCategories = get(product, 'categories', []);
     if (isArray(get(productCategories, '[0]'))) {
       forEach(productCategories, (categoryTree) => {
         categories.push(
-          map(categoryTree, (category) => get(category, "name", "")).join(" / ")
+          map(categoryTree, (category) => get(category, 'name', '')).join(' / '),
         );
       });
     } else {
       categories.push(
-        map(productCategories, (category) => get(category, "name", "")).join(" / ")
+        map(productCategories, (category) => get(category, 'name', '')).join(' / '),
       );
     }
 
     const productData = {
-      content_ids: [`${get(product, "sku") || product?.id}`],
-      content_name: get(product, "name"),
+      content_ids: [`${get(product, 'sku') || product?.id}`],
+      content_name: get(product, 'name'),
       content_type: CONTENT_TYPE_PRODUCT,
       content_category: first(categories),
-      currency: get(product, "finalPriceData.currency", "EUR"),
-      value: get(product, "finalPriceData.price", null),
+      currency: get(product, 'finalPriceData.currency', 'EUR'),
+      value: get(product, 'finalPriceData.price', null),
       contents: [
         {
-          id: `${get(product, "sku") || product?.id}`,
-          quantity: get(additionalData, "quantity", 1),
-          item_price: get(product, "finalPriceData.price", null),
-          name: get(product, "name", null),
-          brand: get(product, "brand.name", null),
+          id: `${get(product, 'sku') || product?.id}`,
+          quantity: get(additionalData, 'quantity', 1),
+          item_price: get(product, 'finalPriceData.price', null),
+          name: get(product, 'name', null),
+          brand: get(product, 'brand.name', null),
           categories,
         },
       ],
@@ -122,7 +123,7 @@ const FBPixel = {
 
     return productData;
   },
-  productCart: function (cart, additionalData) {
+  productCart: function(cart, additionalData) {
     const { items = [] } = cart;
     const productsObject = [];
     if (isEmpty(items)) {
@@ -132,31 +133,31 @@ const FBPixel = {
     let categories = [];
     forEach(items, (item) => {
       const { product, count } = item;
-      let quantity = get(additionalData, "count", null);
+      let quantity = get(additionalData, 'count', null);
       if (!quantity) {
         quantity = count ? count : 1;
       }
       categories = [];
-      productCategories = get(product, "categories", []);
+      productCategories = get(product, 'categories', []);
       forEach(productCategories, (categoryTree) => {
         categories.push(
-          map(categoryTree, (category) => get(category, "name", "")).join(" / ")
+          map(categoryTree, (category) => get(category, 'name', '')).join(' / '),
         );
       });
       const productData = {
-        content_ids: [`${get(product, "id")}`],
-        content_name: get(product, "name", null),
+        content_ids: [`${get(product, 'id')}`],
+        content_name: get(product, 'name', null),
         content_type: CONTENT_TYPE_PRODUCT,
         content_category: first(categories),
-        currency: get(product, "finalPriceData.currency", "EUR"),
-        value: get(product, "finalPriceData.price", null),
+        currency: get(product, 'finalPriceData.currency', 'EUR'),
+        value: get(product, 'finalPriceData.price', null),
         contents: [
           {
-            id: `${get(product, "sku", product?.id)}`,
+            id: `${get(product, 'sku', product?.id)}`,
             quantity: quantity,
-            item_price: get(product, "finalPriceData.price", null),
-            name: get(product, "name", null),
-            brand: get(product, "brand.name", null),
+            item_price: get(product, 'finalPriceData.price', null),
+            name: get(product, 'name', null),
+            brand: get(product, 'brand.name', null),
             categories,
           },
         ],
@@ -165,7 +166,7 @@ const FBPixel = {
     });
     return productsObject;
   },
-  productsCheckout: function (cart) {
+  productsCheckout: function(cart) {
     if (isEmpty(cart)) {
       return [];
     }
@@ -178,21 +179,21 @@ const FBPixel = {
       const { product } = item;
       if (product) {
         categories = [];
-        productCategories = get(product, "categories", []);
+        productCategories = get(product, 'categories', []);
         forEach(productCategories, (categoryTree) => {
           categories.push(
-            map(categoryTree, (category) => get(category, "name", "")).join(
-              " / "
-            )
+            map(categoryTree, (category) => get(category, 'name', '')).join(
+              ' / ',
+            ),
           );
         });
-        productsIds.push(`${get(product, "id")}`);
+        productsIds.push(`${get(product, 'id')}`);
         contents.push({
-          id: `${get(product, "sku") || product?.id}`,
-          quantity: get(item, "count", 1),
-          item_price: get(product, "finalPriceData.price", null),
-          name: get(product, "name", null),
-          brand: get(product, "brand.name", null),
+          id: `${get(product, 'sku') || product?.id}`,
+          quantity: get(item, 'count', 1),
+          item_price: get(product, 'finalPriceData.price', null),
+          name: get(product, 'name', null),
+          brand: get(product, 'brand.name', null),
           categories,
         });
       }
@@ -201,13 +202,13 @@ const FBPixel = {
       eventID: `checkout-${productsIds.join('-')}`,
       content_ids: productsIds,
       content_type: CONTENT_TYPE_PRODUCT,
-      currency: get(cart, "currency", "EUR"),
-      value: get(cart, "sumTotal", null),
+      currency: get(cart, 'currency', 'EUR'),
+      value: get(cart, 'sumTotal', null),
       contents: contents,
     };
     return cartObject;
   },
-  purchase: function (order, withVat = true) {
+  purchase: function(order, withVat = true) {
     if (isEmpty(order)) {
       return [];
     }
@@ -221,22 +222,22 @@ const FBPixel = {
 
       if (product) {
         categories = [];
-        productCategories = get(product, "categories", []);
+        productCategories = get(product, 'categories', []);
         forEach(productCategories, (categoryTree) => {
           categories.push(
-            map(categoryTree, (category) => get(category, "name", "")).join(
-              " / "
-            )
+            map(categoryTree, (category) => get(category, 'name', '')).join(
+              ' / ',
+            ),
           );
         });
-        const productId = `${get(item, "product.sku") || product?.id}`;
+        const productId = `${get(item, 'product.sku') || product?.id}`;
         productsIds.push(productId);
         contents.push({
           id: productId,
-          quantity: get(item, "count", 1),
-          item_price: get(item, ["unitPriceData", withVat ? "price" : "priceWithoutVat"], null),
-          name: get(product, "name", null),
-          brand: get(product, "brand.name", null),
+          quantity: get(item, 'count', 1),
+          item_price: get(item, ['unitPriceData', withVat ? 'price' : 'priceWithoutVat'], null),
+          name: get(product, 'name', null),
+          brand: get(product, 'brand.name', null),
           categories,
         });
       }
@@ -246,36 +247,38 @@ const FBPixel = {
       eventID: `order-${order?.id}`,
       content_ids: productsIds,
       content_type: CONTENT_TYPE_PRODUCT,
-      currency: get(order, "itemsSumData.currency", "EUR"),
-      value: get(order, ["itemsSumData", withVat ? "price" : "priceWithoutVat"], null),
+      currency: get(order, 'itemsSumData.currency', 'EUR'),
+      value: get(order, ['itemsSumData', withVat ? 'price' : 'priceWithoutVat'], null),
       num_items: orderItems.length,
-      order_number: get(order, "orderNumber", null),
+      order_number: get(order, 'orderNumber', null),
       contents: contents,
     };
 
     return orderObject;
   },
-  track: function (event, data = {}) {
+  track: function(event, data = {}) {
     if (this.isEnabled()) {
-      fbq("track", event, data);
+      fbq('track', event, data);
     }
   },
 
-  prepareProductData: function (product, additionalData) {
+  prepareProductData: function(product, additionalData) {
     return this.productDetail(product, additionalData);
   },
 
-  addToCart: function (product, additionalData) {
+  addToCart: function(product, additionalData) {
     const productData = this.prepareProductData(product, additionalData);
 
     if (!productData) {
       return;
     }
 
-    this.track("AddToCart", productData);
+    productData.eventID = `product-${product?.id}`;
+
+    this.track('AddToCart', productData);
   },
 
-  prepareCartData: function (cart) {
+  prepareCartData: function(cart) {
     if (!cart?.items) {
       return null;
     }
@@ -285,27 +288,27 @@ const FBPixel = {
     let priceTotal = 0;
 
     forEach(cart?.items, (item) => {
-      const productId = `${get(item, "product.sku") || item?.product?.id}`;
+      const productId = `${get(item, 'product.sku') || item?.product?.id}`;
       contentIds.push(productId);
       contents.push({
         id: productId,
-        quantity: get(item, "count", 1),
-        item_price: get(item, "priceData.price", null),
-        name: get(item, "product.name", null),
-        brand: get(item, "brand.name", null),
+        quantity: get(item, 'count', 1),
+        item_price: get(item, 'priceData.price', null),
+        name: get(item, 'product.name', null),
+        brand: get(item, 'brand.name', null),
       });
-      priceTotal += get(item, "priceTotalData.price", 0);
+      priceTotal += get(item, 'priceTotalData.price', 0);
     });
 
     return {
-      currency: get(cart, "sumData.currency"),
+      currency: get(cart, 'sumData.currency'),
       value: priceTotal,
       content_ids: contentIds,
       contents: contents,
     };
   },
 
-  initiateCheckout: function (cart) {
+  initiateCheckout: function(cart) {
     const cartObject = this.prepareCartData(cart);
 
     if (!cartObject) {
@@ -313,59 +316,64 @@ const FBPixel = {
     }
 
     cartObject.num_items = cart?.items?.length ?? 0;
+    cartObject.eventID = `checkout-${join(cartObject.content_ids, '-')}`;
 
-    this.track("InitiateCheckout", cartObject);
+    this.track('InitiateCheckout', cartObject);
   },
 
-  addPaymentInfo: function (cart) {
+  addPaymentInfo: function(cart) {
     const cartObject = this.prepareCartData(cart);
 
     if (!cartObject) {
       return;
     }
 
-    this.track("AddPaymentInfo", cartObject);
+    this.track('AddPaymentInfo', cartObject);
   },
 
-  addPurchase: function (order) {
+  addPurchase: function(order) {
     const data = this.purchase(order, false);
 
     if (isEmpty(data)) {
       return;
     }
 
-    this.track("Purchase", data);
+    this.track('Purchase', data);
   },
 
-  viewProduct: function (product) {
-    const productData = this.prepareProductData(product)
+  viewProduct: function(product) {
+    const productData = this.prepareProductData(product);
 
     if (!productData) {
       return;
     }
 
-    this.track("ViewContent", productData);
+    this.track('ViewContent', productData);
   },
 
-  addToWishlist: function (product) {
-    const productData = this.prepareProductData(product)
+  addToWishlist: function(product) {
+    const productData = this.prepareProductData(product);
 
     if (!productData) {
       return;
     }
 
-    this.track("AddToWishlist", productData);
+    productData.eventID = `product-${product?.id}`;
+
+    this.track('AddToWishlist', productData);
   },
 
-  reservation: function (product) {
-    const productData = this.prepareProductData(product)
+  reservation: function(product) {
+    const productData = this.prepareProductData(product);
 
     if (!productData) {
       return;
     }
 
-    this.track("Reservation", productData);
-  }
+    productData.eventID = `product-${product?.id}`;
+
+    this.track('Reservation', productData);
+  },
 };
 
 export default FBPixel;
