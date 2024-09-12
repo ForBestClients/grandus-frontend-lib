@@ -112,7 +112,7 @@ const blogListingPage = {
       uri.push(`perPage=${get(context, "query.perPage", "")}`);
     }
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/blogs?${uri.join("&")}`
+      `${reqGetHost(context?.req)}/api/lib/v1/blogs?${uri.join("&")}`,{headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
     return {
       props: data,
@@ -283,7 +283,7 @@ const staticPage = {
   },
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/statics/${context?.params?.id}`
+      `${reqGetHost(context?.req)}/api/lib/v1/statics/${context?.params?.id}`, {headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
     if (!data?.id) {
       context.res.statusCode = 404;
@@ -308,12 +308,12 @@ const staticPage = {
 const checkoutContactPage = {
   serverSideProps: async (context) => {
     const countries = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/countries`
+      `${reqGetHost(context?.req)}/api/lib/v1/countries`, {headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
 
     let towns = [];
     try {
-      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`).then(
+      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`, {headers: reqGetHeaders(context?.req??{})}).then(
         (result) => result.json()
       );
     } catch (error) {
@@ -348,12 +348,12 @@ const userPage = {
 const userProfilePage = {
   serverSideProps: async (context) => {
     const countries = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/countries`
+      `${reqGetHost(context?.req)}/api/lib/v1/countries`,{headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
 
     let towns = [];
     try {
-      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`).then(
+      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`, {headers: reqGetHeaders(context?.req??{})}).then(
         (result) => result.json()
       );
     } catch (error) {
@@ -373,10 +373,10 @@ const thanksPage = {
           context,
           "query.orderToken",
           ""
-        )}`
+        )}`, {headers: reqGetHeaders(context?.req??{})}
       ).then((result) => result.json()),
 
-      fetch(`${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`).then(
+      fetch(`${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`,{headers: reqGetHeaders(context?.req??{})}).then(
         (result) => result.json()
       ),
     ]);

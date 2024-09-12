@@ -158,7 +158,7 @@ export const getFrontendUrlFromHeaders = headers => {
 export const reqGetHeaders = req => {
   const result = reqGetHeadersBasicEdge(req);
 
-  const locale = get(req, 'cookies.NEXT_LOCALE');
+  const locale = get(req, 'cookies.NEXT_LOCALE') || get(req,  'headers.accept-language');
 
   if (locale) {
     result['Accept-Language'] = locale;
