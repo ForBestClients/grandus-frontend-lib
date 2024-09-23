@@ -95,7 +95,7 @@ export const getCleanedUrl = (path, parameters = {}, query = {}) => {
 
   const pathParts = split(path, '?', 1)[0];
 
-  const queryString = queryToQueryString(query, {}, keys(parameters));
+  const queryString = queryToQueryString(query, {}, keys(parameters), {encode: true});
 
   return pathParts + (queryString ? `?${queryString}` : '');
 };
