@@ -135,7 +135,7 @@ export const queryToQuery = (
   return newQuery;
 };
 
-/* 
+/*
     options = {
       encode: bool,
       replace: [{key: newKey}, {key2: newKey2}]
@@ -383,17 +383,27 @@ export const queryMerge = (queryActual, queryNew) => {
 };
 
 export const getFilterUrl = (
-  category,
-  parameters,
-  selected,
+  filterParams,
   parameterKey,
   parameterValue,
   isRemove = false,
   isReplace = false,
   sortValues = true,
+  isReset = false,
 ) => {
-  const urlSegments = getCategoryLinkAttributes(
-    category,
+  const category = filterParams?.category ?? null;
+  const search = filterParams?.search ?? null;
+  let parameters = filterParams?.parameters ?? {};
+  parameters = isArray(parameters) ? arrayToParams(parameters) : parameters;
+  const selected = isReset ? {} : parameters ?? {};
+
+  let linkAttributesFnName = getCategoryLinkAttributes;
+  if (!category && search) {
+    linkAttributesFnName = getSearchLinkAttributes;
+  }
+
+  const urlSegments = linkAttributesFnName.apply(this, [
+    category ?? search,
     paramsToPath(
       isRemove
         ? removeParameter(selected, parameterKey, parameterValue)
@@ -406,8 +416,8 @@ export const getFilterUrl = (
           ),
     ),
     parameters, //query
-    { toDelete: ['category', 'parameters', 'page'] },
-  );
+    { toDelete: ['category', 'parameters', 'page', 'term'] },
+  ]);
 
   return get(urlSegments, 'as', '');
 };
