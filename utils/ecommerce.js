@@ -389,7 +389,7 @@ const EnhancedEcommerce = {
     return prepareData(data, 'checkoutOption');
   },
 
-  purchase: (order) => {
+  purchase: (order, user = null) => {
     const items = get(order, 'orderItems', []);
     const couponsString = map(get(order, 'coupons'), (coupon) =>
       get(coupon, 'hash'),
@@ -399,12 +399,13 @@ const EnhancedEcommerce = {
         actionField: {
           id: get(order, 'orderNumber'), // Transaction ID. Required for purchases and refunds.
           affiliation: '',
-          revenue: parseFloat(_.get(order, 'totalSumData.price', 0)), // Total transaction value (incl. tax and shipping)
+          revenue: parseFloat(get(order, 'totalSumData.price', 0)), // Total transaction value (incl. tax and shipping)
           tax: get(order, 'totalSumData.vatFraction', 0),
           shipping:
             parseFloat(get(order, 'deliveryPrice', 0)) +
             parseFloat(get(order, 'paymentPrice', 0)),
           coupon: couponsString,
+          email: get(user, 'email', ''),
         },
         products: map(items, (item, index) => ({
           name: item?.name,
