@@ -16,6 +16,7 @@ const EnhancedEcommerce = {
     products,
     list = undefined,
     options = { page: 1, perPage: 1 },
+    user = null
   ) => {
     let positionConstant = 0;
     const page = options?.page;
@@ -24,6 +25,7 @@ const EnhancedEcommerce = {
       positionConstant = (parseInt(page) - 1) * parseInt(perPage);
     }
     const data = {
+      email: get(user, 'email', ''),
       impressions: products.map((product, index) => ({
         name: product?.name,
         id: product?.id,
@@ -71,8 +73,9 @@ const EnhancedEcommerce = {
   },
 
   // UA analytics: detail
-  detail: (product) => {
+  detail: (product, user = null) => {
     const data = {
+      email: get(user, 'email', ''),
       detail: {
         products: [
           {
@@ -118,6 +121,7 @@ const EnhancedEcommerce = {
     product,
     list = undefined,
     options = { page: 1, perPage: 1 },
+    user = null
   ) => {
     let positionConstant = 0;
     const page = options?.page;
@@ -126,6 +130,7 @@ const EnhancedEcommerce = {
       positionConstant = (parseInt(page) - 1) * parseInt(perPage);
     }
     const data = {
+      email: get(user, 'email', ''),
       click: {
         actionField: { list: list }, // Optional list property.
         products: [
@@ -145,8 +150,9 @@ const EnhancedEcommerce = {
   },
 
   // UA analytics: add to cart
-  cartAdd: (product, quantity = 1) => {
+  cartAdd: (product, quantity = 1, user = null) => {
     const data = {
+      email: get(user, 'email', ''),
       add: {
         products: [
           {
@@ -193,8 +199,9 @@ const EnhancedEcommerce = {
   },
 
   // UA analytics: remove from cart
-  cartRemove: function(product, quantity = 1) {
+  cartRemove: function(product, quantity = 1, user = null) {
     const data = {
+      email: get(user, 'email', ''),
       remove: {
         products: [
           {
@@ -240,8 +247,9 @@ const EnhancedEcommerce = {
     return prepareData(data, 'remove_from_cart');
   },
 
-  checkout: (items, step = null) => {
+  checkout: (items, step = null, user = null) => {
     const data = {
+      email: get(user, 'email', ''),
       checkout: {
         products: map(items, (item, index) => ({
           name: item?.product?.name,
@@ -371,8 +379,9 @@ const EnhancedEcommerce = {
     return prepareData(data, 'add_payment_info');
   },
 
-  checkoutOption: (option = null, step = null) => {
+  checkoutOption: (option = null, step = null, user = null) => {
     const data = {
+      email: get(user, 'email', ''),
       checkout_option: {
         actionField: {},
       },
@@ -395,6 +404,7 @@ const EnhancedEcommerce = {
       get(coupon, 'hash'),
     ).join('|');
     const data = {
+      email: get(user, 'email', ''),
       purchase: {
         actionField: {
           id: get(order, 'orderNumber'), // Transaction ID. Required for purchases and refunds.
@@ -405,7 +415,6 @@ const EnhancedEcommerce = {
             parseFloat(get(order, 'deliveryPrice', 0)) +
             parseFloat(get(order, 'paymentPrice', 0)),
           coupon: couponsString,
-          email: get(user, 'email', ''),
         },
         products: map(items, (item, index) => ({
           name: item?.name,
@@ -473,10 +482,11 @@ const EnhancedEcommerce = {
   },
 
   // G4 add to wishlist
-  add_to_wishlist(product, variant) {
+  add_to_wishlist(product, variant, user) {
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
+      email: get(user, 'email', ''),
       items: [{
         item_id: product?.id,
         item_name: product?.name,
