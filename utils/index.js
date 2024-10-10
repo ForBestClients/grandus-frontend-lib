@@ -136,7 +136,7 @@ export const getProductCardFields = (asUriPart = false) => {
       }`
     : `${
         asUriPart ? `fields=` : ''
-      }id,name,urlTitle,storeStatus,finalPriceData,photo`;
+      }id,name,urlTitle,storeStatus,finalPriceData,priceData,photo`;
 };
 
 export const reqGetHeadersFront = (req, options = {}) => {
@@ -158,7 +158,8 @@ export const getFrontendUrlFromHeaders = headers => {
 export const reqGetHeaders = req => {
   const result = reqGetHeadersBasicEdge(req);
 
-  const locale = get(req, 'cookies.NEXT_LOCALE') || get(req,  'headers.accept-language');
+  const locale =
+    get(req, 'cookies.NEXT_LOCALE') || get(req, 'headers.accept-language');
 
   if (locale) {
     result['Accept-Language'] = locale;
@@ -371,6 +372,6 @@ export const generateRandomString = (length = 10) => {
   ).join``;
 };
 
-export const remove4ByteChars = (str) => {
+export const remove4ByteChars = str => {
   return str?.replace(/[\u{010000}-\u{10FFFF}]/gu, '');
-}
+};
