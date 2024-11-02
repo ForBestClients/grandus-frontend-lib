@@ -14,6 +14,7 @@ import styles from "./packetery.module.scss";
 import * as yup from "yup";
 import {useEffect, useState } from "react";
 import assign from "lodash/assign";
+import Script from "next/script";
 
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
@@ -113,14 +114,13 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
 
   return (
     <>
-      <Head>
-        <script
+      <Script
+          id="packeta-widget-settings"
           dangerouslySetInnerHTML={{
             __html: get(settings, "packetery_widget_settings"),
           }}
-        ></script>
-        <script src={WIDGET_URL} data-api-key={apiKey}></script>
-      </Head>
+      ></Script>
+      <Script src={WIDGET_URL} data-api-key={apiKey}></Script>
       <div className={`${styles.packetery} packetery__custom`}>
         {isLoading || isSessionStorageLoading ? (
           'loading'
