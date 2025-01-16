@@ -1,11 +1,11 @@
-import map from "lodash/map";
-import {getImageUrl} from "grandus-lib/utils";
-import forEach from "lodash/forEach";
-import isFunction from "lodash/isFunction";
+import map from 'lodash/map';
+import { getImageUrl } from 'grandus-lib/utils';
+import forEach from 'lodash/forEach';
+import isFunction from 'lodash/isFunction';
 
 const EcoMail = {
   isEnabled: function () {
-    return !!window.ecotrack
+    return !!window.ecotrack;
   },
 
   track: function (event, ...data) {
@@ -19,24 +19,24 @@ const EcoMail = {
   },
 
   unStructEvent: function (cart, callback) {
-    const products = map(cart?.items, (item) => {
+    const products = map(cart?.items, item => {
       return {
         productId: item?.product?.id,
-        img_url: getImageUrl(item?.product?.photo, "200x200", "png"),
+        img_url: getImageUrl(item?.product?.photo, '200x200', 'png'),
         url: `${process.env.NEXT_PUBLIC_HOST}/produkt/${item?.product?.urlTitle}`,
         name: item?.product?.name,
         price: item?.product?.priceData?.price,
         description: item?.product?.shortProductDescription?.description,
-        quantity: item?.count
-      }
+        quantity: item?.count,
+      };
     });
 
     this.track('trackUnstructEvent', {
       schema: '',
       data: {
         action: 'Basket',
-        products: products.length ? products : []
-      }
+        products: products.length ? products : [],
+      },
     });
 
     if (isFunction(callback)) {
@@ -45,23 +45,27 @@ const EcoMail = {
   },
 
   addTrans: function (order) {
-    this.track('addTrans', order?.id,
-      "Murat",
+    this.track(
+      'addTrans',
+      order?.id,
+      'Murat',
       order?.totalSumData?.priceFormatted,
       `${order?.totalSumData?.vatFraction} ${order?.totalSumData?.currencySymbol}`,
       order?.deliveryPriceData?.priceFormatted,
       order?.city,
-      "SK");
+      'SK',
+    );
   },
 
   addItems: function (order) {
-    forEach(order?.orderItems, (item) => {
-      this.addItem(order?.id, item)
+    forEach(order?.orderItems, item => {
+      this.addItem(order?.id, item);
     });
   },
 
   addItem: function (cartId, item) {
-    this.track('addItem',
+    this.track(
+      'addItem',
       cartId,
       item?.product?.sku ? item?.product?.sku : item?.product?.id,
       item?.name,
@@ -76,15 +80,14 @@ const EcoMail = {
   },
 
   trackPageView: function () {
-    this.track('trackPageView')
+    this.track('trackPageView');
   },
 
   trackOrder: function (order) {
-    console.log(order);
-    this.addTrans(order)
-    this.addItems(order)
-    this.trackTrans()
-  }
-}
+    this.addTrans(order);
+    this.addItems(order);
+    this.trackTrans();
+  },
+};
 
 export default EcoMail;
