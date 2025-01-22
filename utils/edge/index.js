@@ -38,9 +38,14 @@ export const reqApiHost = (req = {}) => {
 };
 
 export const reqGetHeadersBasic = (req = {}) => {
-  return {
+  const headers = {
     'Content-Type': 'application/json',
     'Owner-Token': process.env.GRANDUS_TOKEN_OWNER,
     'Webinstance-Token': process.env.GRANDUS_TOKEN_WEBINSTANCE,
   };
+
+  if(process.env.NEXT_PUBLIC_DEFAULT_LOCALE){
+    headers['Accept-Language'] = process.env.NEXT_PUBLIC_DEFAULT_LOCALE;
+  }
+  return headers;
 };
