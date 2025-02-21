@@ -1,21 +1,20 @@
-@use "sass:math";
-@import "styles/variables";
+@use 'styles/variables' as vars;
 
 .product {
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: calc(100% - 50px);
-  margin: math.div($general-gutter, 2);
-  padding: $general-gutter;
+  margin: var(--dimension_general-gutter-05);
+  padding: var(--dimension_general-gutter);
   border: 1px solid transparent;
-  border-radius: $general-radius;
+  border-radius: var(--dimension_general-radius);
 
-  @media (max-width: $md) {
+  @media (max-width: #{vars.$md}) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: $general-gutter;
+    padding: var(--dimension_general-gutter);
     margin: 0;
     border-color: $grey-dark-color;
     img {
@@ -26,12 +25,12 @@
 
   &:hover {
     border: 1px solid $primary-color;
-    box-shadow: $general-shadow;
+    box-shadow: var(--design_general-shadow);
   }
 
   img {
     max-width: 100%;
-    border-radius: $general-radius;
+    border-radius: var(--dimension_general-radius);
   }
 
   .name {
@@ -40,9 +39,9 @@
     display: block;
     margin: 10px 0;
     text-align: left;
-    @media (max-width: $md) {
+    @media (max-width: #{vars.$md}) {
       font-size: 0.8em;
-      padding: 0 math.div($general-gutter, 2);
+      padding: 0 var(--dimension_general-gutter-05);
     }
   }
 
@@ -51,7 +50,7 @@
     color: $text-color;
     white-space: nowrap;
 
-    & [data-property="price"] {
+    & [data-property='price'] {
       font-size: 1.1em;
       font-weight: bolder;
     }

@@ -1,4 +1,4 @@
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .besteron {
     background: rgba(0,0,0,0.03);
@@ -32,16 +32,16 @@
             height: auto;
             border: none;
             width: 100%;
-            padding: $general-gutter;
+            padding: var(--dimension_general-gutter);
             border: 1px solid #d9d9d9;
             font-size: 13px;
             background: #ffffff;
             margin: 0;
-            border-radius: $general-radius;
+            border-radius: var(--dimension_general-radius);
 
             &:global(.ant-radio-wrapper-checked),
             &:hover {
-                box-shadow: $general-shadow;
+                box-shadow: var(--design_general-shadow);
                 border-color: $primary-color;
             }
 
