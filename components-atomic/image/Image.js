@@ -3,7 +3,6 @@ import styles from './Image.module.scss';
 import { getImageUrl } from 'grandus-lib/utils/index';
 import Image from 'next/image';
 import ImagePlaceholder from './ImagePlaceholder';
-import useWebInstance from 'grandus-lib/hooks/useWebInstance';
 
 const ImageNext = ({ photo, size, type, title, alt, imageProps }) => {
   const dimensions = size.match(/\d+/g).map(Number);
@@ -32,7 +31,7 @@ const ImageNext = ({ photo, size, type, title, alt, imageProps }) => {
   );
 };
 
-const ImageBody = ({
+export const ImageBody = ({
   image,
   size,
   type,
@@ -126,41 +125,24 @@ export const arePropsEqual = (prevProps, nextProps) => {
   );
 };
 
-const ImageComponent = memo(
-  ({
-    photo,
-    size,
-    type,
-    srcSet = {},
-    title = '',
-    alt = false,
-    className,
-    useNextImage = false,
-    usePlaceholder = false,
-    imageProps = {},
-  }) => {
-    // if photo does not exist, use webinstance placeholder
+const ImageComponent = ({
+  photo,
+  size,
+  type,
+  srcSet = {},
+  title = '',
+  alt = false,
+  className,
+  useNextImage = false,
+  usePlaceholder = false,
+  imageProps = {},
+}) => {
+  // if photo does not exist, use webinstance placeholder
 
-    if (usePlaceholder && !photo) {
-      return (
-        <ImagePlaceholder
-          photo={photo}
-          size={size}
-          type={type}
-          srcSet={srcSet}
-          title={title}
-          alt={alt}
-          className={className}
-          useNextImage={useNextImage}
-          usePlaceholder={true}
-          imageProps={imageProps}
-        />
-      );
-    }
-
+  if (usePlaceholder && !photo) {
     return (
-      <ImageBody
-        image={photo}
+      <ImagePlaceholder
+        photo={photo}
         size={size}
         type={type}
         srcSet={srcSet}
@@ -168,11 +150,25 @@ const ImageComponent = memo(
         alt={alt}
         className={className}
         useNextImage={useNextImage}
+        usePlaceholder={true}
         imageProps={imageProps}
       />
     );
-  },
-  arePropsEqual,
-);
+  }
 
-export default ImageComponent;
+  return (
+    <ImageBody
+      image={photo}
+      size={size}
+      type={type}
+      srcSet={srcSet}
+      title={title}
+      alt={alt}
+      className={className}
+      useNextImage={useNextImage}
+      imageProps={imageProps}
+    />
+  );
+};
+
+export default memo(ImageComponent, arePropsEqual);
