@@ -2,6 +2,10 @@ import { memo } from 'react';
 import { ImageBody, arePropsEqual } from './Image';
 import useWebInstance from 'grandus-lib/hooks/useWebInstance';
 
+const arePropsEqualLocal = (prevProps, nextProps) => {
+  return arePropsEqual(prevProps, nextProps);
+}
+
 const ImagePlaceholder = ({
   photo,
   size,
@@ -38,4 +42,4 @@ const ImagePlaceholder = ({
   );
 };
 
-export default memo(ImagePlaceholder, arePropsEqual);
+export default memo(ImagePlaceholder, arePropsEqualLocal);
