@@ -3,7 +3,7 @@ import styles from './Image.module.scss';
 import { getImageUrl } from 'grandus-lib/utils/index';
 import Image from 'next/image';
 import ImagePlaceholder from './ImagePlaceholder';
-import useWebInstance from 'grandus-lib/hooks/useWebInstance';
+import { arePropsEqual } from './helpers';
 
 const ImageNext = ({ photo, size, type, title, alt, imageProps }) => {
   const dimensions = size.match(/\d+/g).map(Number);
@@ -32,7 +32,7 @@ const ImageNext = ({ photo, size, type, title, alt, imageProps }) => {
   );
 };
 
-const ImageBody = ({
+export const ImageBody = ({
   image,
   size,
   type,
@@ -85,44 +85,6 @@ const ImageBody = ({
         {...imageProps}
       />
     </picture>
-  );
-};
-
-export const shallowEqual = (objA, objB) => {
-  if (objA === objB) return true;
-
-  if (
-    typeof objA !== 'object' ||
-    typeof objB !== 'object' ||
-    objA === null ||
-    objB === null
-  ) {
-    return false;
-  }
-
-  const keysA = Object.keys(objA);
-  const keysB = Object.keys(objB);
-
-  if (keysA.length !== keysB.length) return false;
-
-  for (let key of keysA) {
-    if (objA[key] !== objB[key]) return false;
-  }
-
-  return true;
-};
-
-export const arePropsEqual = (prevProps, nextProps) => {
-  return (
-    prevProps.photo === nextProps.photo &&
-    prevProps.size === nextProps.size &&
-    prevProps.type === nextProps.type &&
-    prevProps.title === nextProps.title &&
-    prevProps.alt === nextProps.alt &&
-    prevProps.useNextImage === nextProps.useNextImage &&
-    prevProps.usePlaceholder === nextProps.usePlaceholder &&
-    prevProps.className === nextProps.className &&
-    shallowEqual(prevProps.imageProps, nextProps.imageProps)
   );
 };
 

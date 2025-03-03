@@ -1,6 +1,7 @@
 import { memo } from 'react';
-import { ImageBody, arePropsEqual } from './Image';
+import { ImageBody } from './Image';
 import useWebInstance from 'grandus-lib/hooks/useWebInstance';
+import { arePropsEqual } from './helpers';
 
 const ImagePlaceholder = ({
   photo,
