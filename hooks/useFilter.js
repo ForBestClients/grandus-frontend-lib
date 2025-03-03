@@ -127,15 +127,17 @@ export const getCategoryLinkAttributes = (
     return emptyResult;
   }
 
-  const categoryUrl = process.env.NEXT_PUBLIC_CATEGORY_URL ? process.env.NEXT_PUBLIC_CATEGORY_URL : "kategoria"
+  const categoryUrl = process.env.NEXT_PUBLIC_CATEGORY_URL
+    ? process.env.NEXT_PUBLIC_CATEGORY_URL
+    : 'kategoria';
 
-  const newQuery = get(options, "toDelete")
+  const newQuery = get(options, 'toDelete')
     ? queryToQuery(
-      query,
-      get(options, "dataToChange", {}),
-      get(options, "toDelete")
-    )
-    : queryToQuery(query, get(options, "dataToChange", {}));
+        query,
+        get(options, 'dataToChange', {}),
+        get(options, 'toDelete'),
+      )
+    : queryToQuery(query, get(options, 'dataToChange', {}));
   return {
     href: {
       pathname: `/${categoryUrl}/[category]/[[...parameters]]`,
@@ -315,6 +317,9 @@ const useFilter = ({
           break;
         case 'term':
           uri.push(`search=${uriPart}`);
+          break;
+        case 'campaign':
+          uri.push(`marketingCampaign=${uriPart}`);
           break;
         case 'parameters':
           uri.push(`param=${arrayToPath(uriPart)}`);
