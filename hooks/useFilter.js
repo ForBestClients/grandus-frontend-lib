@@ -1,3 +1,4 @@
+"use client"
 import get from 'lodash/get';
 import fromPairs from 'lodash/fromPairs';
 import split from 'lodash/split';
@@ -61,7 +62,7 @@ export const queryToQuery = (
   return newQuery;
 };
 
-/* 
+/*
   options = {
     encode: bool,
     replace: [{key: newKey}, {key2: newKey2}]
