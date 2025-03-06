@@ -26,29 +26,29 @@ const MicroDataArticle = ({ data = null, webInstance = null }) => {
   const { domain } = webInstance;
   const { title, photo, createTime } = data;
 
+  const schemaArticles = data.map((blog) => ({
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: blog?.title,
+    image: blog?.photo?.path ? [getImageUrl(blog.photo, "400x250", "jpg")] : [],
+    author: {
+      "@type": "Organization",
+      name: "bezeckepotreby.sk",
+      logo: `${domain}/img/logo.svg`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "bezeckepotreby.sk",
+      logo: `${domain}/img/logo.svg`,
+    },
+    datePublished: blog?.createTime ? convertDateStringToDateObject(blog?.createTime) : blog?.publishTime,
+  }));
+
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "NewsArticle",
-          headline: title,
-          image:
-            photo && photo?.path ? [getImageUrl(photo, "400x250", "jpg")] : [],
-          author: {
-            "@type": "Organization",
-            name: "bezeckepotreby.sk",
-            logo: `${domain}/img/logo.svg`,
-          },
-          publisher: {
-            "@type": "Organization",
-            name: "bezeckepotreby.sk",
-            logo: `${domain}/img/logo.svg`,
-          },
-          datePublished: convertDateStringToDateObject(createTime),
-          // dateModified: updateTime,
-        }),
+        __html: JSON.stringify({ schemaArticles }),
       }}
     />
   );
