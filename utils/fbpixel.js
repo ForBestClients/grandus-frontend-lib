@@ -244,7 +244,9 @@ const FBPixel = {
     });
 
     const orderObject = {
-      eventID: `order-${order?.id}`,
+      eventID: `order-${order?.id}`, // left there because I don't know if someone uses it
+      event_id: `order-${order?.id}`,
+      event_name: 'Purchase',
       content_ids: productsIds,
       content_type: CONTENT_TYPE_PRODUCT,
       currency: get(order, 'itemsSumData.currency', 'EUR'),
