@@ -3,6 +3,7 @@ import map from 'lodash/map';
 import first from 'lodash/first';
 import pickBy from 'lodash/pickBy';
 import includes from 'lodash/includes';
+import toNumber from "lodash/toNumber";
 
 const ALLOWED_CUSTOM_FIELDS = [
   'custom_label_2',
@@ -174,7 +175,7 @@ const EnhancedEcommerce = {
   add_to_cart: function(product, variant, quantity = 1) {
     const data = {
       currency: product?.finalPriceData?.currency,
-      value: product?.finalPriceData?.price,
+      value: toNumber(product?.finalPriceData?.price) * toNumber(quantity),
       items: [
         {
           item_id: product?.id,
