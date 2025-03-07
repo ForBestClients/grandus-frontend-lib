@@ -21,7 +21,7 @@ const convertDateStringToDateObject = (dateString = "") => {
 const convertDomainToName = (domainString) => {
   if (!domainString) return ""
 
-  const hostname = new URL(domainString).hostname;
+  const hostname = new URL(domainString)?.hostname;
   const domainWithoutWWW = hostname.replace(/^www\./, '');
 
   return domainWithoutWWW
@@ -30,7 +30,7 @@ const convertDomainToName = (domainString) => {
 const getLogoUrl = (domain, logoObj) => {
   if (!domain) return "";
 
-  if (logoObj && logoObj.path) {
+  if (logoObj && logoObj?.path) {
     return `${domain}${logoObj.path}`;
   }
   return "";
