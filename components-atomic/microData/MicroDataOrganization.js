@@ -12,19 +12,19 @@ const MicroDataOrganization = ({ webInstance = null }) => {
             "@context": "https://schema.org/",
             "@type": "Organization",
             url: `${domain}`,
-            name: `${get(globalSettings, 'companyName')}`,
+            name: `${get(globalSettings, 'name_of_company')}`,
 
             contactPoint: [
               {
                 "@type": "ContactPoint",
-                telephone: "+X-XXX-XXX-XXX",
+                telephone: get(globalSettings, 'phone'),
                 contactType: "customer service",
               },
             ],
 
             address: {
               addressCountry: get(globalSettings, 'state'),
-              postalCode: "XXXXX",
+              postalCode: get(globalSettings, 'ZIP'),
               addressLocality: get(globalSettings, 'street_and_number'),
             },
           }),
