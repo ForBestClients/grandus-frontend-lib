@@ -18,37 +18,55 @@ const convertDateStringToDateObject = (dateString = "") => {
   return date;
 };
 
+const convertDomainToName = (domainString) => {
+  if (!domainString) return ""
+
+  const hostname = new URL(domainString)?.hostname;
+  const domainWithoutWWW = hostname.replace(/^www\./, '');
+
+  return domainWithoutWWW
+}
+
+const getLogoUrl = (domain, logoObj) => {
+  if (!domain) return "";
+
+  if (logoObj && logoObj?.path) {
+    return `${domain}${logoObj.path}`;
+  }
+  return "";
+};
+
 const MicroDataArticle = ({ data = null, webInstance = null }) => {
   if (isEmpty(data) || isEmpty(webInstance)) {
     return null;
   }
 
-  const { domain } = webInstance;
+  const { domain, logo } = webInstance;
   const { title, photo, createTime } = data;
+
+  const schemaArticles = data.map((blog) => ({
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: blog?.title,
+    image: blog?.photo?.path ? [getImageUrl(blog.photo, "400x250", "jpg")] : [],
+    author: {
+      "@type": "Organization",
+      name: convertDomainToName(domain),
+      logo: getLogoUrl(domain,logo),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: convertDomainToName(domain),
+      logo: getLogoUrl(domain,logo),
+    },
+    datePublished: blog?.createTime ? convertDateStringToDateObject(blog?.createTime) : blog?.publishTime,
+  }));
 
   return (
     <script
       type="application/ld+json"
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "NewsArticle",
-          headline: title,
-          image:
-            photo && photo?.path ? [getImageUrl(photo, "400x250", "jpg")] : [],
-          author: {
-            "@type": "Organization",
-            name: "bezeckepotreby.sk",
-            logo: `${domain}/img/logo.svg`,
-          },
-          publisher: {
-            "@type": "Organization",
-            name: "bezeckepotreby.sk",
-            logo: `${domain}/img/logo.svg`,
-          },
-          datePublished: convertDateStringToDateObject(createTime),
-          // dateModified: updateTime,
-        }),
+        __html: JSON.stringify({ schemaArticles }),
       }}
     />
   );
