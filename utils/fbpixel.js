@@ -373,6 +373,8 @@ const FBPixel = {
     }
 
     productData.eventID = `product-${product?.id}`;
+    productData.event_id = `product-${product?.id}`;
+    productData.event_name = 'Reservation';
 
     this.track('Reservation', productData);
   },
