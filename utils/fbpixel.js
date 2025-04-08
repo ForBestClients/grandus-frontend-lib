@@ -258,9 +258,10 @@ const FBPixel = {
 
     return orderObject;
   },
-  track: function(event, data = {}) {
+
+  track: function(event, data = {}, additionalData = {}) {
     if (this.isEnabled()) {
-      fbq('track', event, data);
+      fbq('track', event, data, additionalData);
     }
   },
 
@@ -275,9 +276,7 @@ const FBPixel = {
       return;
     }
 
-    productData.eventID = `product-${product?.id}`;
-
-    this.track('AddToCart', productData);
+    this.track('AddToCart', productData, { eventID: `product-${product?.id}` });
   },
 
   prepareCartData: function(cart) {
@@ -340,7 +339,7 @@ const FBPixel = {
       return;
     }
 
-    this.track('Purchase', data);
+    this.track('Purchase', data, { eventID: `order-${order?.id}` });
   },
 
   viewProduct: function(product) {
@@ -360,9 +359,7 @@ const FBPixel = {
       return;
     }
 
-    productData.eventID = `product-${product?.id}`;
-
-    this.track('AddToWishlist', productData);
+    this.track('AddToWishlist', productData, { eventID: `product-${product?.id}` });
   },
 
   reservation: function(product) {
@@ -376,7 +373,7 @@ const FBPixel = {
     productData.event_id = `product-${product?.id}`;
     productData.event_name = 'Reservation';
 
-    this.track('Reservation', productData);
+    this.track('Reservation', productData, { eventID: `product-${product?.id}` });
   },
 };
 
