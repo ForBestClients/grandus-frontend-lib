@@ -319,7 +319,7 @@ const FBPixel = {
     cartObject.num_items = cart?.items?.length ?? 0;
     cartObject.eventID = `checkout-${join(cartObject.content_ids, '-')}`;
 
-    this.track('InitiateCheckout', cartObject);
+    this.track('InitiateCheckout', cartObject, { eventID: cartObject.eventID });
   },
 
   addPaymentInfo: function(cart) {
@@ -329,7 +329,9 @@ const FBPixel = {
       return;
     }
 
-    this.track('AddPaymentInfo', cartObject);
+    cartObject.eventID = `payment-info-${cart?.id}`;
+
+    this.track('AddPaymentInfo', cartObject, { eventID: cartObject.eventID });
   },
 
   addPurchase: function(order) {
@@ -349,7 +351,7 @@ const FBPixel = {
       return;
     }
 
-    this.track('ViewContent', productData);
+    this.track('ViewContent', productData, { eventID: `product-${product?.id}` });
   },
 
   addToWishlist: function(product) {
