@@ -1,4 +1,5 @@
 import Cookies from "./cookies";
+import dayjs from 'dayjs';
 /**
  * Get client referer URL from request.
  *
@@ -45,7 +46,7 @@ const getClientFbc = (req) => {
     const url = new URL(req.headers.referer);
 
     if (url.searchParams.has('fbclid')) {
-      return url.searchParams.get('fbclid');
+      return `fb.1.${dayjs().valueOf()}.${url.searchParams.get('fbclid')}`;
     }
   }
 
