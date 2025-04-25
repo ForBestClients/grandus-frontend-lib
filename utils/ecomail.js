@@ -23,7 +23,7 @@ const EcoMail = {
   
     const externalCartLink = map(cart?.items, item => {
       const externalId = item?.product?.ean || item?.product?.id;
-      const quantity = item?.count || 1;
+      const quantity = item?.count;
       return `${externalId}${quantity > 1 ? `|||${quantity}` : ''}`;
     }).join(',');
 
@@ -39,7 +39,7 @@ const EcoMail = {
         name: item?.product?.name,
         price: item?.product?.priceData?.price,
         description: item?.product?.shortProductDescription?.description,
-        quantity: item?.count || 1,
+        quantity: item?.count,
       };
     });
   
