@@ -19,18 +19,30 @@ const EcoMail = {
   },
 
   unStructEvent: function (cart, callback) {
+    const includeCartUrl = process.env.NEXT_PUBLIC_INCLUDE_CART_URL_IN_ECOMAIL === 'true';
+  
+    const externalCartLink = map(cart?.items, item => {
+      const externalId = item?.product?.ean || item?.product?.id;
+      const quantity = item?.count || 1;
+      return `${externalId}${quantity > 1 ? `|||${quantity}` : ''}`;
+    }).join(',');
+
+    const fullCartUrl = `${process.env.NEXT_PUBLIC_HOST}/kosik/externe/${externalCartLink}`;
+  
     const products = map(cart?.items, item => {
       return {
         productId: item?.product?.id,
         img_url: getImageUrl(item?.product?.photo, '200x200', 'png'),
-        url: `${process.env.NEXT_PUBLIC_HOST}/produkt/${item?.product?.urlTitle}`,
+        url: includeCartUrl
+          ? fullCartUrl 
+          : `${process.env.NEXT_PUBLIC_HOST}/produkt/${item?.product?.urlTitle}`, 
         name: item?.product?.name,
         price: item?.product?.priceData?.price,
         description: item?.product?.shortProductDescription?.description,
-        quantity: item?.count,
+        quantity: item?.count || 1,
       };
     });
-
+  
     this.track('trackUnstructEvent', {
       schema: '',
       data: {
@@ -38,7 +50,7 @@ const EcoMail = {
         products: products.length ? products : [],
       },
     });
-
+  
     if (isFunction(callback)) {
       callback();
     }
