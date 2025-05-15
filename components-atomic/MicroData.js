@@ -1,3 +1,4 @@
+"use client"
 import useWebInstance from "grandus-lib/hooks/useWebInstance";
 import MicroDataProduct from "grandus-lib/components-atomic/microData/MicroDataProduct";
 import MicroDataBreadcrumbs from "grandus-lib/components-atomic/microData/MicroDataBreadcrumbs";
