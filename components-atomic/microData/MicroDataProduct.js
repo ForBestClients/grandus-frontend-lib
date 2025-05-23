@@ -57,7 +57,7 @@ const MicroDataProduct = ({ data = null, webInstance = null }) => {
       sku: `${sku}` || `${id}`,
       mpn: `${ean}` || `${id}`,
       brand: {
-        '@type': 'Thing',
+        '@type': 'Brand',
         name: get(brand, 'name', ''),
       },
       offers: {
