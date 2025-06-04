@@ -124,10 +124,14 @@ export default function useUser({
       if (isFunction(callback)) {
         callback(user);
       }
+
+      return user;
     } catch (error) {
       setIsLoading(false);
       console.error("An unexpected error happened:", error);
     }
+
+    return null;
   };
 
   return {
