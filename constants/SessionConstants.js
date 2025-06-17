@@ -18,3 +18,4 @@ export const SESSION_STORAGE_CONSTANT = "_grandus-frontend-session-storage";
 export const DELIVERY_DATA_SESSION_STORAGE_KEY = "deliveryProviderData";
 
 export const USER_LAST_SEEN_CONSTANT = '_grandus_user_lastSeen'
+export const CURRENCY_COOKIE_NAME_CONSTANT = '_grandus_currency'
