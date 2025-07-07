@@ -171,32 +171,37 @@ const EnhancedEcommerce = {
   },
 
   // G4 analytics: add to cart
-  add_to_cart: function(product, variant, quantity = 1) {
-    const data = {
-      currency: product?.finalPriceData?.currency,
-      value: product?.finalPriceData?.price,
-      items: [
-        {
-          item_id: product?.id,
-          item_name: product?.name,
-          item_variant: variant,
-          currency: product?.finalPriceData?.currency,
-          price: product?.finalPriceData?.price,
-          index: 0,
-          item_brand: product?.brand?.name,
-          item_category: get(product, 'categories[0].name', ''),
-          item_category2: get(product, 'categories[1].name', ''),
-          item_category3: get(product, 'categories[2].name', ''),
-          item_category4: get(product, 'categories[3].name', ''),
-          item_category5: get(product, 'categories[4].name', ''),
-          quantity: quantity,
-          ...this.getProductCustomKeys(product),
-        },
-      ],
-    };
+  add_to_cart: function (product, variant, quantity = 1) {
+  const rawCategories = get(product, 'categories', []);
+  const flatCategories = Array.isArray(rawCategories)
+    ? rawCategories.flat(Infinity)
+    : [];
 
-    return prepareData(data, 'add_to_cart');
-  },
+  const data = {
+    currency: get(product, 'finalPriceData.currency'),
+    value: get(product, 'finalPriceData.price'),
+    items: [
+      {
+        item_id: get(product, 'id'),
+        item_name: get(product, 'name'),
+        item_variant: variant,
+        currency: get(product, 'finalPriceData.currency'),
+        price: get(product, 'finalPriceData.price'),
+        index: 0,
+        item_brand: get(product, 'brand.name'),
+        item_category: get(flatCategories, '[0].name', ''),
+        item_category2: get(flatCategories, '[1].name', ''),
+        item_category3: get(flatCategories, '[2].name', ''),
+        item_category4: get(flatCategories, '[3].name', ''),
+        item_category5: get(flatCategories, '[4].name', ''),
+        quantity: quantity,
+        ...this.getProductCustomKeys(product),
+      },
+    ],
+  };
+
+  return prepareData(data, 'add_to_cart');
+},
 
   // UA analytics: remove from cart
   cartRemove: function(product, quantity = 1, user = null) {
