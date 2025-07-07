@@ -39,7 +39,7 @@ const useStaticBlock = (options = {}) => {
     },
   );
 
-  const getByHash = async hash => {
+  const getByHash = hash => {
     return find(data, ['hash', hash]) || {};
   };
 
