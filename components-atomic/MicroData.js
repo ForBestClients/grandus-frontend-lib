@@ -6,6 +6,7 @@ import MicroDataArticle from "grandus-lib/components-atomic/microData/MicroDataA
 import MicroDataSearch from "grandus-lib/components-atomic/microData/MicroDataSearch";
 import MicroDataOrganization from "grandus-lib/components-atomic/microData/MicroDataOrganization";
 import MicroDataNavigation from "grandus-lib/components-atomic/microData/MicroDataNavigation";
+import MicroDataFAQ from "@/grandus-lib/components-atomic/microData/MicroDataFaq";
 import isEmpty from "lodash/isEmpty";
 import includes from "lodash/includes";
 
@@ -14,7 +15,8 @@ export const MICRODATA_BREADCRUMBS = "breadcrumbs";
 export const MICRODATA_ARTICLE = "article";
 export const MICRODATA_SEARCH = "search";
 export const MICRODATA_ORGANIZATION = "organization";
-export const MICRODATA_NAVIGATION = "navigation"
+export const MICRODATA_NAVIGATION = "navigation";
+export const MICRODATA_FAQ = "faq"
 
 const MicroData = ({ type = "default", data = null }) => {
   if (isEmpty(data) && !includes(type, [MICRODATA_SEARCH]) && !includes(type, [MICRODATA_ORGANIZATION])) {
@@ -35,6 +37,8 @@ const MicroData = ({ type = "default", data = null }) => {
       return <MicroDataSearch webInstance={webInstance} />;
     case MICRODATA_ORGANIZATION:
       return <MicroDataOrganization webInstance={webInstance} />;
+    case MICRODATA_FAQ:
+      return <MicroDataFAQ webInstance={webInstance} data={data}/>;
     default:
       return null;
   }
