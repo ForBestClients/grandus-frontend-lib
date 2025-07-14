@@ -450,7 +450,7 @@ const EnhancedEcommerce = {
       currency: order?.totalSumData?.currency,
       items: order?.orderItems.map((item, index) => ({
         item_id: item?.productId,
-        item_name: item?.product?.name,
+        item_name: item?.product?.name ?? item?.name,
         item_variant: item?.size,
         currency: item?.unitPriceData?.currency,
         price: item?.unitPriceData?.price,
