@@ -17,10 +17,8 @@ const generateKey = (level = 0, id, key, suffix = "") =>
 
 const LinkMobileAll = ({ name, urlName, onClickMethod }) => {
   return (
-    <Link {...getCategoryLinkAttributes(urlName)} scroll={true}>
-      <a className={styles.mobile} onClick={() => onClickMethod(false)}>
+    <Link {...getCategoryLinkAttributes(urlName)} scroll={true} className={styles.mobile} onClick={() => onClickMethod(false)}>
         {`Všetko z kategórie ${name}`}
-      </a>
     </Link>
   );
 };
@@ -37,9 +35,7 @@ const LinkMobile = ({ item, onClickMethod, onClickMethod2 }) => {
         { absoluteHref: get(item, "externalUrl") }
       )}
       scroll={true}
-    >
-      <a
-        className={hasSubmenuCssClass + " " + styles.mobile}
+              className={hasSubmenuCssClass + " " + styles.mobile}
         onClick={(e) => {
           if (hasSubmenu) {
             e.preventDefault();
@@ -48,9 +44,8 @@ const LinkMobile = ({ item, onClickMethod, onClickMethod2 }) => {
             onClickMethod2(false);
           }
         }}
-      >
+    >
         {item?.name}
-      </a>
     </Link>
   );
 };
@@ -83,12 +78,9 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
         ) : (
           <ul className={`${styles.main} ${isOpen ? styles.open : ""}`}>
             <li className={styles.logo + " " + styles.mobile}>
-              <Link href="/" as={`/`}>
-                <a
-                  onClick={() => {
+              <Link href="/" as={`/`}                   onClick={() => {
                     updateOpenedMenu(false);
-                  }}
-                >
+                  }}>
                   {options?.logo ? (
                     <Image
                       photo={options.logo}
@@ -103,7 +95,6 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                   ) : (
                     ""
                   )}
-                </a>
               </Link>
               <a
                 href="#"
@@ -119,14 +110,10 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
               ""
             ) : (
               <li className={styles.mobile}>
-                <Link href="/prihlasenie" as={`/prihlasenie`}>
-                  <a
-                    onClick={() => {
+                <Link href="/prihlasenie" as={`/prihlasenie`}                     onClick={() => {
                       updateOpenedMenu(false);
-                    }}
-                  >
+                    }}>
                     Prihlásenie
-                  </a>
                 </Link>
               </li>
             )}
@@ -134,14 +121,10 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
               ""
             ) : (
               <li className={styles.mobile}>
-                <Link href="/porovnanie" as={`/porovnanie`}>
-                  <a
-                    onClick={() => {
+                <Link href="/porovnanie" as={`/porovnanie`}                     onClick={() => {
                       updateOpenedMenu(false);
-                    }}
-                  >
+                    }}>
                     Porovnanie
-                  </a>
                 </Link>
               </li>
             )}
@@ -150,14 +133,10 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
               ""
             ) : (
               <li className={styles.mobile}>
-                <Link href="/wishlist" as={`/wishlist`}>
-                  <a
-                    onClick={() => {
+                <Link href="/wishlist" as={`/wishlist`}                     onClick={() => {
                       updateOpenedMenu(false);
-                    }}
-                  >
+                    }}>
                     Zoznam obľúbených produktov
-                  </a>
                 </Link>
               </li>
             )}
@@ -176,12 +155,9 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                       { absoluteHref: get(item, "externalUrl") }
                     )}
                     scroll={true}
+                    className={submenuItemsCount ? styles["has-submenu"] : ""}
                   >
-                    <a
-                      className={submenuItemsCount ? styles["has-submenu"] : ""}
-                    >
                       {get(item, "name")}
-                    </a>
                   </Link>
                   <LinkMobile
                     item={item}
@@ -245,19 +221,16 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                 get(subItem, "urlName")
                               )}
                               scroll={true}
-                            >
-                              <a
-                                className={`${styles["megamenu-title"]} ${
+                                                              className={`${styles["megamenu-title"]} ${
                                   hasSubSubmenu ? styles["has-submenu"] : ""
                                 }`}
-                              >
+                            >
                                 {/* <Image
                                   photo={get(subItem, "alternativePhoto", {})}
                                   size={"20x28"}
                                   type={"png"}
                                 /> */}
                                 {get(subItem, "name")}
-                              </a>
                             </Link>
                             <LinkMobile
                               item={subItem}
@@ -300,9 +273,7 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                             )}
                                             scroll={true}
                                           >
-                                            <a>
                                               <u>Zobraziť ďaľšie</u>
-                                            </a>
                                           </Link>
                                         </li>
                                       );
@@ -323,15 +294,12 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                             get(subSubItem, "urlName")
                                           )}
                                           scroll={true}
-                                        >
-                                          <a
-                                            className={styles.always}
+                                                                                      className={styles.always}
                                             onClick={() => {
                                               updateOpenedMenu(false);
                                             }}
-                                          >
+                                        >
                                             {get(subSubItem, "name")}
-                                          </a>
                                         </Link>
                                       </li>
                                     );

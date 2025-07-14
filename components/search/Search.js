@@ -44,14 +44,10 @@ const Results = ({ products, brands, categories, closeAction }) => {
                   <Link
                     href="/kategoria/[category]/[[...parameters]]"
                     as={`/kategoria/${category?.urlName}`}
-                  >
-                    <a
-                      onClick={() => {
+                                          onClick={() => {
                         closeAction(false);
                       }}
-                    >
-                      {category?.name}
-                    </a>
+                  >
                   </Link>
                 </li>
               ))}

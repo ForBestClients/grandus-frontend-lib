@@ -61,8 +61,8 @@ const Variant = ({ data, hash = false, options = {} }) => {
             href="/produkt/[id]"
             as={`/produkt/${product?.urlTitle}`}
             scroll={true}
+            className={styles.item}
           >
-            <a className={styles.item}>
               {get(options, "image.disabled", false) ? (
                 ""
               ) : (
@@ -74,7 +74,6 @@ const Variant = ({ data, hash = false, options = {} }) => {
               )}
 
               <span>{foundParameter?.value}</span>
-            </a>
           </Link>
         );
       })}

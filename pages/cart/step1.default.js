@@ -232,7 +232,6 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
             href="/produkt/[id]"
             as={`/produkt/${get(item, "product.urlTitle")}`}
           >
-            <a>
               {get(item, "product.photo") ? (
                 <Image
                   photo={get(item, "product.photo")}
@@ -242,7 +241,6 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
               ) : (
                 ""
               )}
-            </a>
           </Link>
         );
       },
@@ -260,7 +258,7 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
                 href="/produkt/[id]"
                 as={`/produkt/${get(item, "product.urlTitle")}`}
               >
-                <a>{get(item, "product.name")}</a>
+                {get(item, "product.name")}
               </Link>
             </Paragraph>
             <Col xs={24} sm={0}>

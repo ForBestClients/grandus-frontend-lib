@@ -133,7 +133,7 @@ const Homepage = (props) => {
                     >
                       {url ? (
                         <Link href={url} scroll={true}>
-                          <a>{image}</a>
+                          {image}
                         </Link>
                       ) : (
                         image
@@ -159,7 +159,7 @@ const Homepage = (props) => {
                   <div className={styles["homepage-banner"]}>
                     {url ? (
                       <Link href={url} scroll={true}>
-                        <a>{image}</a>
+                        {image}
                       </Link>
                     ) : (
                       image
@@ -241,7 +241,7 @@ const Homepage = (props) => {
                     <div className={styles["homepage-banner"]}>
                       {url ? (
                         <Link href={url} scroll={true}>
-                          <a>{image}</a>
+                          {image}
                         </Link>
                       ) : (
                         image
