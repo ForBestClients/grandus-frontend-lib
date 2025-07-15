@@ -33,13 +33,15 @@ const HookTypeHard = ({ data = [], options = {} }) => {
             key={`product-hard-hook-${urlTitle}`}
             href={`/produkt/${urlTitle}`}
             scroll={true}
-            className={styles.product}
+            legacyBehavior
           >
+            <a className={styles.product}>
               {photo ? <Image photo={photo} size={"45x45"} type={"jpg"} /> : ""}
               <div className={styles.content}>
                 <strong>{name}</strong>
                 <Price priceData={finalPriceData} options={priceOtions} />
               </div>
+              </a>
           </Link>
         );
       })}

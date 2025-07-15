@@ -629,8 +629,11 @@ const CartDeliveryAndPayment = (props) => {
                         href={get(settings, "terms_and_conditions_link", "")}
                         target="_blank"
                         passHref
+                        legacyBehavior
                       >
+                        <a>
                         obchodnými podmienkami
+                        </a>
                       </Link>
                     </Checkbox>
                   </Form.Item>

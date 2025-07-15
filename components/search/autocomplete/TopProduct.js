@@ -12,13 +12,18 @@ const TopProduct = ({
   closeAction,
 }) => (
   <Link href={`/produkt/${urlTitle}`}
-        className={styles.product}
-      onClick={() => {
+        legacyBehavior
+>
+        <a       
+        onClick={() => {
         closeAction(false);
-      }}>
+      }}
+      className={styles.product}
+      >
       <Image photo={photo} size={"250x250"} type={"jpg"} />
       <span className={styles.name}>{name}</span>
       <Price priceData={finalPriceData} className={styles.price} />
+      </a>
   </Link>
 );
 

@@ -485,8 +485,10 @@ const CartContact = (props) => {
               }`}
               style={{ marginBottom: "15px" }}
               extra={
-                <Link href={"/ucet/profil"}>
+                <Link href={"/ucet/profil"} legacyBehavior>
+                  <a>
                   Profil
+                  </a>
                 </Link>
               }
             >

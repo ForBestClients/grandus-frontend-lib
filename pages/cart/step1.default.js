@@ -231,16 +231,17 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
           <Link
             href="/produkt/[id]"
             as={`/produkt/${get(item, "product.urlTitle")}`}
+            legacyBehavior
           >
-              {get(item, "product.photo") ? (
+            <a>
+              {get(item, "product.photo") && (
                 <Image
                   photo={get(item, "product.photo")}
                   size={"50x50"}
                   type={"jpg"}
                 />
-              ) : (
-                ""
               )}
+            </a>
           </Link>
         );
       },
@@ -257,8 +258,11 @@ const Cart = ({ inputCountRender, allowCoupons = true }) => {
               <Link
                 href="/produkt/[id]"
                 as={`/produkt/${get(item, "product.urlTitle")}`}
+                legacyBehavior
               >
+                <a>
                 {get(item, "product.name")}
+                </a>
               </Link>
             </Paragraph>
             <Col xs={24} sm={0}>
