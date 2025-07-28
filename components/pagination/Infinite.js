@@ -1,10 +1,10 @@
-import { useSWRInfinite } from "swr";
-import map from "lodash/map";
-import toNumber from "lodash/toNumber";
-import LoadingIcon from "components/_other/icons/LoadingIcon";
-import { useEffect, useState } from "react";
-import { createPortal } from "react-dom";
-import { useRouter } from "next/router";
+import useSWRInfinite from 'swr/infinite';
+import map from 'lodash/map';
+import toNumber from 'lodash/toNumber';
+import LoadingIcon from 'components/_other/icons/LoadingIcon';
+import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useRouter } from 'next/router';
 
 const Infinite = ({
   totalCount = 0,
@@ -14,7 +14,7 @@ const Infinite = ({
   handleGetKey,
   handleGetHref,
   render,
-  className = "",
+  className = '',
   destinationElementId = null,
   loadMoreDescription,
 }) => {
@@ -23,7 +23,7 @@ const Infinite = ({
     size: actualPage,
     setSize: setActualPage,
     isValidating,
-  } = useSWRInfinite(handleGetKey, (url) => fetch(url).then((r) => r.json()), {
+  } = useSWRInfinite(handleGetKey, url => fetch(url).then(r => r.json()), {
     initialSize: currentPage > 1 ? currentPage - 1 : 0,
   });
 
@@ -52,14 +52,14 @@ const Infinite = ({
 
                 return render(page);
               }),
-              document.getElementById(destinationElementId)
+              document.getElementById(destinationElementId),
             )
-          : ""}
+          : ''}
         {actualPage < pageCount ? (
           <div className={className}>
             <button
               className="button"
-              onClick={(e) => {
+              onClick={e => {
                 const newPage = actualPage ? actualPage + 1 : 2;
                 e.preventDefault;
                 setActualPage(newPage);
@@ -71,12 +71,13 @@ const Infinite = ({
                 <>
                   <LoadingIcon />
                 </>
-              ) :  loadMoreDescription?? "Zobraziť ďalšie produkty"
-              }
+              ) : (
+                (loadMoreDescription ?? 'Zobraziť ďalšie produkty')
+              )}
             </button>
           </div>
         ) : (
-          ""
+          ''
         )}
       </>
     );
