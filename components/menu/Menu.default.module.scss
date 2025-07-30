@@ -1,5 +1,4 @@
-@use "sass:math";
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .megamenu {
   .mobile {
@@ -35,7 +34,7 @@
         > a {
           display: flex;
           align-items: center;
-          padding: 0 $general-gutter;
+          padding: 0 var(--dimension_general-gutter);
           color: $text-color;
           height: 50px;
           &:hover {
@@ -46,7 +45,7 @@
       }
       //LEVEL 1
       .megamenu-item {
-        box-shadow: $general-shadow;
+        box-shadow: var(--design_general-shadow);
         display: none; //flex on hover
         flex-wrap: wrap;
         z-index: 4;
@@ -54,12 +53,12 @@
         left: 0;
         right: 0;
         background: white;
-        padding: $general-gutter;
+        padding: var(--dimension_general-gutter);
         ul {
           width: 100%;
           padding: 0;
           li {
-            margin-bottom: math.div($general-gutter, 2);
+            margin-bottom: var(--dimension_general-gutter-05);
             a {
               color: $text-color;
               &:hover {
@@ -72,12 +71,12 @@
           display: flex;
           color: $primary-color;
           font-size: 16px;
-          padding-bottom: math.div($general-gutter, 2);
+          padding-bottom: var(--dimension_general-gutter-05);
           font-weight: bolder;
           align-items: center;
           position: relative;
           img {
-            margin-right: $general-gutter;
+            margin-right: var(--dimension_general-gutter);
           }
         }
       }
@@ -88,14 +87,14 @@
 .column {
   width: 100%;
   position: relative;
-  padding-right: $general-gutter;
+  padding-right: var(--dimension_general-gutter);
 
   // background-image: SET INLINE ON ELEMENT
   background-repeat: no-repeat;
   background-size: 75px 75px;
   background-position: right top;
   &.menu-col-auto {
-    padding: $general-gutter;
+    padding: var(--dimension_general-gutter);
 
     border-left: 1px solid $grey-light-color;
     border-bottom: 1px solid $grey-light-color;
@@ -168,7 +167,7 @@
 }
 .megamenu-wrap {
   display: flex;
-  padding-left: math.div($general-gutter, 2);
+  padding-left: var(--dimension_general-gutter-05);
 }
 @media (min-width: 900px) {
   .megamenu-title.has-submenu {
@@ -214,8 +213,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: $general-gutter;
-      padding-right: $general-gutter;
+      margin-bottom: var(--dimension_general-gutter);
+      padding-right: var(--dimension_general-gutter);
     }
     nav {
       ul.main {
@@ -223,7 +222,7 @@
           display: block;
         }
         z-index: 4;
-        box-shadow: $general-shadow;
+        box-shadow: var(--design_general-shadow);
         position: fixed;
         left: 0;
         top: 0;
@@ -240,7 +239,7 @@
             font-size: 14px;
             font-weight: normal;
 
-            padding: $general-gutter $general-gutter;
+            padding: var(--dimension_general-gutter) var(--dimension_general-gutter);
             align-items: center;
             margin: 0;
           }
@@ -256,7 +255,7 @@
             }
             .megamenu-wrap {
               display: none;
-              margin-left: $general-gutter;
+              margin-left: var(--dimension_general-gutter);
               &.open,
               a {
                 display: flex;
@@ -267,7 +266,7 @@
             }
             .column.menu-col-auto {
               padding: 0;
-              margin-top: math.div($general-gutter, 2);
+              margin-top: var(--dimension_general-gutter-05);
               a {
                 border-bottom: none;
               }
@@ -280,7 +279,7 @@
             font-size: 16px;
             font-weight: bolder;
             height: auto;
-            padding: $general-gutter;
+            padding: var(--dimension_general-gutter);
           }
         }
       }

@@ -1,47 +1,46 @@
-@use "sass:math";
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .badge {
-  border-radius: $general-radius;
+  border-radius: var(--dimension_general-radius);
   background-color: transparent;
-  padding: math.div($general-gutter, 2);
+  padding: var(--dimension_general-gutter-05);
   font-weight: bolder;
   fill: $primary-color;
   color: $primary-color;
   display: inline-flex;
   align-items: center;
-  margin-bottom: math.div($general-gutter, 2);
+  margin-bottom: var(--dimension_general-gutter-05);
   font-size: 1.2em;
   span {
-    margin-right: math.div($general-gutter, 2);
+    margin-right: var(--dimension_general-gutter-05);
   }
 }
 
 .product {
-  border-radius: $general-radius;
+  border-radius: var(--dimension_general-radius);
   display: flex;
-  padding: $general-gutter;
+  padding: var(--dimension_general-gutter);
   background-color: white;
-  border: $general-border;
-  transition: $general-transition;
+  border: var(--design_general-border);
+  transition: var(--design_general-transition);
 
   &:hover {
     border-color: $color-primary;
-    box-shadow: $general-shadow;
-    transition: $general-transition;
+    box-shadow: var(--design_general-shadow);
+    transition: var(--design_general-transition);
   }
 
   .content {
     display: flex;
     flex-direction: column;
-    margin-left: $general-gutter;
+    margin-left: var(--dimension_general-gutter);
   }
 }
 
 .wrapper {
   background-color: $color-primary;
-  padding: $general-gutter;
-  border-radius: $general-radius;
+  padding: var(--dimension_general-gutter);
+  border-radius: var(--dimension_general-radius);
   .badge {
     fill: white;
     color: white;

@@ -1,4 +1,4 @@
-@import "styles/variables";
+@use "styles/variables" as vars;
 .packetery {
   display: flex;
   align-items: center;
