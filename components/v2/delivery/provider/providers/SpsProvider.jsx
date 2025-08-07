@@ -2,15 +2,16 @@ import Script from 'next/script';
 import styles from './SpsProvider.module.scss';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
-import useSessionStorage from '../../../../../hooks/useSessionStorage';
-import useWebInstance from '../../../../../hooks/useWebInstance';
-import useCart from '../../../../../hooks/useCart';
+import useSessionStorage from "grandus-lib/hooks/useSessionStorage";
+import useWebInstance from "grandus-lib/hooks/useWebInstance";
+import useCart from "grandus-lib/hooks/useCart";
 import { useEffect, useState } from 'react';
-import { DELIVERY_DATA_SESSION_STORAGE_KEY } from '../../../../../constants/SessionConstants';
+import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/SessionConstants";
 import assign from 'lodash/assign';
 import toString from 'lodash/toString';
 import pick from 'lodash/pick';
 import isFunction from 'lodash/isFunction';
+import { SPS_TYPE } from '../index';
 
 const WIDGET_URL = 'https://balikomat.sps-sro.sk/widget/v1/initialize.js';
 
@@ -88,6 +89,10 @@ const SpsProvider = ({ errors, delivery, onSelect, config = {} }) => {
     window?.initializeWidget(spsOptions);
   };
 
+  const isSpsSelected = cart?.serviceProviderType === SPS_TYPE &&
+    cart?.specificDeliveryType &&
+    !isEmpty(selectedPickupPoint)
+
   return (
     <>
       <Script src={WIDGET_URL} defer={true}></Script>
@@ -98,7 +103,7 @@ const SpsProvider = ({ errors, delivery, onSelect, config = {} }) => {
         ) : (
           // <LoadingOutlined spin />
           <div className={`${styles.selected} sps__custom--selected`}>
-            {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint) ? (
+            {isSpsSelected ? (
               <p>
                 <strong>{get(selectedPickupPoint, 'address', '')}</strong>
                 <br />
@@ -109,7 +114,7 @@ const SpsProvider = ({ errors, delivery, onSelect, config = {} }) => {
               type={!isEmpty(errors?.specificDeliveryType) ? 'danger' : null}
               onClick={showModal}
             >
-              {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint)
+              {isSpsSelected
                 ? get(config, 'text.changePlaceLabel', 'Zmeniť')
                 : get(config, 'text.choosePlaceLabel', 'Vybrať odberné miesto')}
             </button>
