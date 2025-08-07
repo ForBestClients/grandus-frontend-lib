@@ -132,7 +132,7 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
           // <LoadingOutlined spin />
         ) : (
           <div className={`${styles.selected} packetery__custom--selected`}>
-            {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint) ? (
+            {isPacketerySelected ? (
               <p>
                 <strong>{get(selectedPickupPoint, "nameStreet", "")}</strong>
                 <br />
@@ -143,7 +143,7 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
               type={!isEmpty(errors?.specificDeliveryType) ? "danger" : null}
               onClick={showModal}
             >
-              {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint)
+              {isPacketerySelected
                 ? get(config, 'text.changePlaceLabel', "Zmeniť")
                 :  get(config, 'text.choosePlaceLabel', "Vybrať odberné miesto")}
             </button>
