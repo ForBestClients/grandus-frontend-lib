@@ -64,7 +64,7 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
 
   packetaOptions = assign(packetaOptions, config);
 
-  const isPacketerySelected = cart?.serviceProviderType === PACKETERY_TYPE &&
+  const isPacketerySelected = cart?.delivery?.serviceProviderType === PACKETERY_TYPE &&
     cart?.specificDeliveryType &&
     !isEmpty(selectedPickupPoint)
 

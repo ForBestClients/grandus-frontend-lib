@@ -2,11 +2,11 @@ import Script from 'next/script';
 import styles from './SpsProvider.module.scss';
 import isEmpty from 'lodash/isEmpty';
 import get from 'lodash/get';
-import useSessionStorage from "grandus-lib/hooks/useSessionStorage";
-import useWebInstance from "grandus-lib/hooks/useWebInstance";
-import useCart from "grandus-lib/hooks/useCart";
+import useSessionStorage from 'grandus-lib/hooks/useSessionStorage';
+import useWebInstance from 'grandus-lib/hooks/useWebInstance';
+import useCart from 'grandus-lib/hooks/useCart';
 import { useEffect, useState } from 'react';
-import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/SessionConstants";
+import { DELIVERY_DATA_SESSION_STORAGE_KEY } from 'grandus-lib/constants/SessionConstants';
 import assign from 'lodash/assign';
 import toString from 'lodash/toString';
 import pick from 'lodash/pick';
@@ -89,9 +89,17 @@ const SpsProvider = ({ errors, delivery, onSelect, config = {} }) => {
     window?.initializeWidget(spsOptions);
   };
 
-  const isSpsSelected = cart?.serviceProviderType === SPS_TYPE &&
+  const isSpsSelected =
+    cart?.delivery?.serviceProviderType === SPS_TYPE &&
     cart?.specificDeliveryType &&
-    !isEmpty(selectedPickupPoint)
+    !isEmpty(selectedPickupPoint);
+
+  console.log(
+    isSpsSelected,
+    cart?.delivery?.serviceProviderType === SPS_TYPE,
+    cart?.specificDeliveryType,
+    selectedPickupPoint,
+  );
 
   return (
     <>
