@@ -94,13 +94,6 @@ const SpsProvider = ({ errors, delivery, onSelect, config = {} }) => {
     cart?.specificDeliveryType &&
     !isEmpty(selectedPickupPoint);
 
-  console.log(
-    isSpsSelected,
-    cart?.delivery?.serviceProviderType === SPS_TYPE,
-    cart?.specificDeliveryType,
-    selectedPickupPoint,
-  );
-
   return (
     <>
       <Script src={WIDGET_URL} defer={true}></Script>
