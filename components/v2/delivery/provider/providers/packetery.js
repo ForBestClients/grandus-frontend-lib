@@ -15,6 +15,7 @@ import * as yup from "yup";
 import {useEffect, useState } from "react";
 import assign from "lodash/assign";
 import Script from "next/script";
+import { PACKETERY_TYPE } from '../index';
 
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
@@ -62,6 +63,10 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
   }
 
   packetaOptions = assign(packetaOptions, config);
+
+  const isPacketerySelected = cart?.delivery?.serviceProviderType === PACKETERY_TYPE &&
+    cart?.specificDeliveryType &&
+    !isEmpty(selectedPickupPoint)
 
   const handlePickupPointSelection = async (selected) => {
     let pickupPointId = get(selected, "id") || null;
@@ -127,7 +132,7 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
           // <LoadingOutlined spin />
         ) : (
           <div className={`${styles.selected} packetery__custom--selected`}>
-            {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint) ? (
+            {isPacketerySelected ? (
               <p>
                 <strong>{get(selectedPickupPoint, "nameStreet", "")}</strong>
                 <br />
@@ -138,7 +143,7 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
               type={!isEmpty(errors?.specificDeliveryType) ? "danger" : null}
               onClick={showModal}
             >
-              {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint)
+              {isPacketerySelected
                 ? get(config, 'text.changePlaceLabel', "Zmeniť")
                 :  get(config, 'text.choosePlaceLabel', "Vybrať odberné miesto")}
             </button>
