@@ -11,13 +11,12 @@ import { DELIVERY_DATA_SESSION_STORAGE_KEY } from "grandus-lib/constants/Session
 
 import styles from "./gls.module.scss";
 import * as yup from "yup";
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import assign from "lodash/assign";
 import Script from "next/script";
 import Modal from '@/components/_other/modal/Modal';
 
-const WIDGET_URL = "https://plugin.gls-slovakia.sk/v1/";
-const PICKUP_POINT_TYPE_EXTERNAL = "external";
+const WIDGET_URL = "https://map.gls-slovakia.com/widget/gls-dpm.js";
 
 export const validationScheme = yup.object().shape({
   specificDeliveryType: yup
@@ -37,7 +36,7 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
   const { settings } = useWebInstance();
   const { cart, cartUpdate } = useCart(null, { revalidateOnMount: false });
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+  const glsDialogRef = useRef(null)
   const [selectedPickupPoint, setSelectedPickupPoint] = useState(
     get(session, DELIVERY_DATA_SESSION_STORAGE_KEY)
   );
@@ -46,22 +45,9 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
     setSelectedPickupPoint(get(session, DELIVERY_DATA_SESSION_STORAGE_KEY));
   },[session?.deliveryProviderData?.address])
 
-  const closeModal = useCallback(() => {
-    if (GlsWidget !== undefined) {
-      GlsWidget.close();
-    }
-    setIsOpen(false);
-  }, []);
-
-  const mapApiKey = get(settings, "gls_map_widget_key", 'A13D8A67AC46781E04A04C5D0F3B53EA248088022DD62DA5D800EB3B395B0E61DD88C281F1FF0FCCC276B26B5EA7AE70A9A39BFF2137FD6F1859760C3ADBF975');
-  if (isEmpty(mapApiKey)) {
-    return null;
-  }
-
   let glsMapWidgetOptions = {
     lang: 'sk',
-    renderTo: '#gls-map-container',
-    find: 1,
+    country: 'sk',
   };
 
   try {
@@ -69,6 +55,12 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
   } catch (e) {
     // do nothing
   }
+
+  useEffect(() => {
+    glsDialogRef.current?.addEventListener('change', async e => {
+      await handlePickupPointSelection(e.detail);
+    });
+  })
 
   glsMapWidgetOptions = assign(glsMapWidgetOptions, config);
 
@@ -92,8 +84,8 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
             itemAdd(
               DELIVERY_DATA_SESSION_STORAGE_KEY,
               pick(point, [
-                "title",
-                "address",
+                "name",
+                "contact.address",
               ]),
               (sessionData) =>
                 setSelectedPickupPoint(
@@ -111,29 +103,15 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
       }
       setIsLoading(false);
     }
-    closeModal();
   };
 
   const showModal = () => {
-    setIsOpen(true);
+    glsDialogRef.current.showModal()
   };
-
-  const initGlsMapWidget = () => {
-    if (typeof GlsWidget !== 'undefined') {
-      const target = document.getElementById('glsWidgetIframe');
-      if (target) {
-        return;
-      }
-
-      GlsWidget.open(handlePickupPointSelection, glsMapWidgetOptions);
-    } else {
-      console.warn('GlsWidget is not available yet or it was already initialized.');
-    }
-  }
 
   return (
     <>
-      <Script src={WIDGET_URL + mapApiKey} strategy="afterInteractive" id="gls-map-widget" />
+      <Script src={WIDGET_URL} strategy="afterInteractive" id="gls-map-widget" type="module" />
       <div className={`${styles.glsMapWidget} gls-map-widget__custom`}>
         {isLoading || isSessionStorageLoading ? (
           'loading'
@@ -142,9 +120,9 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
           <div className={`${styles.selected} gls-map-widget__custom--selected`}>
             {cart?.specificDeliveryType && !isEmpty(selectedPickupPoint) ? (
               <p>
-                <strong>{get(selectedPickupPoint, "address", "")}</strong>
+                <strong>{get(selectedPickupPoint, "contact.address", "")}</strong>
                 <br />
-                {get(selectedPickupPoint, "title", "")}
+                {get(selectedPickupPoint, "name", "")}
               </p>
             ) : null}
             <button
@@ -163,9 +141,7 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
           </div>
         ) : null}
       </div>
-      <Modal open={isOpen} afterOpen={initGlsMapWidget} onClose={closeModal} className="h-full">
-        <div id="gls-map-container" className="relative h-full"></div>
-      </Modal>
+      <gls-dpm-dialog {...glsMapWidgetOptions} ref={glsDialogRef} id="gls-map-widget-dialog"></gls-dpm-dialog>
     </>
   );
 };
