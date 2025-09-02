@@ -5,7 +5,7 @@ import { ESHOP_TYPE_B2C } from "grandus-lib/constants/AppConstants";
 
 export default function useWebInstance() {
   const { data = null } = useSWR(
-    `/api/lib/v1/webinstance`,
+    `/cz/api/lib/v1/webinstance`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,

@@ -70,7 +70,7 @@ const Login = ({ user, apiHost, host }) => {
                 "webInstanceToken"
               )}&cartAccessToken=${encodeURIComponent(
                 get(cart, "accessToken", "")
-              )}&frontendReturnUrl=${host}/api/lib/v1/auth/oauth?backUrl=${
+              )}&frontendReturnUrl=${host}/cz/api/lib/v1/auth/oauth?backUrl=${
                 router.asPath
               }`}
               block
@@ -91,7 +91,7 @@ const Login = ({ user, apiHost, host }) => {
                 "webInstanceToken"
               )}&cartAccessToken=${encodeURIComponent(
                 get(cart, "accessToken", "")
-              )}&frontendReturnUrl=${host}/api/lib/v1/auth/oauth?backUrl=${
+              )}&frontendReturnUrl=${host}/cz/api/lib/v1/auth/oauth?backUrl=${
                 router.asPath
               }`}
               block

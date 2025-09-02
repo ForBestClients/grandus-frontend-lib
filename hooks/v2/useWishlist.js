@@ -7,7 +7,7 @@ import filter from 'lodash/filter';
 const useWishlist = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { data: wishlist, mutate, isValidating } = useSWR(
-    `/api/lib/v2/wishlist`,
+    `/cz/api/lib/v2/wishlist`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
@@ -27,7 +27,7 @@ const useWishlist = () => {
     isLoading: isLoadingProducts,
   } = useSWR(
     productsUrl
-      ? `/api/lib/v1/products?${productsUrl}&fields=${
+      ? `/cz/api/lib/v1/products?${productsUrl}&fields=${
         process.env.NEXT_PUBLIC_PRODUCT_CARD_FIELDS
       }&perPage=${get(wishlist, 'productIds', []).length}`
       : null,
@@ -50,7 +50,7 @@ const useWishlist = () => {
   const itemRemove = async (productId, callback) => {
     setIsLoading(true);
     await mutate(
-      await fetch(`/api/lib/v2/wishlist/items/${productId}`, {
+      await fetch(`/cz/api/lib/v2/wishlist/items/${productId}`, {
         method: "DELETE",
       })
       .then((result) => result.json())
@@ -69,7 +69,7 @@ const useWishlist = () => {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v2/wishlist/items/${productId}`, {
+        await fetch(`/cz/api/lib/v2/wishlist/items/${productId}`, {
           method: "POST",
         })
         .then((result) => result.json())
@@ -91,7 +91,7 @@ const useWishlist = () => {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v2/wishlist/items/bulk`, {
+        await fetch(`/cz/api/lib/v2/wishlist/items/bulk`, {
           method: "POST",
         })
         .then((result) => result.json())

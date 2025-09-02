@@ -30,7 +30,7 @@ const useStaticBlock = (options = {}) => {
   }
 
   const { data = null, isValidating } = useSWR(
-    '/api/lib/v1/blocks' + (isEmpty(uri) ? '' : '?' + join(uri, '&')),
+    '/cz/api/lib/v1/blocks' + (isEmpty(uri) ? '' : '?' + join(uri, '&')),
     url => fetch(url).then(r => r.json()),
     {
       revalidateOnReconnect: false,

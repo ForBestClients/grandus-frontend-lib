@@ -16,7 +16,7 @@ export default function useShoppingList(options = {}) {
     mutate,
     isValidating,
   } = useSWR(
-    user ? `/api/lib/v1/shopping-list` : false,
+    user ? `/cz/api/lib/v1/shopping-list` : false,
     (url) => fetch(url).then((r) => r.json()),
     {
       ...{
@@ -30,7 +30,7 @@ export default function useShoppingList(options = {}) {
   const create = async (data, callback) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/lib/v1/shopping-list`, {
+      const response = await fetch(`/cz/api/lib/v1/shopping-list`, {
         method: "POST",
         body: JSON.stringify(data),
       })
@@ -54,7 +54,7 @@ export default function useShoppingList(options = {}) {
   const copy = async (accessToken, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/shopping-list/${accessToken}/copy`, {
+      await fetch(`/cz/api/lib/v1/shopping-list/${accessToken}/copy`, {
         method: "POST",
       })
         .then((result) => result.json())
@@ -74,7 +74,7 @@ export default function useShoppingList(options = {}) {
   const update = async (accessToken, data, callback) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/lib/v1/shopping-list/${accessToken}`, {
+      const response = await fetch(`/cz/api/lib/v1/shopping-list/${accessToken}`, {
         method: "PUT",
         body: JSON.stringify(data),
       })
@@ -97,7 +97,7 @@ export default function useShoppingList(options = {}) {
   const remove = async (accessToken, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/shopping-list/${accessToken}`, {
+      await fetch(`/cz/api/lib/v1/shopping-list/${accessToken}`, {
         method: "DELETE",
       })
         .then((result) => result.json())
@@ -135,7 +135,7 @@ export default function useShoppingList(options = {}) {
     setIsLoading(true);
     let success = true;
     const shoppingLists = await fetch(
-      `/api/lib/v1/shopping-list/${accessToken}/item`,
+      `/cz/api/lib/v1/shopping-list/${accessToken}/item`,
       {
         method: "POST",
         body: JSON.stringify(data),
@@ -160,7 +160,7 @@ export default function useShoppingList(options = {}) {
     setIsLoading(true);
     let success = true;
     const shoppingLists = await fetch(
-      `/api/lib/v1/shopping-list/${accessToken}/item/${itemId}`,
+      `/cz/api/lib/v1/shopping-list/${accessToken}/item/${itemId}`,
       {
         method: "PUT",
         body: JSON.stringify({
@@ -182,7 +182,7 @@ export default function useShoppingList(options = {}) {
 
   const itemRemove = async (accessToken, itemId, callback) => {
     setIsLoading(true);
-    await fetch(`/api/lib/v1/shopping-list/${accessToken}/item/${itemId}`, {
+    await fetch(`/cz/api/lib/v1/shopping-list/${accessToken}/item/${itemId}`, {
       method: "DELETE",
     }).then((result) => {
       if (isFunction(callback)) {

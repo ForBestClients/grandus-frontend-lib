@@ -17,7 +17,7 @@ export default function useUser({
     mutate,
     isValidating,
   } = useSWR(
-    `/api/lib/v1/auth/profile`,
+    `/cz/api/lib/v1/auth/profile`,
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnReconnect: false,
@@ -46,7 +46,7 @@ export default function useUser({
   const logoutUser = async () => {
     setIsLoading(true);
     await mutate(
-      await fetch(`/api/lib/v1/auth/signout`).then((result) => result.json())
+      await fetch(`/cz/api/lib/v1/auth/signout`).then((result) => result.json())
     );
     setIsLoading(false);
   };
@@ -68,7 +68,7 @@ export default function useUser({
     const data = {
       user: { params: { ...user?.parameters, [parameterId]: parameterValue } },
     };
-    const response = await fetch(`/api/lib/v1/auth/profile`, {
+    const response = await fetch(`/cz/api/lib/v1/auth/profile`, {
       method: "PUT",
       body: JSON.stringify(data),
     }).then((response) => response.json());
@@ -112,7 +112,7 @@ export default function useUser({
           vatNumber: get(values, "company.icDPH"),
         };
       }
-      const user = await fetch(`/api/lib/v1/auth/signup`, {
+      const user = await fetch(`/cz/api/lib/v1/auth/signup`, {
         method: "POST",
         body: JSON.stringify(reqBody),
       }).then((response) => response.json());

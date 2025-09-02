@@ -91,7 +91,7 @@ const Results = ({ products, brands, categories, closeAction }) => {
   );
 };
 
-const Search = ({ endpoint = "/api/lib/v1/autosuggest?search=" }) => {
+const Search = ({ endpoint = "/cz/api/lib/v1/autosuggest?search=" }) => {
   const router = useRouter();
   const [value, setValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);

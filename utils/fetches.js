@@ -37,7 +37,7 @@ const indexPage = {
 
 const productPage = {
   serverSideProps: async (context) => {
-    let uri = `${reqGetHost(context?.req)}/api/lib/v1/products/${
+    let uri = `${reqGetHost(context?.req)}/cz/api/lib/v1/products/${
       context?.params?.id
     }?initial=1`;
 
@@ -112,7 +112,7 @@ const blogListingPage = {
       uri.push(`perPage=${get(context, "query.perPage", "")}`);
     }
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/blogs?${uri.join("&")}`,{headers: reqGetHeaders(context?.req??{})}
+      `${reqGetHost(context?.req)}/cz/api/lib/v1/blogs?${uri.join("&")}`,{headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
     return {
       props: data,
@@ -187,7 +187,7 @@ const blogPage = {
   },
   serverSideProps: async (context, options = {}) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/blogs/${
+      `${reqGetHost(context?.req)}/cz/api/lib/v1/blogs/${
         context?.params?.id
       }?${queryToQueryString(options)}`,
       {
@@ -210,7 +210,7 @@ const campaignListingPage = {
       uri.push(`perPage=${get(context, "query.perPage", "")}`);
     }
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/campaigns?${uri.join("&")}`
+      `${reqGetHost(context?.req)}/cz/api/lib/v1/campaigns?${uri.join("&")}`
     ).then((result) => result.json());
     return {
       props: data,
@@ -283,7 +283,7 @@ const staticPage = {
   },
   serverSideProps: async (context) => {
     const data = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/statics/${context?.params?.id}`, {headers: reqGetHeaders(context?.req??{})}
+      `${reqGetHost(context?.req)}/cz/api/lib/v1/statics/${context?.params?.id}`, {headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
     if (!data?.id) {
       context.res.statusCode = 404;
@@ -308,12 +308,12 @@ const staticPage = {
 const checkoutContactPage = {
   serverSideProps: async (context) => {
     const countries = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/countries`, {headers: reqGetHeaders(context?.req??{})}
+      `${reqGetHost(context?.req)}/cz/api/lib/v1/countries`, {headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
 
     let towns = [];
     try {
-      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`, {headers: reqGetHeaders(context?.req??{})}).then(
+      towns = await fetch(`${reqGetHost(context?.req)}/cz/api/lib/v1/towns`, {headers: reqGetHeaders(context?.req??{})}).then(
         (result) => result.json()
       );
     } catch (error) {
@@ -331,7 +331,7 @@ const userPage = {
     let user = null;
     try {
       user = await fetch(
-        `${reqGetHost(context?.req)}/api/lib/v1/auth/profile`,
+        `${reqGetHost(context?.req)}/cz/api/lib/v1/auth/profile`,
         {
           headers: reqGetHeadersFront(context?.req),
         }
@@ -348,12 +348,12 @@ const userPage = {
 const userProfilePage = {
   serverSideProps: async (context) => {
     const countries = await fetch(
-      `${reqGetHost(context?.req)}/api/lib/v1/countries`,{headers: reqGetHeaders(context?.req??{})}
+      `${reqGetHost(context?.req)}/cz/api/lib/v1/countries`,{headers: reqGetHeaders(context?.req??{})}
     ).then((result) => result.json());
 
     let towns = [];
     try {
-      towns = await fetch(`${reqGetHost(context?.req)}/api/lib/v1/towns`, {headers: reqGetHeaders(context?.req??{})}).then(
+      towns = await fetch(`${reqGetHost(context?.req)}/cz/api/lib/v1/towns`, {headers: reqGetHeaders(context?.req??{})}).then(
         (result) => result.json()
       );
     } catch (error) {
@@ -369,14 +369,14 @@ const thanksPage = {
   serverSideProps: async (context) => {
     let [order, banners] = await Promise.all([
       fetch(
-        `${reqGetHost(context?.req)}/api/lib/v1/order?orderToken=${get(
+        `${reqGetHost(context?.req)}/cz/api/lib/v1/order?orderToken=${get(
           context,
           "query.orderToken",
           ""
         )}`, {headers: reqGetHeaders(context?.req??{})}
       ).then((result) => result.json()),
 
-      fetch(`${reqGetHost(context?.req)}/api/lib/v1/banners?type=11`,{headers: reqGetHeaders(context?.req??{})}).then(
+      fetch(`${reqGetHost(context?.req)}/cz/api/lib/v1/banners?type=11`,{headers: reqGetHeaders(context?.req??{})}).then(
         (result) => result.json()
       ),
     ]);

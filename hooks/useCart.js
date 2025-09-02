@@ -21,7 +21,7 @@ export default function useCart(initialCart = false, options = {}) {
     data: cart,
     mutate,
     isValidating,
-  } = useSWR(`/api/lib/v1/cart`, url => fetch(url).then(r => r.json()), {
+  } = useSWR(`/cz/api/lib/v1/cart`, url => fetch(url).then(r => r.json()), {
     ...swrOptions,
     ...options,
   });
@@ -33,7 +33,7 @@ export default function useCart(initialCart = false, options = {}) {
       false,
     );
     await mutate(
-      await fetch(`/api/lib/v1/cart/items/${itemId}`, {
+      await fetch(`/cz/api/lib/v1/cart/items/${itemId}`, {
         method: 'DELETE',
       })
         .then(result => result.json())
@@ -51,7 +51,7 @@ export default function useCart(initialCart = false, options = {}) {
   const itemsRemove = async (itemsIds, callback) => {
     setIsLoading(true);
     let success = true;
-    const cart = await fetch(`/api/lib/v1/cart/items/bulk`, {
+    const cart = await fetch(`/cz/api/lib/v1/cart/items/bulk`, {
       method: 'DELETE',
       body: JSON.stringify({ items: itemsIds }),
     }).then(async result => {
@@ -74,7 +74,7 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v1/cart`, {
+        await fetch(`/cz/api/lib/v1/cart`, {
           method: 'POST',
           body: JSON.stringify({
             cart: {
@@ -101,7 +101,7 @@ export default function useCart(initialCart = false, options = {}) {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v1/cart`, {
+        await fetch(`/cz/api/lib/v1/cart`, {
           method: 'DELETE',
         }).then(result => {
           result.json().then(data => {
@@ -137,7 +137,7 @@ export default function useCart(initialCart = false, options = {}) {
   const itemsAdd = async (items, callback) => {
     setIsLoading(true);
     let success = true;
-    const cart = await fetch(`/api/lib/v1/cart`, {
+    const cart = await fetch(`/cz/api/lib/v1/cart`, {
       method: 'POST',
       body: JSON.stringify({ items }),
     }).then(async result => {
@@ -159,7 +159,7 @@ export default function useCart(initialCart = false, options = {}) {
   const itemUpdate = async (itemId, body, callback) => {
     setIsLoading(true);
     let success = true;
-    const cart = await fetch(`/api/lib/v1/cart/items/${itemId}`, {
+    const cart = await fetch(`/cz/api/lib/v1/cart/items/${itemId}`, {
       method: 'PUT',
       body: JSON.stringify({
         item: body,
@@ -183,7 +183,7 @@ export default function useCart(initialCart = false, options = {}) {
   const saveContact = async (values, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/cart/contact`, {
+      await fetch(`/cz/api/lib/v1/cart/contact`, {
         method: 'POST',
         body: JSON.stringify(values),
       }).then(result => {
@@ -204,7 +204,7 @@ export default function useCart(initialCart = false, options = {}) {
   const removeContact = async callback => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/cart/contact`, {
+      await fetch(`/cz/api/lib/v1/cart/contact`, {
         method: 'DELETE',
       }).then(result => {
         result.json().then(data => {
@@ -224,7 +224,7 @@ export default function useCart(initialCart = false, options = {}) {
   const createOrder = async (values, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/order/create`, {
+      await fetch(`/cz/api/lib/v1/order/create`, {
         method: 'POST',
         body: JSON.stringify(values),
       }).then(result => {
@@ -243,7 +243,7 @@ export default function useCart(initialCart = false, options = {}) {
   const applyCoupon = async (couponHash, callback) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/lib/v1/cart/coupon`, {
+      const response = await fetch(`/cz/api/lib/v1/cart/coupon`, {
         method: 'POST',
         body: JSON.stringify({ couponHash }),
       }).then(result => {
@@ -263,7 +263,7 @@ export default function useCart(initialCart = false, options = {}) {
   const removeCoupon = async callback => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/lib/v1/cart/coupon`, {
+      const response = await fetch(`/cz/api/lib/v1/cart/coupon`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -286,7 +286,7 @@ export default function useCart(initialCart = false, options = {}) {
   const applyCredits = async (value, callback) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/lib/v1/cart/credits`, {
+      const response = await fetch(`/cz/api/lib/v1/cart/credits`, {
         method: 'POST',
         body: JSON.stringify({ credit: value }),
       })
@@ -308,7 +308,7 @@ export default function useCart(initialCart = false, options = {}) {
   const applyIsic = async (surname, code, callback) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/lib/v1/cart/isic`, {
+      const response = await fetch(`/cz/api/lib/v1/cart/isic`, {
         method: 'POST',
         body: JSON.stringify({
           isic: {
@@ -336,7 +336,7 @@ export default function useCart(initialCart = false, options = {}) {
   const removeIsic = async callback => {
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/lib/v1/cart/isic`, {
+      const response = await fetch(`/cz/api/lib/v1/cart/isic`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

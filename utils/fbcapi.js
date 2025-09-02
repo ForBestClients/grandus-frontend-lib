@@ -166,7 +166,7 @@ const FBCAPI = {
 
   send: function(event, data = {}) {
     const requestData = this.prepareData(data, event);
-    fetch('/api/lib/v1/events/fb-capi', {
+    fetch('/cz/api/lib/v1/events/fb-capi', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

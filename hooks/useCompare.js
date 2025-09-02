@@ -9,7 +9,7 @@ const useCompare = () => {
     data: compare,
     mutate,
     isValidating,
-  } = useSWR(`/api/lib/v1/compare`, (url) => fetch(url).then((r) => r.json()), {
+  } = useSWR(`/cz/api/lib/v1/compare`, (url) => fetch(url).then((r) => r.json()), {
     revalidateOnReconnect: false,
     revalidateOnFocus: false,
     shouldRetryOnError: false,
@@ -26,7 +26,7 @@ const useCompare = () => {
   const itemRemove = async (productId, callback) => {
     setIsLoading(true);
     await mutate(
-      await fetch(`/api/lib/v1/compare/items/${productId}`, {
+      await fetch(`/cz/api/lib/v1/compare/items/${productId}`, {
         method: "DELETE",
       })
         .then((result) => result.json())
@@ -45,7 +45,7 @@ const useCompare = () => {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v1/compare/items/${productId}`, {
+        await fetch(`/cz/api/lib/v1/compare/items/${productId}`, {
           method: "PUT",
         })
           .then((result) => result.json())

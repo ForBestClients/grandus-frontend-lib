@@ -57,7 +57,7 @@ const LinkMobile = ({ item, onClickMethod, onClickMethod2 }) => {
 
 const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
   const { data, error } = useSWR(
-    "/api/lib/v1/categories",
+    "/cz/api/lib/v1/categories",
     (url) => fetch(url).then((r) => r.json()),
     {
       revalidateOnFocus: false,

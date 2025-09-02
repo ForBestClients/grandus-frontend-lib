@@ -346,7 +346,7 @@ const useFilter = ({
     }
   }
 
-  const url = `/api/lib/v1/filters?${uri.join('&')}`;
+  const url = `/cz/api/lib/v1/filters?${uri.join('&')}`;
 
   const {
     data: filter,

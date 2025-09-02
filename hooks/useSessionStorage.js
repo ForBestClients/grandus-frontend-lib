@@ -10,7 +10,7 @@ const useSessionStorage = () => {
     data: session,
     mutate,
     isValidating,
-  } = useSWR(`/api/lib/v1/session`, (url) => fetch(url).then((r) => r.json()), {
+  } = useSWR(`/cz/api/lib/v1/session`, (url) => fetch(url).then((r) => r.json()), {
     revalidateOnReconnect: false,
     revalidateOnFocus: false,
     shouldRetryOnError: false,
@@ -23,7 +23,7 @@ const useSessionStorage = () => {
   const itemRemove = async (name, callback) => {
     setIsLoading(true);
     await mutate(
-      await fetch(`/api/lib/v1/session/${name}`, {
+      await fetch(`/cz/api/lib/v1/session/${name}`, {
         method: "DELETE",
       })
         .then((result) => result.json())
@@ -42,7 +42,7 @@ const useSessionStorage = () => {
     setIsLoading(true);
     try {
       await mutate(
-        await fetch(`/api/lib/v1/session/${name}`, {
+        await fetch(`/cz/api/lib/v1/session/${name}`, {
           method: "PUT",
           body: JSON.stringify(value),
         })
