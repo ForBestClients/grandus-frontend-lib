@@ -56,15 +56,7 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
     // do nothing
   }
 
-  useEffect(() => {
-    glsDialogRef.current?.addEventListener('change', async e => {
-      await handlePickupPointSelection(e.detail);
-    });
-  })
-
-  glsMapWidgetOptions = assign(glsMapWidgetOptions, config);
-
-  const handlePickupPointSelection = async (point) => {
+  const handlePickupPointSelection = useCallback(async (point) => {
     if (!point || !point.id) {
       console.warn("GLS callback received invalid or empty point", point);
       return;
@@ -103,7 +95,23 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
       }
       setIsLoading(false);
     }
-  };
+  }, [cart?.specificDeliveryType, cartUpdate, delivery, itemAdd, itemRemove, onSelect]);
+
+  useEffect(() => {
+    const el = glsDialogRef.current;
+    if (!el) return;
+
+    const onChange = async e => {
+      await handlePickupPointSelection(e.detail);
+    };
+
+    el.addEventListener('change', onChange);
+    return () => {
+      el.removeEventListener('change', onChange);
+    }
+  }, [handlePickupPointSelection])
+
+  glsMapWidgetOptions = assign(glsMapWidgetOptions, config);
 
   const showModal = () => {
     glsDialogRef.current.showModal()
