@@ -100,6 +100,7 @@ const EnhancedEcommerce = {
       items: [
         {
           item_id: product?.id,
+          item_group_id: product?.id,
           item_name: product?.name,
           currency: product?.finalPriceData?.currency,
           price: product?.finalPriceData?.price,
@@ -179,6 +180,7 @@ const EnhancedEcommerce = {
       items: [
         {
           item_id: product?.id,
+          item_group_id: product?.item_group_id,
           item_name: product?.name,
           item_variant: variant,
           currency: product?.finalPriceData?.currency,
@@ -229,6 +231,7 @@ const EnhancedEcommerce = {
       items: [
         {
           item_id: get(item, 'product.id'),
+          item_group_id: item?.product?.item_group_id,
           item_name: get(item, 'product.name'),
           item_variant: item?.store?.name,
           currency: get(item, 'priceData.currency'),
@@ -305,6 +308,7 @@ const EnhancedEcommerce = {
       coupon: cart?.coupon?.hash,
       items: cart?.items.map((item, index) => ({
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
@@ -333,6 +337,7 @@ const EnhancedEcommerce = {
       shipping_tier: cart?.delivery?.name,
       items: cart?.items.map((item, index) => ({
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
@@ -361,6 +366,7 @@ const EnhancedEcommerce = {
       payment_type: cart?.payment?.name,
       items: cart?.items.map((item, index) => ({
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
