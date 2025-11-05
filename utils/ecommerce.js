@@ -93,15 +93,16 @@ const EnhancedEcommerce = {
   },
 
   //G4 analytics:  detail
-  view_item: function(product) {
+  view_item: function(product, variant = null) {
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
       items: [
         {
           item_id: product?.id,
-          item_group_id: product?.id,
+          item_group_id: product?.item_group_id ?? product?.id,
           item_name: product?.name,
+          item_variant: variant,
           currency: product?.finalPriceData?.currency,
           price: product?.finalPriceData?.price,
           index: 0,
