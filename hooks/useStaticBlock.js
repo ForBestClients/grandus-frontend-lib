@@ -4,51 +4,73 @@ import isEmpty from 'lodash/isEmpty';
 import join from 'lodash/join';
 
 const useStaticBlock = (options = {}) => {
-  let uri = [];
+  const {
+    hash,
+    group,
+    fields,
+    perPage,
+    expand,
+    initialData = null,
+    swrConfig = {},
+  } = options;
 
-  if (options?.hash) {
-    uri.push('hash=' + options?.hash);
+  const uri = [];
+
+  if (hash) {
+    uri.push('hash=' + hash);
   }
 
-  if (options?.group) {
-    uri.push('group=' + options?.group);
+  if (group) {
+    uri.push('group=' + group);
   }
 
-  if (options?.fields) {
-    uri.push('fields=' + options?.fields);
+  if (fields) {
+    uri.push('fields=' + fields);
   }
 
-  if (options?.perPage !== false) {
-    uri.push('per-page=' + (options?.perPage ? options?.perPage : '999'));
+  if (perPage !== false) {
+    uri.push('per-page=' + (perPage ? perPage : '999'));
   }
 
-  if (options?.expand !== false) {
-    uri.push(
-      'expand=' +
-        (options?.expand ? options?.expand : 'customCss,customJavascript'),
-    );
+  if (expand !== false) {
+    uri.push('expand=' + (expand ? expand : 'customCss,customJavascript'));
   }
 
-  const { data = null, isValidating } = useSWR(
-    '/api/lib/v1/blocks' + (isEmpty(uri) ? '' : '?' + join(uri, '&')),
+  const swrKey =
+    '/api/lib/v1/blocks' + (isEmpty(uri) ? '' : '?' + join(uri, '&'));
+
+  const baseConfig = {
+    revalidateOnReconnect: false,
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  };
+
+  if (initialData !== null) {
+    baseConfig.fallbackData = initialData;
+    baseConfig.revalidateOnMount = false;
+  }
+
+  const { data = initialData ?? null, isValidating } = useSWR(
+    swrKey,
     url => fetch(url).then(r => r.json()),
     {
-      revalidateOnReconnect: false,
-      revalidateOnFocus: false,
-      shouldRetryOnError: false,
+      ...baseConfig,
+      ...swrConfig,
     },
   );
 
-  const getByHash = hash => {
-    return find(data, ['hash', hash]) || {};
+  const resolvedData = data ?? initialData ?? null;
+
+  const getByHash = hashValue => {
+    return find(resolvedData, ['hash', hashValue]) || {};
   };
 
-  const getBy = async (type, hash) => {
-    return find(data, [type, hash]) || {};
+  const getBy = async (type, hashValue) => {
+    return find(resolvedData, [type, hashValue]) || {};
   };
 
   return {
-    staticBlocks: data,
+    staticBlocks: resolvedData,
     isValidating,
     getByHash,
     getBy,
