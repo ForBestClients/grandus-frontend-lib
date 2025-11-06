@@ -23,7 +23,7 @@ export const MICRODATA_NAVIGATION = "navigation"
 const MicroData = ({ type = "default", data = null }) => {
   const { webInstance } = useWebInstance();
 
-  if (isEmpty(data) && !includes(type, [MICRODATA_SEARCH]) && !includes(type, [MICRODATA_ORGANIZATION])) {
+  if (isEmpty(webInstance) || isEmpty(data) && !includes(type, [MICRODATA_SEARCH]) && !includes(type, [MICRODATA_ORGANIZATION])) {
     return null;
   }
 

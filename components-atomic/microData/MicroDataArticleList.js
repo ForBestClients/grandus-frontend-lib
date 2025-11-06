@@ -1,5 +1,5 @@
 'use client';
-import { generateArticleScheme, generateProductScheme } from 'grandus-lib/utils/microdata';
+import { generateArticleScheme } from 'grandus-lib/utils/microdata';
 import MicroDataList from './MicroDataList';
 import map from 'lodash/map';
 
