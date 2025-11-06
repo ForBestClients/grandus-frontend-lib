@@ -94,7 +94,7 @@ const EnhancedEcommerce = {
   },
 
   //G4 analytics:  detail
-  view_item: function(product) {
+  view_item: function(product, variant = null) {
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
@@ -102,7 +102,9 @@ const EnhancedEcommerce = {
         {
           id: product?.id,
           item_id: product?.id,
+          item_group_id: product?.item_group_id ?? product?.id,
           item_name: product?.name,
+          item_variant: variant,
           currency: product?.finalPriceData?.currency,
           price: product?.finalPriceData?.price,
           index: 0,
@@ -182,6 +184,7 @@ const EnhancedEcommerce = {
         {
           id: product?.id,
           item_id: product?.id,
+          item_group_id: product?.item_group_id,
           item_name: product?.name,
           item_variant: variant,
           currency: product?.finalPriceData?.currency,
@@ -233,6 +236,7 @@ const EnhancedEcommerce = {
         {
           id: get(item, 'product.id'),
           item_id: get(item, 'product.id'),
+          item_group_id: item?.product?.item_group_id,
           item_name: get(item, 'product.name'),
           item_variant: item?.store?.name,
           currency: get(item, 'priceData.currency'),
@@ -311,6 +315,7 @@ const EnhancedEcommerce = {
       items: cart?.items.map((item, index) => ({
         id: item?.product?.id,
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
@@ -340,6 +345,7 @@ const EnhancedEcommerce = {
       items: cart?.items.map((item, index) => ({
         id: item?.product?.id,
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
@@ -369,6 +375,7 @@ const EnhancedEcommerce = {
       items: cart?.items.map((item, index) => ({
         id: item?.product?.id,
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
