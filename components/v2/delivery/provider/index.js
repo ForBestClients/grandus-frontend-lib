@@ -1,13 +1,11 @@
 import Packetery, {
-    validationScheme as packeteryValidationScheme,
-  } from "./providers/packetery";
-import GLS, {
-  validationScheme as glsValidationScheme,
-} from '@/grandus-lib/components/v2/delivery/provider/providers/gls';
+  validationScheme as packeteryValidationScheme,
+} from './providers/packetery';
+import GLS, { validationScheme as glsValidationScheme } from './providers/gls';
 import SpsProvider from './providers/SpsProvider';
 
-  export const PACKETERY_TYPE = 1;
-  export const GLS_TYPE = 2;
+export const PACKETERY_TYPE = 1;
+export const GLS_TYPE = 2;
 export const SPS_TYPE = 3;
 
 export const getValidationScheme = (deliveryProviderType = null) => {
@@ -15,15 +13,15 @@ export const getValidationScheme = (deliveryProviderType = null) => {
     return null;
   }
 
-    switch (deliveryProviderType) {
-      case PACKETERY_TYPE:
-        return packeteryValidationScheme;
-      case GLS_TYPE:
-        return glsValidationScheme;
-      default:
-        return null;
-    }
-  };
+  switch (deliveryProviderType) {
+    case PACKETERY_TYPE:
+      return packeteryValidationScheme;
+    case GLS_TYPE:
+      return glsValidationScheme;
+    default:
+      return null;
+  }
+};
 
 const DeliveryProvider = ({
   deliveryProviderType = null,
