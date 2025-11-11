@@ -340,7 +340,6 @@ const EnhancedEcommerce = {
 
   // G4 analytics: add shipping info / step 3
   add_shipping_info: function(cart) {
-    console.log('add_shipping_info', cart);
     const data = {
       currency: cart?.sumData?.currency,
       value: cart?.sumData?.price,
