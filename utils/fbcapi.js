@@ -43,6 +43,10 @@ const FBCAPI = {
       },
     };
 
+    if (additionalData?.eventName) {
+      productData.event_name = additionalData.eventName;
+    }
+
     return productData;
   },
 
@@ -121,6 +125,7 @@ const FBCAPI = {
 
     const orderObject = {
       event_id: `order-${order?.id}`,
+      event_name: 'Purchase',
       custom_data: {
         content_ids: productsIds,
         content_type: CONTENT_TYPE_PRODUCT,

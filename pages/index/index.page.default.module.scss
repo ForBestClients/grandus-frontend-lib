@@ -1,16 +1,16 @@
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .wrapper {
   box-sizing: border-box;
 }
 
 .homepage-banners-section{
-  @media (max-width: $sm) {
+  @media (max-width: #{vars.$sm}) {
     padding: 0;
   }  
   .homepage-banner{
     display: block;
-    @media (min-width: $sm) {
+    @media (min-width: #{vars.$sm}) {
       padding: 10px;
     }
     picture, img{
@@ -19,7 +19,7 @@
       max-width: 100%;
       height: auto;
       border: 1px solid transparent;
-      border-radius: $general-radius;
+      border-radius: var(--dimension_general-radius);
       &:hover {
         border: 1px solid $primary-color;
       }

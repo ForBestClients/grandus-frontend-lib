@@ -1,4 +1,4 @@
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .filter {
   display: none;
@@ -9,12 +9,12 @@
   width: 100%;
   background-color: white;
   z-index: 2;
-  padding: $general-gutter;
+  padding: var(--dimension_general-gutter);
   overflow: auto;
   &.open {
     display: block;
   }
-  @media (min-width: $sm) {
+  @media (min-width: #{vars.$sm}) {
     display: block;
     position: relative;
     z-index: auto;
@@ -27,9 +27,9 @@
   .filterToggleFixed {
     z-index: 3;
     position: fixed;
-    bottom: $general-gutter;
-    right: $general-gutter;
-    @media (min-width: $sm) {
+    bottom: var(--dimension_general-gutter);
+    right: var(--dimension_general-gutter);
+    @media (min-width: #{vars.$sm}) {
       display: none;
     }
   }
@@ -37,7 +37,7 @@
 
 .filterToggle {
   display: block;
-  @media (min-width: $sm) {
+  @media (min-width: #{vars.$sm}) {
     display: none;
   }
 }

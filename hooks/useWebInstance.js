@@ -1,8 +1,7 @@
-'use client';
-
-import useSWR from 'swr';
-import get from 'lodash/get';
-import { ESHOP_TYPE_B2C } from 'grandus-lib/constants/AppConstants';
+"use client"
+import useSWR from "swr";
+import get from "lodash/get";
+import { ESHOP_TYPE_B2C } from "grandus-lib/constants/AppConstants";
 
 export default function useWebInstance() {
   const { data = null } = useSWR(

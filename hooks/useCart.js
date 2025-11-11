@@ -333,6 +333,29 @@ export default function useCart(initialCart = false, options = {}) {
     }
   };
 
+  const removeIsic = async callback => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/lib/v1/cart/isic`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then(result => {
+        if (isFunction(callback)) {
+          callback(result);
+        }
+        return result.json();
+      });
+
+      return response;
+    } catch (error) {
+      console.error('An unexpected error happened:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const isProductAdded = productId => {
     const cartItem = cart?.items?.find(item => item?.product?.id === productId);
 
@@ -359,6 +382,7 @@ export default function useCart(initialCart = false, options = {}) {
     removeCoupon,
     applyCredits,
     applyIsic,
+    removeIsic,
     isProductAdded,
   };
 }

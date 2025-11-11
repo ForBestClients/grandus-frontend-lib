@@ -1,22 +1,21 @@
-@use "sass:math";
-@import "styles/variables";
+@use 'styles/variables' as vars;
 
 .wrapper {
   display: block;
-  @media (max-width: $md) {
+  @media (max-width: #{vars.$md}) {
     // display: none;
   }
 }
 
 .modal {
   :global(.ant-modal-body) {
-    padding: $general-gutter math.div($general-gutter, 3);
+    padding: var(--dimension_general-gutter) var(--dimension_general-gutter-05);
   }
 
   :global(.ant-tabs .ant-tabs-content .ant-tabs-tabpane) {
     max-height: 600px;
     overflow-y: auto;
-    padding: 0 $general-gutter;
+    padding: 0 var(--dimension_general-gutter);
   }
 
   :global(.ant-tabs .ant-tabs-tab .ant-tabs-tab-btn) {
@@ -34,20 +33,20 @@
 
     & + div {
       border-bottom: 1px solid $grey-light-color;
-      margin-bottom: math.div($general-gutter, 2);
+      margin-bottom: var(--dimension_general-gutter-05);
     }
   }
 
   :global(.ant-slider) {
     border-bottom: none;
-    margin: $general-gutter;
+    margin: var(--dimension_general-gutter);
     & + div {
       display: flex;
       justify-content: space-between;
-      padding-bottom: $general-gutter;
+      padding-bottom: var(--dimension_general-gutter);
       border-bottom: 1px solid $grey-light-color;
-      margin-top: math.div($general-gutter, 2);
-      margin-bottom: math.div($general-gutter, 2);
+      margin-top: var(--dimension_general-gutter-05);
+      margin-bottom: var(--dimension_general-gutter-05);
     }
   }
 
@@ -55,16 +54,16 @@
     & > div {
       width: 33%;
       float: left;
-      padding: math.div($general-gutter, 2);
-      border-radius: $general-radius;
+      padding: var(--dimension_general-gutter-05);
+      border-radius: var(--dimension_general-radius);
       border: 1px solid white;
-      @media (max-width: $md) {
+      @media (max-width: #{vars.$md}) {
         width: 49%;
       }
 
       &:hover {
         background-color: $grey-light-color;
-        box-shadow: $general-shadow;
+        box-shadow: var(--design_general-shadow);
       }
     }
   }
