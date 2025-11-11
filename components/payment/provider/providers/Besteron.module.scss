@@ -42,7 +42,7 @@
             &:global(.ant-radio-wrapper-checked),
             &:hover {
                 box-shadow: var(--design_general-shadow);
-                border-color: $primary-color;
+                border-color: vars.$primary-color;;
             }
 
             span {
