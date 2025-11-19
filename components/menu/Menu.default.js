@@ -17,8 +17,8 @@ const generateKey = (level = 0, id, key, suffix = "") =>
 
 const LinkMobileAll = ({ name, urlName, onClickMethod }) => {
   return (
-    <Link {...getCategoryLinkAttributes(urlName)} scroll={true}>
-      <a className={styles.mobile} onClick={() => onClickMethod(false)}>
+    <Link {...getCategoryLinkAttributes(urlName)} scroll={true} onClick={() => onClickMethod(false)} legacyBehavior>
+      <a className={styles.mobile}>
         {`Všetko z kategórie ${name}`}
       </a>
     </Link>
@@ -37,9 +37,7 @@ const LinkMobile = ({ item, onClickMethod, onClickMethod2 }) => {
         { absoluteHref: get(item, "externalUrl") }
       )}
       scroll={true}
-    >
-      <a
-        className={hasSubmenuCssClass + " " + styles.mobile}
+              
         onClick={(e) => {
           if (hasSubmenu) {
             e.preventDefault();
@@ -48,7 +46,9 @@ const LinkMobile = ({ item, onClickMethod, onClickMethod2 }) => {
             onClickMethod2(false);
           }
         }}
-      >
+        legacyBehavior
+    >
+      <a className={hasSubmenuCssClass + " " + styles.mobile}>
         {item?.name}
       </a>
     </Link>
@@ -83,12 +83,11 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
         ) : (
           <ul className={`${styles.main} ${isOpen ? styles.open : ""}`}>
             <li className={styles.logo + " " + styles.mobile}>
-              <Link href="/" as={`/`}>
-                <a
-                  onClick={() => {
+              <Link href="/" as={`/`}                   onClick={() => {
                     updateOpenedMenu(false);
                   }}
-                >
+                  legacyBehavior>
+                    <a>
                   {options?.logo ? (
                     <Image
                       photo={options.logo}
@@ -103,7 +102,7 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                   ) : (
                     ""
                   )}
-                </a>
+                  </a>
               </Link>
               <a
                 href="#"
@@ -119,14 +118,10 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
               ""
             ) : (
               <li className={styles.mobile}>
-                <Link href="/prihlasenie" as={`/prihlasenie`}>
-                  <a
-                    onClick={() => {
+                <Link  legacyBehavior href="/prihlasenie" as={`/prihlasenie`}                     onClick={() => {
                       updateOpenedMenu(false);
-                    }}
-                  >
-                    Prihlásenie
-                  </a>
+                    }}>
+                    <a>Prihlásenie</a>
                 </Link>
               </li>
             )}
@@ -134,14 +129,10 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
               ""
             ) : (
               <li className={styles.mobile}>
-                <Link href="/porovnanie" as={`/porovnanie`}>
-                  <a
-                    onClick={() => {
+                <Link legacyBehavior href="/porovnanie" as={`/porovnanie`}                     onClick={() => {
                       updateOpenedMenu(false);
-                    }}
-                  >
-                    Porovnanie
-                  </a>
+                    }}>
+                    <a>Porovnanie</a>
                 </Link>
               </li>
             )}
@@ -150,14 +141,10 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
               ""
             ) : (
               <li className={styles.mobile}>
-                <Link href="/wishlist" as={`/wishlist`}>
-                  <a
-                    onClick={() => {
+                <Link legacyBehavior href="/wishlist" as={`/wishlist`}                     onClick={() => {
                       updateOpenedMenu(false);
-                    }}
-                  >
-                    Zoznam obľúbených produktov
-                  </a>
+                    }}>
+                    <a>Zoznam obľúbených produktov</a>
                 </Link>
               </li>
             )}
@@ -176,10 +163,10 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                       { absoluteHref: get(item, "externalUrl") }
                     )}
                     scroll={true}
+                    
+                    legacyBehavior
                   >
-                    <a
-                      className={submenuItemsCount ? styles["has-submenu"] : ""}
-                    >
+                    <a className={submenuItemsCount ? styles["has-submenu"] : ""}>
                       {get(item, "name")}
                     </a>
                   </Link>
@@ -245,12 +232,12 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                 get(subItem, "urlName")
                               )}
                               scroll={true}
-                            >
-                              <a
-                                className={`${styles["megamenu-title"]} ${
+                                                              className={`${styles["megamenu-title"]} ${
                                   hasSubSubmenu ? styles["has-submenu"] : ""
                                 }`}
-                              >
+                              legacyBehavior
+                            >
+                              <a>
                                 {/* <Image
                                   photo={get(subItem, "alternativePhoto", {})}
                                   size={"20x28"}
@@ -299,6 +286,7 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                               get(subItem, "urlName")
                                             )}
                                             scroll={true}
+                                            legacyBehavior
                                           >
                                             <a>
                                               <u>Zobraziť ďaľšie</u>
@@ -323,13 +311,13 @@ const Menu = ({ isOpen = false, updateOpenedMenu, options = {} }) => {
                                             get(subSubItem, "urlName")
                                           )}
                                           scroll={true}
-                                        >
-                                          <a
-                                            className={styles.always}
+                                                                                      className={styles.always}
                                             onClick={() => {
                                               updateOpenedMenu(false);
                                             }}
-                                          >
+                                          legacyBehavior
+                                        >
+                                          <a>
                                             {get(subSubItem, "name")}
                                           </a>
                                         </Link>
