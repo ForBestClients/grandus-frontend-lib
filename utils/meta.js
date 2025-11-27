@@ -84,7 +84,8 @@ export const getMetaData = (
     metaDataGeneral.viewport = {
       width: 'device-width',
       initialScale: 1,
-      maximumScale: 5,
+      maximumScale: 1,
+      userScalable: false,
     };
 
     if (!isEmpty(options?.viewport)) {
