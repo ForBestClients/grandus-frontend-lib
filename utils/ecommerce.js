@@ -539,8 +539,8 @@ const EnhancedEcommerce = {
   // G4 click product
   select_item: (product, variant, list) => {
     const data = {
-      item_list_id: list?.id,
-      item_list_name: list?.name,
+      item_list_id: get(list, 'id', list),
+      item_list_name: get(list, 'name', list),
       items: [{
         item_id: product?.id,
         item_name: product?.name,
