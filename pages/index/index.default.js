@@ -132,8 +132,10 @@ const Homepage = (props) => {
                       className={styles["homepage-banner"]}
                     >
                       {url ? (
-                        <Link href={url} scroll={true}>
-                          <a>{image}</a>
+                        <Link href={url} scroll={true} legacyBehavior>
+                          <a>
+                          {image}
+                          </a>
                         </Link>
                       ) : (
                         image
@@ -158,8 +160,10 @@ const Homepage = (props) => {
                 <Col xs={12} md={6} key={`banners-location-01-${id}-${index}`}>
                   <div className={styles["homepage-banner"]}>
                     {url ? (
-                      <Link href={url} scroll={true}>
-                        <a>{image}</a>
+                      <Link href={url} scroll={true} legacyBehavior>
+                        <a>
+                        {image}
+                        </a>
                       </Link>
                     ) : (
                       image
@@ -240,8 +244,10 @@ const Homepage = (props) => {
                   >
                     <div className={styles["homepage-banner"]}>
                       {url ? (
-                        <Link href={url} scroll={true}>
-                          <a>{image}</a>
+                        <Link href={url} scroll={true} legacyBehavior>
+                          <a>
+                          {image}
+                          </a>
                         </Link>
                       ) : (
                         image

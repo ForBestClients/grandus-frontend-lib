@@ -65,6 +65,13 @@ export default function useCart(initialCart = false, options = {}) {
     });
 
     if (success) {
+      // try {
+      //   const token = get(cart, 'accessToken');
+      //   if (token && typeof document !== 'undefined') {
+      //     const maxAge = 60 * 60 * 24 * 14; // 14 days
+      //     document.cookie = `__cart_access_token=${token}; Path=/; Max-Age=${maxAge}; SameSite=Lax`;
+      //   }
+      // } catch (e) {}
       await mutate(cart, false);
     }
     setIsLoading(false);

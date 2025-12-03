@@ -1,7 +1,8 @@
-"use client"
-import useSWR from "swr";
-import get from "lodash/get";
-import { ESHOP_TYPE_B2C } from "grandus-lib/constants/AppConstants";
+'use client';
+import useSWR from 'swr';
+import get from 'lodash/get';
+import { ESHOP_TYPE_B2C } from 'grandus-lib/constants/AppConstants';
+import { getContactFromWebInstance } from 'grandus-lib/utils/contact';
 
 export default function useWebInstance() {
   const { data = null } = useSWR(
@@ -14,16 +15,18 @@ export default function useWebInstance() {
     },
   );
 
+  const contact = getContactFromWebInstance(data);
+
   return {
     webInstance: data,
     domain: get(data, 'domain'),
     settings: get(data, 'globalSettings'),
     eshopType: get(data, 'globalSettings.type_of_shop', ESHOP_TYPE_B2C),
     contact: {
-      phone: get(data, 'globalSettings.phone', ''),
-      tel: get(data, 'globalSettings.phone', '').replace(/\s/g, ''),
-      email: get(data, 'adminEmail', ''),
-      mailto: get(data, 'adminEmail', ''),
+      phone: contact?.phone,
+      tel: contact?.phoneNormalized,
+      email: contact?.email,
+      mailto: contact?.email,
     },
   };
 }

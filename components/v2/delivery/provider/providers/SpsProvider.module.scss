@@ -1,5 +1,6 @@
-@use "styles/variables" as vars;
-.packetery {
+@import "styles/variables";
+
+.sps {
   display: flex;
   align-items: center;
   justify-content: center;

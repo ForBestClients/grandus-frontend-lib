@@ -51,6 +51,7 @@ const EnhancedEcommerce = {
       item_list_id: get(list, 'id', list),
       item_list_name: get(list, 'name', list),
       items: products.map((product, index) => ({
+        id: product?.id,
         item_id: product?.id,
         item_name: product?.name,
         currency: product?.finalPriceData?.currency,
@@ -93,14 +94,17 @@ const EnhancedEcommerce = {
   },
 
   //G4 analytics:  detail
-  view_item: function(product) {
+  view_item: function(product, variant = null) {
     const data = {
       currency: product?.finalPriceData?.currency,
       value: product?.finalPriceData?.price,
       items: [
         {
+          id: product?.id,
           item_id: product?.id,
+          item_group_id: product?.item_group_id ?? product?.id,
           item_name: product?.name,
+          item_variant: variant,
           currency: product?.finalPriceData?.currency,
           price: product?.finalPriceData?.price,
           index: 0,
@@ -178,7 +182,9 @@ const EnhancedEcommerce = {
       value: toNumber(product?.finalPriceData?.price) * toNumber(quantity),
       items: [
         {
+          id: product?.id,
           item_id: product?.id,
+          item_group_id: product?.item_group_id,
           item_name: product?.name,
           item_variant: variant,
           currency: product?.finalPriceData?.currency,
@@ -228,7 +234,9 @@ const EnhancedEcommerce = {
       value: item?.priceData?.price,
       items: [
         {
+          id: get(item, 'product.id'),
           item_id: get(item, 'product.id'),
+          item_group_id: item?.product?.item_group_id,
           item_name: get(item, 'product.name'),
           item_variant: item?.store?.name,
           currency: get(item, 'priceData.currency'),
@@ -277,6 +285,7 @@ const EnhancedEcommerce = {
       value: cart?.sumData?.price,
       coupon: cart?.coupon?.hash,
       items: cart?.items.map((item, index) => ({
+        id: item?.product?.id,
         item_id: item?.product?.id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
@@ -304,7 +313,9 @@ const EnhancedEcommerce = {
       value: cart?.sumData?.price,
       coupon: cart?.coupon?.hash,
       items: cart?.items.map((item, index) => ({
+        id: item?.product?.id,
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
@@ -332,7 +343,9 @@ const EnhancedEcommerce = {
       coupon: cart?.coupon?.hash,
       shipping_tier: cart?.delivery?.name,
       items: cart?.items.map((item, index) => ({
+        id: item?.product?.id,
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
@@ -360,7 +373,9 @@ const EnhancedEcommerce = {
       coupon: cart?.coupon?.hash,
       payment_type: cart?.payment?.name,
       items: cart?.items.map((item, index) => ({
+        id: item?.product?.id,
         item_id: item?.product?.id,
+        item_group_id: item?.product?.item_group_id,
         item_name: item?.product?.name,
         item_variant: item?.store?.name,
         currency: item?.priceData?.currency,
@@ -449,6 +464,7 @@ const EnhancedEcommerce = {
       coupon: couponsString,
       currency: order?.totalSumData?.currency,
       items: order?.orderItems.map((item, index) => ({
+        id: item?.productId,
         item_id: item?.productId,
         item_name: item?.product?.name ?? item?.name,
         item_variant: item?.size,
@@ -489,6 +505,7 @@ const EnhancedEcommerce = {
       value: product?.finalPriceData?.price,
       email: get(user, 'email', ''),
       items: [{
+        id: product?.id,
         item_id: product?.id,
         item_name: product?.name,
         item_variant: variant?.name,
@@ -514,6 +531,7 @@ const EnhancedEcommerce = {
       creative_name: name,
       items: map(banners, (banner) => {
         return {
+          id: banner?.id,
           item_id: banner?.id,
           item_name: banner?.title,
         };
@@ -528,6 +546,7 @@ const EnhancedEcommerce = {
     const data = {
       creative_name: name ?? '',
       items: [{
+        id: banner?.id,
         item_id: banner?.id,
         item_name: banner?.title,
       }],
@@ -542,6 +561,7 @@ const EnhancedEcommerce = {
       item_list_id: list?.id,
       item_list_name: list?.name,
       items: [{
+        id: product?.id,
         item_id: product?.id,
         item_name: product?.name,
         item_variant: variant?.name,
