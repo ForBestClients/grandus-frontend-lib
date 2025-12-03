@@ -83,7 +83,7 @@ const EcoMail = {
       get(item, `product.${itemKey}`, get(item, 'product.id', 'discount')),
       get(item, 'name'),
       get(item, 'product.kind.name', 'discount'),
-      get(item, 'priceData.price', 0),
+      get(item, 'totalPriceData.price', 0),
       get(item, 'count', 1),
     );
   },
