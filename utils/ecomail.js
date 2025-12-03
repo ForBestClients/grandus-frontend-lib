@@ -11,7 +11,6 @@ const EcoMail = {
 
   track: function (event, ...data) {
     if (this.isEnabled()) {
-      console.log('event', event, data);
       window.ecotrack(event, ...data);
     }
   },
@@ -78,14 +77,23 @@ const EcoMail = {
   },
 
   addItem: function (orderId, item, itemKey = 'sku') {
-    console.log(item);
+    console.log([
+      'addItem',
+      orderId,
+      get(item, `product.${itemKey}`, get(item, 'product.id', 'discount')),
+      get(item, 'name'),
+      get(item, 'product.kind.name', 'discount'),
+      get(item, 'totalPriceData.price', 0),
+      get(item, 'count', 1),
+    ]);
+
     this.track(
       'addItem',
       orderId,
       get(item, `product.${itemKey}`, get(item, 'product.id', 'discount')),
       get(item, 'name'),
       get(item, 'product.kind.name', 'discount'),
-      get(item, 'unitPriceData.price', 0),
+      get(item, 'priceData.price', 0),
       get(item, 'count', 1),
     );
   },
