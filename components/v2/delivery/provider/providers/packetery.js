@@ -86,6 +86,7 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
             itemAdd(
               DELIVERY_DATA_SESSION_STORAGE_KEY,
               pick(selected, [
+                "id",
                 "place",
                 "nameStreet",
                 "url",

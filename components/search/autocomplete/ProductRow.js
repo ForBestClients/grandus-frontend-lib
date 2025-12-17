@@ -12,13 +12,15 @@ const RowProduct = ({
   finalPriceData,
   closeAction,
 }) => (
-  <Link href="/produkt/[id]" as={`/produkt/${urlTitle}`}>
-    <a
-      className={styles.product}
-      onClick={() => {
+  <Link href="/produkt/[id]" as={`/produkt/${urlTitle}`}
+        legacyBehavior
+        >
+        <a       onClick={() => {
         closeAction(false);
       }}
-    >
+
+              className={styles.product}
+      >
       <Image photo={photo} size={"60x60"} type={"jpg"} />
       <div className={styles?.right}>
         <span className={styles.name}>
@@ -29,7 +31,7 @@ const RowProduct = ({
         </span>
         <Price priceData={finalPriceData} className={styles.price} />
       </div>
-    </a>
+      </a>
   </Link>
 );
 

@@ -627,9 +627,13 @@ const CartDeliveryAndPayment = (props) => {
                       Súhlasím s{" "}
                       <Link
                         href={get(settings, "terms_and_conditions_link", "")}
+                        target="_blank"
                         passHref
+                        legacyBehavior
                       >
-                        <a target="_blank">obchodnými podmienkami</a>
+                        <a>
+                        obchodnými podmienkami
+                        </a>
                       </Link>
                     </Checkbox>
                   </Form.Item>
