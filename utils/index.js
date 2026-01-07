@@ -256,7 +256,7 @@ export const getAttachmentUrl = attachment => {
   }
 
   return (
-    (attachment?.type !== ATTACHMENT_TYPE_URL ? host : '') + attachment.fileUrl
+    (attachment?.type !== ATTACHMENT_TYPE_URL ? host : '') + attachment.fileName
   );
 };
 

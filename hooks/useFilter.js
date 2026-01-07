@@ -23,6 +23,7 @@ import {
   hasActiveFilters as hasActiveFiltersMoved,
   getApiBodyFromParams as getApiBodyFromParamsMoved,
 } from 'grandus-lib/utils/filter';
+import trim from 'lodash/trim';
 
 const sortChunks = chunks => chunks; // temporary disabled sortingsortBy(chunks, (pair) => pair[0]);
 
@@ -162,7 +163,7 @@ export const getCampaignLinkAttributesFromRouter = (router, options = {}) => {
 
 export const getSearchLinkAttributesFromRouter = (router, options = {}) => {
   return getSearchLinkAttributes(
-    encodeURIComponent(get(router, 'query.term')),
+    encodeURIComponent(decodeURIComponent(trim(get(router, 'query.term')))),
     arrayToPath(get(router, 'query.parameters', [])),
     router.query,
     options,
