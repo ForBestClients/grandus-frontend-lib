@@ -5,7 +5,7 @@ import MicroDataList from './MicroDataList';
 import isEmpty from 'lodash/isEmpty';
 
 const MicroDataItemList = ({ data = null, webInstance = null }) => {
-  if (!isEmpty(data) && !isEmpty(webInstance)) {
+  if (isEmpty(data) || isEmpty(webInstance)) {
     return null;
   }
   const { products, totalNumberOfItems } = data;

@@ -49,9 +49,11 @@ const MicroDataOrganization = ({ webInstance = null }) => {
             ],
 
             address: {
-              addressCountry: get(globalSettings, 'state'),
+              "@type": "PostalAddress",
+              streetAddress: get(globalSettings, 'street_and_number'),
+              addressLocality: get(globalSettings, 'city'),
               postalCode: get(globalSettings, 'ZIP'),
-              addressLocality: get(globalSettings, 'street_and_number'),
+              addressCountry: get(globalSettings, 'state'),
             },
           }),
         }}
