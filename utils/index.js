@@ -103,6 +103,10 @@ export const getApiExpand = (
   const expandData =
     process.env[`NEXT_PUBLIC_${type}_${uriType ? uriType : 'EXPAND'}`];
 
+  if (!expandData) {
+    return '';
+  }
+
   return expandPrepend + expandData;
 };
 
