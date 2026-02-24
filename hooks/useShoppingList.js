@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import useSWR from "swr";
 import isFunction from "lodash/isFunction";
 import find from "lodash/find";
@@ -54,7 +54,7 @@ export default function useShoppingList(options = {}) {
   const copy = async (accessToken, callback) => {
     setIsLoading(true);
     try {
-      await fetch(`/api/lib/v1/shopping-list/${accessToken}/copy`, {
+      const response = await fetch(`/api/lib/v1/shopping-list/${accessToken}/copy`, {
         method: "POST",
       })
         .then((result) => result.json())
@@ -63,8 +63,11 @@ export default function useShoppingList(options = {}) {
             callback(result);
           }
           return result;
-        }),
-        await mutate();
+        });
+
+      await mutate();
+      setIsLoading(false);
+      return response;
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
@@ -194,7 +197,7 @@ export default function useShoppingList(options = {}) {
     setIsLoading(false);
   };
 
-  const getProductLists = (productIds) => {
+  const getProductLists = useCallback((productIds) => {
     if (Array.isArray(productIds)) {
       const activeShoppingLists = [];
       const productsToShoppingList = {};
@@ -209,8 +212,8 @@ export default function useShoppingList(options = {}) {
           return;
         }
         if (
-          (intersection(shoppingList?.products, productIds).length =
-            productIds.length)
+          intersection(shoppingList?.products, productIds).length ===
+            productIds.length
         ) {
           activeShoppingLists.push(shoppingList?.listObject);
         }
@@ -223,7 +226,7 @@ export default function useShoppingList(options = {}) {
           find(list?.items, (item) => item?.product?.id === productIds)
         )
       : false;
-  };
+  }, [shoppingLists]);
 
   return {
     shoppingLists,
