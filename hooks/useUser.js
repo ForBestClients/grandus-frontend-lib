@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
-import Router from "next/router";
-import useSWR from "swr";
+'use client';
 
-import get from "lodash/get";
-import isFunction from "lodash/isFunction";
-import find from "lodash/find";
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+
+import get from 'lodash/get';
+import isFunction from 'lodash/isFunction';
+import find from 'lodash/find';
 
 export default function useUser({
   redirectTo = false,
@@ -18,14 +20,15 @@ export default function useUser({
     isValidating,
   } = useSWR(
     `/api/lib/v1/auth/profile`,
-    (url) => fetch(url).then((r) => r.json()),
+    url => fetch(url).then(r => r.json()),
     {
       revalidateOnReconnect: false,
       revalidateOnFocus: false,
       shouldRetryOnError: false,
       initialData: initialUser,
-    }
+    },
   );
+  const router = useRouter();
 
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
@@ -39,14 +42,14 @@ export default function useUser({
       // If redirectIfFound is also set, redirect if the user was found
       (redirectIfFound && user?.isLoggedIn)
     ) {
-      Router.push(redirectTo);
+      router.push(redirectTo);
     }
   }, [user, redirectIfFound, redirectTo]);
 
   const logoutUser = async () => {
     setIsLoading(true);
     await mutate(
-      await fetch(`/api/lib/v1/auth/signout`).then((result) => result.json())
+      await fetch(`/api/lib/v1/auth/signout`).then(result => result.json()),
     );
     setIsLoading(false);
   };
@@ -55,7 +58,7 @@ export default function useUser({
     const parameters = user?.parameters;
     const searchObj = { parameterId: parameterId };
     if (parameterValue) {
-      searchObj["value"] = parameterValue;
+      searchObj['value'] = parameterValue;
     }
 
     const found = find(parameters, searchObj);
@@ -69,9 +72,9 @@ export default function useUser({
       user: { params: { ...user?.parameters, [parameterId]: parameterValue } },
     };
     const response = await fetch(`/api/lib/v1/auth/profile`, {
-      method: "PUT",
+      method: 'PUT',
       body: JSON.stringify(data),
-    }).then((response) => response.json());
+    }).then(response => response.json());
 
     setIsLoading(false);
     mutate(response);
@@ -81,57 +84,57 @@ export default function useUser({
     setIsLoading(true);
     try {
       const userData = {
-        name: get(values, "user.firstname"),
-        surname: get(values, "user.surname"),
-        email: get(values, "user.email"),
-        phone: get(values, "user.phone", ""),
-        password: get(values, "user.password"),
-        passwordRepeat: get(values, "user.passwordRepeat"),
+        name: get(values, 'user.firstname'),
+        surname: get(values, 'user.surname'),
+        email: get(values, 'user.email'),
+        phone: get(values, 'user.phone', ''),
+        password: get(values, 'user.password'),
+        passwordRepeat: get(values, 'user.passwordRepeat'),
+      };
+
+      if (get(values, 'user.countryId')) {
+        userData.countryId = get(values, 'user.countryId');
       }
 
-      if (get(values, "user.countryId")) {
-        userData.countryId = get(values, "user.countryId");
-      }
-
-      if (get(values, "user.params")) {
-        userData.params = get(values, "user.params");
+      if (get(values, 'user.params')) {
+        userData.params = get(values, 'user.params');
       }
 
       const reqBody = {
         user: userData,
       };
 
-      if (get(values, "cart.accessToken")) {
-        reqBody.cart = { accessToken: get(values, "cart.accessToken") };
+      if (get(values, 'cart.accessToken')) {
+        reqBody.cart = { accessToken: get(values, 'cart.accessToken') };
       }
-      if (get(values, "company")) {
+      if (get(values, 'company')) {
         reqBody.company = {
-          name: get(values, "company.name"),
-          businessId: get(values, "company.ico"),
-          taxId: get(values, "company.dic"),
-          vatNumber: get(values, "company.icDPH"),
+          name: get(values, 'company.name'),
+          businessId: get(values, 'company.ico'),
+          taxId: get(values, 'company.dic'),
+          vatNumber: get(values, 'company.icDPH'),
         };
       }
       const user = await fetch(`/api/lib/v1/auth/signup`, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(reqBody),
-      }).then((response) => response.json());
+      }).then(response => response.json());
 
       setIsLoading(false);
-      if (get(user, "success", false)) {
-        await mutate(get(user, "data"), false);
+      if (get(user, 'success', false)) {
+        await mutate(get(user, 'data'), false);
       }
       if (isFunction(callback)) {
         callback(user);
       }
     } catch (error) {
       setIsLoading(false);
-      console.error("An unexpected error happened:", error);
+      console.error('An unexpected error happened:', error);
     }
   };
 
   return {
-    user: get(user, "accessToken") ? user : null,
+    user: get(user, 'accessToken') ? user : null,
     mutateUser: mutate,
     createUser,
     logoutUser,

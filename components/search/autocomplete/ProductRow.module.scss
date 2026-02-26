@@ -1,5 +1,4 @@
-@use "sass:math";
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .product {
   display: flex;
@@ -7,20 +6,20 @@
   align-items: center;
   justify-content: left;
   width: 100%;
-  padding: math.div($general-gutter, 1.5);
+  padding: var(--dimension_general-gutter);
   border: 1px solid transparent;
   border-bottom-color: $grey-light-color;
-  border-radius: $general-radius;
+  border-radius: var(--dimension_general-radius);
 
   &:hover {
     border: 1px solid $primary-color;
-    box-shadow: $general-shadow;
+    box-shadow: var(--design_general-shadow);
   }
 
   img {
     max-width: 80px;
     margin-right: 10px;
-    border-radius: $general-radius;
+    border-radius: var(--dimension_general-radius);
   }
 
   .right {

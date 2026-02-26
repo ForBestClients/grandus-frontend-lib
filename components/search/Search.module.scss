@@ -1,5 +1,4 @@
-@use "sass:math";
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .search {
   width: 100%;
@@ -10,21 +9,21 @@
     top: calc(100% + 10px);
     z-index: 20;
     border: 1px solid $grey-light-color;
-    box-shadow: $general-shadow;
-    border-radius: $general-radius;
+    box-shadow: var(--design_general-shadow);
+    border-radius: var(--dimension_general-radius);
 
-    @media (min-width: $md) {
+    @media (min-width: #{vars.$md}) {
       width: 800px;
       left: -200px;
       right: auto;
     }
 
-    @media (min-width: $lg) {
+    @media (min-width: #{vars.$lg}) {
       width: 1000px;
       // left: -250px;
     }
 
-    @media (min-width: $xl) {
+    @media (min-width: #{vars.$xl}) {
       width: 1100px;
       // left: -350px;
     }
@@ -38,17 +37,17 @@
       display: flex;
       background: white;
       flex-direction: column;
-      border-radius: $general-radius;
+      border-radius: var(--dimension_general-radius);
 
-      @media (min-width: $md) {
+      @media (min-width: #{vars.$md}) {
         height: 500px;
         flex-direction: row;
       }
 
       .close {
         position: absolute;
-        top: $general-gutter;
-        right: $general-gutter;
+        top: var(--dimension_general-gutter);
+        right: var(--dimension_general-gutter);
         width: 25px;
         height: 25px;
         color: $grey-color;
@@ -62,12 +61,12 @@
 
       .resultsLeft {
         background: $grey-light-color;
-        padding: $general-gutter;
-        border-radius: $general-radius;
-        margin: math.div($general-gutter, 2);
+        padding: var(--dimension_general-gutter);
+        border-radius: var(--dimension_general-radius);
+        margin: var(--dimension_general-gutter-05);
         border: 1px solid $grey-dark-color;
 
-        @media (min-width: $md) {
+        @media (min-width: #{vars.$md}) {
           width: 30%;
         }
 
@@ -75,7 +74,7 @@
           list-style: none;
           padding: 0;
           margin: 0;
-          margin-bottom: $general-gutter;
+          margin-bottom: var(--dimension_general-gutter);
 
           &.inline {
             width: 100%;
@@ -91,14 +90,14 @@
 
             a {
               display: block;
-              padding: math.div($general-gutter, 4) math.div($general-gutter, 2);
+              padding: var(--dimension_general-gutter-05) var(--dimension_general-gutter-05);
               color: $text-color;
               font-size: 0.9em;
 
               &:hover {
                 text-decoration: underline;
                 background-color: white;
-                border-radius: $general-radius;
+                border-radius: var(--dimension_general-radius);
               }
 
               &.tag {
@@ -121,9 +120,9 @@
         width: 100%;
         background: white;
         border-right: 1px solid $grey-light-color;
-        padding: $general-gutter;
+        padding: var(--dimension_general-gutter);
 
-        @media (min-width: $md) {
+        @media (min-width: #{vars.$md}) {
           width: 30%;
         }
       }
@@ -131,20 +130,20 @@
       .emptyProducts {
         width: 100%;
         background: white;
-        padding: $general-gutter;
+        padding: var(--dimension_general-gutter);
 
-        @media (min-width: $md) {
+        @media (min-width: #{vars.$md}) {
           width: 60%;
         }
       }
 
       .resultsRight {
         background: white;
-        padding: $general-gutter;
+        padding: var(--dimension_general-gutter);
         overflow-y: scroll;
-        border-radius: $general-radius;
+        border-radius: var(--dimension_general-radius);
 
-        @media (min-width: $md) {
+        @media (min-width: #{vars.$md}) {
           width: 40%;
         }
       }

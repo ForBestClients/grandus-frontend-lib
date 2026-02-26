@@ -1,3 +1,4 @@
+"use client"
 import get from 'lodash/get';
 import fromPairs from 'lodash/fromPairs';
 import split from 'lodash/split';

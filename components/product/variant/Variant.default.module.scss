@@ -1,24 +1,23 @@
-@use "sass:math";
-@import "styles/variables";
+@use "styles/variables" as vars;
 
 .wrapper {
   .headline {
     display: block;
-    margin-top: $general-gutter;
+    margin-top: var(--dimension_general-gutter);
   }
   .item {
-    padding: math.div($general-gutter, 2);
+    padding: var(--dimension_general-gutter-05);
     display: inline-block;
     box-sizing: border-box;
-    margin: $general-gutter;
+    margin: var(--dimension_general-gutter);
     margin-left: 0;
     border: 1px solid transparent;
     text-align: center;
-    border-radius: $general-radius;
+    border-radius: var(--dimension_general-radius);
     &:hover {
       border: 1px solid $primary-color;
       z-index: 2;
-      box-shadow: $general-shadow;
+      box-shadow: var(--design_general-shadow);
     }
     span {
       font-size: 0.7em;
