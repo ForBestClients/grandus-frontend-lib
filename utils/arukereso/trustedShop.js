@@ -65,30 +65,20 @@ export async function buildTrustedShopHtml({ webApiKey, email, products }) {
     }
 
     if (res.status === 200) {
-        const qp = new URLSearchParams({
-            Token: String(data.Token || ""),
-            WebApiKey: webApiKey,
-            C: "", // will be concatenated with callback arg "c"
-        }).toString();
-        const query = `?${qp}`;
+        // Build query string manually WITHOUT URL-encoding (matches reference PHP/Node.js implementation)
+        const query = `?Token=${data.Token || ""}&WebApiKey=${webApiKey}&C=`;
         const random = Math.random().toString(36).slice(2);
 
         return [
-            `<script type="text/javascript">`,
-            `window.aku_request_done = function (w, c) {`,
-            `  var I = new Image();`,
-            `  I.src = "${SERVICE_URL_SEND}${SERVICE_TOKEN_PROCESS}${query}" + c;`,
-            `};`,
-            `</script>`,
-            `<script type="text/javascript">(function(){`,
-            `  var a = document.createElement("script");`,
-            `  a.type = "text/javascript";`,
-            `  a.src = "${SERVICE_URL_AKU}";`,
-            `  a.async = true;`,
-            `  (document.head || document.body).appendChild(a);`,
+            `<script type="text/javascript">window.aku_request_done = function(w, c) {`,
+            `var I = new Image(); I.src="${SERVICE_URL_SEND}${SERVICE_TOKEN_PROCESS}${query}" + c;`,
+            `};</script>`,
+            `<script type="text/javascript"> (function() {`,
+            `var a=document.createElement("script"); a.type="text/javascript"; a.src="${SERVICE_URL_AKU}"; a.async=true;`,
+            `(document.getElementsByTagName("head")[0]||document.getElementsByTagName("body")[0]).appendChild(a);`,
             `})();</script>`,
             `<noscript>`,
-            `  <img src="${SERVICE_URL_SEND}${SERVICE_TOKEN_PROCESS}${query}${random}" />`,
+            `<img src="${SERVICE_URL_SEND}${SERVICE_TOKEN_PROCESS}${query}${random}" />`,
             `</noscript>`,
         ].join("\n");
     }
