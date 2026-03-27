@@ -115,6 +115,9 @@ export default function useUser({
           vatNumber: get(values, 'company.icDPH'),
         };
       }
+      if (get(values, 'campaignHash')) {
+        reqBody.campaignHash = get(values, 'campaignHash');
+      }
       const user = await fetch(`/api/lib/v1/auth/signup`, {
         method: 'POST',
         body: JSON.stringify(reqBody),
