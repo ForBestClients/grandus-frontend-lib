@@ -1,5 +1,8 @@
 import { useState, useCallback } from "react";
-import useSWR from "swr";
+import useSWR, { mutate as globalMutate } from "swr";
+
+const broadcastMutate = () =>
+  globalMutate((key) => typeof key === "string" && key.startsWith("/api/lib/v1/shopping-list"));
 import isFunction from "lodash/isFunction";
 import find from "lodash/find";
 import filter from "lodash/filter";
@@ -42,7 +45,7 @@ export default function useShoppingList(options = {}) {
           return result;
         });
 
-      await mutate();
+      await broadcastMutate();
       setIsLoading(false);
       return response;
     } catch (error) {
@@ -65,7 +68,7 @@ export default function useShoppingList(options = {}) {
           return result;
         });
 
-      await mutate();
+      await broadcastMutate();
       setIsLoading(false);
       return response;
     } catch (error) {
@@ -88,7 +91,7 @@ export default function useShoppingList(options = {}) {
           }
           return result;
         });
-      await mutate();
+      await broadcastMutate();
       setIsLoading(false);
       return response;
     } catch (error) {
@@ -111,7 +114,7 @@ export default function useShoppingList(options = {}) {
           return result;
         });
 
-      await mutate();
+      await broadcastMutate();
     } catch (error) {
       console.error("An unexpected error happened:", error);
     }
@@ -134,6 +137,58 @@ export default function useShoppingList(options = {}) {
     );
   };
 
+  const itemsBulkAdd = async (accessToken, items, callback) => {
+    setIsLoading(true);
+    let success = true;
+    const result = await fetch(
+      `/api/lib/v1/shopping-list/${accessToken}/items/bulk`,
+      {
+        method: "POST",
+        body: JSON.stringify(items),
+      }
+    ).then(async (response) => {
+      success = response?.ok;
+      const data = await response.json();
+      data.success = success;
+      if (isFunction(callback)) {
+        callback(data);
+      }
+      return data;
+    });
+
+    if (success) {
+      await broadcastMutate();
+    }
+    setIsLoading(false);
+    return result;
+  };
+
+  const itemsRemoveBulk = async (accessToken, ids, callback) => {
+    setIsLoading(true);
+    let success = true;
+    const result = await fetch(
+      `/api/lib/v1/shopping-list/${accessToken}/items/bulk`,
+      {
+        method: "DELETE",
+        body: JSON.stringify({ ids }),
+      }
+    ).then(async (response) => {
+      success = response?.ok;
+      const data = await response.json();
+      data.success = success;
+      if (isFunction(callback)) {
+        callback(data);
+      }
+      return data;
+    });
+
+    if (success) {
+      await broadcastMutate();
+    }
+    setIsLoading(false);
+    return result;
+  };
+
   const itemAddCustom = async (accessToken, data, callback, options = {}) => {
     setIsLoading(true);
     let success = true;
@@ -154,7 +209,7 @@ export default function useShoppingList(options = {}) {
     });
 
     if (success && !options?.skipMutate) {
-      await mutate();
+      await broadcastMutate();
     }
     setIsLoading(false);
   };
@@ -193,7 +248,7 @@ export default function useShoppingList(options = {}) {
       }
       return result.json();
     });
-    await mutate();
+    await broadcastMutate();
     setIsLoading(false);
   };
 
@@ -238,6 +293,8 @@ export default function useShoppingList(options = {}) {
     copy,
     itemAdd,
     itemAddCustom,
+    itemsBulkAdd,
+    itemsRemoveBulk,
     itemRemove,
     itemUpdate,
     getProductLists,
