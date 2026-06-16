@@ -1,9 +1,12 @@
 import { foxentryRequest } from '../server';
-import {
-  SUPPORTED_COUNTRIES,
-  MIN_QUERY_LENGTH,
-  MAX_QUERY_LENGTH,
-} from '../constants';
+import { MIN_QUERY_LENGTH, MAX_QUERY_LENGTH } from '../constants';
+
+// Company name autosuggest is restricted to these countries — PL and any others
+// are dropped even if Foxentry returns them. (Foxentry's filter.country accepts a
+// single ISO-2 only, not a list, so the search is cross-country and we filter
+// server-side afterwards.)
+const COMPANY_SEARCH_COUNTRIES = ['SK', 'CZ'];
+const COMPANY_SEARCH_LIMIT = 7;
 
 /**
  * Company autocomplete (by registration number / IČO).
@@ -69,7 +72,6 @@ export const handleCompanyAutocomplete = async (request, { backendFallback }) =>
 export const handleCompanySearch = async request => {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get('query')?.trim();
-  const country = (searchParams.get('country') || '').toUpperCase();
 
   // Defensive bounds: too short → nothing useful; too long → reject rather
   // than forward an abusive payload to Foxentry.
@@ -77,16 +79,12 @@ export const handleCompanySearch = async request => {
     return Response.json([]);
   }
 
+  // Cross-country search (no country filter), then keep only SK/CZ below. A
+  // larger resultsLimit leaves enough rows to survive the country filter.
   const response = await foxentryRequest(
     'company/search',
-    {
-      type: 'name',
-      value: query,
-      ...(SUPPORTED_COUNTRIES.includes(country)
-        ? { filter: { country } }
-        : {}),
-    },
-    { options: { dataScope: 'basic', resultsLimit: 7 } },
+    { type: 'name', value: query },
+    { options: { dataScope: 'basic', resultsLimit: 15 } },
   );
 
   const results = response?.results;
@@ -103,7 +101,10 @@ export const handleCompanySearch = async request => {
       icDph: data?.vatNumber ?? null,
       country: data?.country ?? null,
     }))
-    .filter(item => item.name);
+    .filter(
+      item => item.name && COMPANY_SEARCH_COUNTRIES.includes(item.country),
+    )
+    .slice(0, COMPANY_SEARCH_LIMIT);
 
   return Response.json(suggestions);
 };
