@@ -101,6 +101,7 @@ export const handleCompanySearch = async request => {
       ico: data?.registrationNumber ?? null,
       dic: data?.taxNumber ?? data?.vatNumber ?? null,
       icDph: data?.vatNumber ?? null,
+      country: data?.country ?? null,
     }))
     .filter(item => item.name);
 

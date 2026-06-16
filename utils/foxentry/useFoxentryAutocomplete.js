@@ -28,8 +28,11 @@ const useFoxentryAutocomplete = ({
   country,
   endpoint,
   minChars = MIN_QUERY_LENGTH,
+  requireCountry = true,
 }) => {
-  const active = isFoxentryEnabled() && Boolean(country);
+  // Address search needs a country; company search can run cross-country
+  // (requireCountry: false) and resolve the country from the picked result.
+  const active = isFoxentryEnabled() && (!requireCountry || Boolean(country));
 
   const [suggestions, setSuggestions] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -44,9 +47,9 @@ const useFoxentryAutocomplete = ({
   const fetchSuggestions = useMemo(
     () =>
       debounce(async (searchValue, countryCode, seq) => {
-        const url = `${endpoint}?query=${encodeURIComponent(
-          searchValue,
-        )}&country=${countryCode}`;
+        const url =
+          `${endpoint}?query=${encodeURIComponent(searchValue)}` +
+          (countryCode ? `&country=${encodeURIComponent(countryCode)}` : '');
         const data = await fetchFoxentryJson(url);
         if (seq !== requestSeq.current) {
           return; // a newer request started while this one was in flight
