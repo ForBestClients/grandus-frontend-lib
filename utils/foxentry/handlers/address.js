@@ -1,7 +1,9 @@
 import { foxentryRequest } from '../server';
-
-const SUPPORTED_COUNTRIES = ['SK', 'CZ', 'PL'];
-const MIN_QUERY_LENGTH = 3;
+import {
+  SUPPORTED_COUNTRIES,
+  MIN_QUERY_LENGTH,
+  MAX_QUERY_LENGTH,
+} from '../constants';
 
 /**
  * Address autocomplete via Foxentry `location/search`.
@@ -10,10 +12,12 @@ const MIN_QUERY_LENGTH = 3;
  */
 export const handleAddressAutocomplete = async request => {
   const searchParams = request.nextUrl.searchParams;
-  const query = searchParams.get('query');
+  const query = searchParams.get('query')?.trim();
   const country = (searchParams.get('country') || '').toUpperCase();
 
-  if (!query || query.trim().length < MIN_QUERY_LENGTH) {
+  // Defensive bounds: too short → nothing useful; too long → reject rather
+  // than forward an abusive payload to Foxentry.
+  if (!query || query.length < MIN_QUERY_LENGTH || query.length > MAX_QUERY_LENGTH) {
     return Response.json([]);
   }
 

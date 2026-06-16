@@ -1,4 +1,5 @@
 import { isFoxentryEnabled } from './client';
+import cache, { getCacheKey } from '../cache';
 
 /**
  * Server-only Foxentry client. Keeps the API key on the server and guarantees
@@ -10,6 +11,18 @@ import { isFoxentryEnabled } from './client';
 const BASE_URL = 'https://api.foxentry.com';
 const API_VERSION = '2.0';
 const DEFAULT_TIMEOUT_MS = 3000;
+
+// Per-endpoint response cache TTL (seconds). Foxentry calls are paid and these
+// lookups are highly repetitive (same IČO / company / email across users), so a
+// short shared cache cuts cost and latency. A caller may override per request
+// via `extra.cacheTtl` (0 disables). No-op when Redis (CACHE_ENABLED) is off.
+const DEFAULT_CACHE_TTL = {
+  'company/get': 86400, // registry data by IČO — stable
+  'company/search': 300, // name autosuggest — keep fresh-ish
+  'location/search': 3600, // address autosuggest
+  'email/validate': 86400, // email validity — stable
+  'phone/validate': 86400, // phone validity — stable
+};
 
 /** Foxentry is usable server-side only when the flag is on AND a key exists. */
 export const isFoxentryServerEnabled = () =>
@@ -30,7 +43,38 @@ export const foxentryRequest = async (endpoint, query, extra = {}) => {
     return null;
   }
 
-  const { timeoutMs = DEFAULT_TIMEOUT_MS, ...requestMembers } = extra;
+  const {
+    timeoutMs = DEFAULT_TIMEOUT_MS,
+    cacheTtl: explicitCacheTtl,
+    ...requestMembers
+  } = extra;
+  const cacheTtl = explicitCacheTtl ?? DEFAULT_CACHE_TTL[endpoint] ?? 0;
+
+  // Short-lived response cache (shared Redis) to collapse repeated identical
+  // lookups and cut paid Foxentry calls. Off when cacheTtl is 0 or Redis is
+  // disabled; read/write errors are swallowed so we always degrade to a live
+  // call rather than failing.
+  const cacheKey =
+    cacheTtl > 0 && cache
+      ? getCacheKey([
+          'foxentry',
+          endpoint,
+          JSON.stringify(query),
+          JSON.stringify(requestMembers),
+        ])
+      : null;
+
+  if (cacheKey) {
+    try {
+      const cached = await cache.get(cacheKey);
+      if (cached) {
+        return JSON.parse(cached);
+      }
+    } catch (err) {
+      // ignore – fall through to a live request
+    }
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
@@ -52,7 +96,17 @@ export const foxentryRequest = async (endpoint, query, extra = {}) => {
     }
 
     const payload = await response.json();
-    return payload?.response ?? null;
+    const result = payload?.response ?? null;
+
+    if (cacheKey && result) {
+      try {
+        await cache.set(cacheKey, JSON.stringify(result), 'EX', cacheTtl);
+      } catch (err) {
+        // ignore cache write failures
+      }
+    }
+
+    return result;
   } catch (err) {
     // Swallow on purpose: a Foxentry outage must never break the route.
     console.error(`Foxentry ${endpoint} unavailable:`, err?.name || 'error');

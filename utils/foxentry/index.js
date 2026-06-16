@@ -14,7 +14,10 @@
 export { isFoxentryEnabled, fetchFoxentryJson } from './client';
 export { isFoxentryServerEnabled, foxentryRequest } from './server';
 
-export { handleCompanyAutocomplete } from './handlers/company';
+export {
+  handleCompanyAutocomplete,
+  handleCompanySearch,
+} from './handlers/company';
 export { handleAddressAutocomplete } from './handlers/address';
 export { handleEmailValidate } from './handlers/email';
 export { handlePhoneValidate } from './handlers/phone';
@@ -24,3 +27,7 @@ export {
   getEmailHint,
   getPhoneHint,
 } from './useFoxentryContactValidation';
+
+export { default as useFoxentryAutocomplete } from './useFoxentryAutocomplete';
+
+export { SUPPORTED_COUNTRIES, MIN_QUERY_LENGTH } from './constants';
