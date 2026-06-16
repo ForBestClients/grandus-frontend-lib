@@ -9,7 +9,7 @@ import cache, { getCacheKey } from '../cache';
  */
 
 const BASE_URL = 'https://api.foxentry.com';
-const API_VERSION = '2.0';
+const API_VERSION = '2.1';
 const DEFAULT_TIMEOUT_MS = 3000;
 
 // Per-endpoint response cache TTL (seconds). Foxentry calls are paid and these

@@ -6,6 +6,12 @@ const NOT_CHECKED = { checked: false };
  * Phone validation via Foxentry `phone/validate`.
  * Returns a normalized result, or { checked: false } when disabled/unavailable.
  * Expected query params: `phone` (E.164 preferred), optional `country` (ISO-2).
+ *
+ * API 2.1: the query parameter is `number` (the older `numberWithPrefix` is
+ * rejected). A correction comes back as `resultCorrected` — the full number in
+ * `data.numberFull`, formatted variants in `data.format` (e123/e164/national).
+ * For an ambiguous national number (no prefix) 2.1 returns a list of per-country
+ * `suggestions` instead, so we pick the one matching the client `country`.
  */
 export const handlePhoneValidate = async request => {
   const searchParams = request.nextUrl.searchParams;
@@ -18,7 +24,7 @@ export const handlePhoneValidate = async request => {
 
   const response = await foxentryRequest(
     'phone/validate',
-    { numberWithPrefix: phone },
+    { number: phone },
     {
       options: { validationType: 'basic' },
       ...(country.length === 2 ? { client: { country } } : {}),
@@ -30,14 +36,19 @@ export const handlePhoneValidate = async request => {
     return Response.json(NOT_CHECKED);
   }
 
-  const corrected = response?.resultCorrected;
+  let corrected = response?.resultCorrected?.data ?? null;
+  if (!corrected && country.length === 2 && Array.isArray(response?.suggestions)) {
+    corrected =
+      response.suggestions.find(s => s?.data?.country?.code === country)?.data ??
+      null;
+  }
 
   return Response.json({
     checked: true,
     isValid: result.isValid === true,
     proposal: result.proposal ?? null,
     carrierType: result.data?.carrier?.type ?? null,
-    corrected: corrected?.data?.numberWithPrefix ?? null,
-    correctedFormatted: corrected?.data?.format?.internationalFormatted ?? null,
+    corrected: corrected?.numberFull ?? null,
+    correctedFormatted: corrected?.format?.e123 ?? corrected?.format?.e164 ?? null,
   });
 };
