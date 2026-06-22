@@ -10,7 +10,12 @@ import cache, { getCacheKey } from '../cache';
 
 const BASE_URL = 'https://api.foxentry.com';
 const API_VERSION = '2.1';
-const DEFAULT_TIMEOUT_MS = 3000;
+// Foxentry's search endpoints (location/company) routinely take ~2–3s and spike
+// to ~4s. A 3s ceiling cut those valid-but-slow responses off and returned
+// nothing, which read as "search is broken / very slow". 6s covers the measured
+// tail with margin while still bailing on a genuine hang. It's only a ceiling —
+// fast endpoints (email/phone validate) still resolve in well under a second.
+const DEFAULT_TIMEOUT_MS = 6000;
 
 // Per-endpoint response cache TTL (seconds). Foxentry calls are paid and these
 // lookups are highly repetitive (same IČO / company / email across users), so a

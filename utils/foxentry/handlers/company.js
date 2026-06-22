@@ -8,6 +8,15 @@ import { MIN_QUERY_LENGTH, MAX_QUERY_LENGTH } from '../constants';
 const COMPANY_SEARCH_COUNTRIES = ['SK', 'CZ'];
 const COMPANY_SEARCH_LIMIT = 7;
 
+// `company/search` discriminates which field is searched via query.type. We
+// expose a small project-facing vocabulary ('name' | 'ico') and translate it to
+// Foxentry's field names here, so callers never need to know Foxentry internals.
+// Unknown/missing values fall back to a name search (the original behaviour).
+const COMPANY_SEARCH_TYPES = {
+  name: 'name',
+  ico: 'registrationNumber',
+};
+
 /**
  * Company autocomplete (by registration number / IČO).
  *
@@ -65,13 +74,18 @@ export const handleCompanyAutocomplete = async (request, { backendFallback }) =>
  *
  * Each suggestion carries the identifiers needed to fill the rest of the form
  * (IČO/DIČ/IČ DPH); the caller may also re-run the IČO lookup for canonical
- * data. Expected query params: `query` (the typed name), `country` (ISO-2).
+ * data. The same endpoint backs both the company-name and the IČO field —
+ * `type` selects which one is searched (defaults to name).
+ *
+ * Expected query params: `query` (the typed value), `type` ('name' | 'ico',
+ * optional), `country` (ISO-2, optional).
  *
  * @param {Request} request
  */
 export const handleCompanySearch = async request => {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get('query')?.trim();
+  const searchType = COMPANY_SEARCH_TYPES[searchParams.get('type')] || 'name';
 
   // Defensive bounds: too short → nothing useful; too long → reject rather
   // than forward an abusive payload to Foxentry.
@@ -83,7 +97,7 @@ export const handleCompanySearch = async request => {
   // larger resultsLimit leaves enough rows to survive the country filter.
   const response = await foxentryRequest(
     'company/search',
-    { type: 'name', value: query },
+    { type: searchType, value: query },
     { options: { dataScope: 'basic', resultsLimit: 15 } },
   );
 
