@@ -5,6 +5,7 @@ export const DEFAULT_TYPE = 0;
 export const CASH_ON_DELIVERY_TYPE = 1;
 export const BESTERON_TYPE = 2;
 export const AHOJ_TYPE = 11;
+export const BANK_TRANSFER_TYPE = 15;
 
 const PaymentProvider = ({
   payment = null,
