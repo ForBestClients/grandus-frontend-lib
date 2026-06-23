@@ -85,7 +85,18 @@ export const handleCompanyAutocomplete = async (request, { backendFallback }) =>
 export const handleCompanySearch = async request => {
   const searchParams = request.nextUrl.searchParams;
   const query = searchParams.get('query')?.trim();
-  const searchType = COMPANY_SEARCH_TYPES[searchParams.get('type')] || 'name';
+  // `type` is attacker-controlled on this unauthenticated route. A plain
+  // `MAP[type] || 'name'` lookup is unsafe: inherited keys ("__proto__",
+  // "toString", …) resolve to truthy prototype members, bypassing the default
+  // and forwarding a malformed `type` to the paid Foxentry call. hasOwnProperty
+  // restricts it to the two real keys.
+  const requestedType = searchParams.get('type');
+  const searchType = Object.prototype.hasOwnProperty.call(
+    COMPANY_SEARCH_TYPES,
+    requestedType,
+  )
+    ? COMPANY_SEARCH_TYPES[requestedType]
+    : 'name';
 
   // Defensive bounds: too short → nothing useful; too long → reject rather
   // than forward an abusive payload to Foxentry.
