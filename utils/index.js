@@ -158,10 +158,21 @@ export const getFrontendUrlFromHeaders = headers => {
 export const reqGetHeaders = req => {
   const result = reqGetHeadersBasicEdge(req);
 
+  const supportedLocales = (
+    process.env.NEXT_PUBLIC_LOCALES ||
+    process.env.NEXT_PUBLIC_DEFAULT_LOCALE ||
+    ''
+  ).split(',');
   const locale =
     get(req, 'cookies.NEXT_LOCALE') || get(req, 'headers.accept-language');
 
-  if (locale) {
+  // send a language header only for a supported, non-default locale — never a
+  // raw browser Accept-Language (e.g. "en-US,en;q=0.9") that slipped through
+  if (
+    locale &&
+    locale !== process.env.NEXT_PUBLIC_DEFAULT_LOCALE &&
+    supportedLocales.includes(locale)
+  ) {
     result['Accept-Language'] = locale;
   }
 
