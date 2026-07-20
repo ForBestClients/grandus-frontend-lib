@@ -27,6 +27,11 @@ export default function useUser({
     }
   );
 
+  // true only during the very first fetch, before any data arrives;
+  // background revalidations no longer flip isLoading (works on SWR 0.5/1/2 —
+  // SWR2's own `isLoading` does not exist in older versions)
+  const isInitialLoad = isValidating && user == null;
+
   useEffect(() => {
     // if no redirect needed, just return (example: already on /dashboard)
     // if user data not yet there (fetch in progress, logged in or not) then don't do anything yet
@@ -45,10 +50,15 @@ export default function useUser({
 
   const logoutUser = async () => {
     setIsLoading(true);
-    await mutate(
-      await fetch(`/api/lib/v1/auth/signout`).then((result) => result.json())
-    );
-    setIsLoading(false);
+    try {
+      await mutate(
+        await fetch(`/api/lib/v1/auth/signout`).then((result) => result.json())
+      );
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const hasParameter = (parameterId, parameterValue = null) => {
@@ -65,16 +75,21 @@ export default function useUser({
 
   const addParameter = async (parameterId, parameterValue) => {
     setIsLoading(true);
-    const data = {
-      user: { params: { ...user?.parameters, [parameterId]: parameterValue } },
-    };
-    const response = await fetch(`/api/lib/v1/auth/profile`, {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }).then((response) => response.json());
+    try {
+      const data = {
+        user: { params: { ...user?.parameters, [parameterId]: parameterValue } },
+      };
+      const response = await fetch(`/api/lib/v1/auth/profile`, {
+        method: "PUT",
+        body: JSON.stringify(data),
+      }).then((response) => response.json());
 
-    setIsLoading(false);
-    mutate(response);
+      mutate(response);
+    } catch (error) {
+      console.error("An unexpected error happened:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const createUser = async (values, callback) => {
@@ -137,6 +152,7 @@ export default function useUser({
     logoutUser,
     addParameter,
     hasParameter,
-    isLoading: isValidating || isLoading,
+    isLoading: isInitialLoad || isLoading,
+    isValidating,
   };
 }
