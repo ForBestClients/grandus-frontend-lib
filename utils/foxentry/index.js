@@ -11,7 +11,12 @@
  * its own presentational components (which depend on project-level inputs).
  */
 
-export { isFoxentryEnabled, fetchFoxentryJson } from './client';
+export {
+  isFoxentryEnabled,
+  isFoxentryJsEnabled,
+  getFoxentryJsProjectId,
+  fetchFoxentryJson,
+} from './client';
 export { isFoxentryServerEnabled, foxentryRequest } from './server';
 
 export {

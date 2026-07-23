@@ -5,9 +5,29 @@
  * request is slow/unavailable — the UI must keep working exactly as before.
  */
 
-/** Whether the Foxentry integration is turned on (client + server readable). */
+/**
+ * Whether the API integration is turned on (server proxy routes + the React
+ * autosuggest/validation components). Client + server readable.
+ */
 export const isFoxentryEnabled = () =>
   process.env.NEXT_PUBLIC_FOXENTRY_ENABLED === 'true';
+
+/**
+ * Whether the JS "Implementation via script" integration is turned on. This is
+ * the Foxentry JS API v2 (speaks API 2.1): a CDN loader binds directly to inputs
+ * mapped in the app.foxentry.com dashboard. Fully independent from the API
+ * integration above — either may run without the other.
+ */
+export const isFoxentryJsEnabled = () =>
+  process.env.NEXT_PUBLIC_FOXENTRY_JS_ENABLED === 'true';
+
+/**
+ * Public Foxentry project ID for the JS integration. Safe to expose to the
+ * client (it is not the secret API key). Empty string when unset — the loader
+ * treats that as "disabled" and is never injected.
+ */
+export const getFoxentryJsProjectId = () =>
+  process.env.NEXT_PUBLIC_FOXENTRY_JS_PROJECT_ID || '';
 
 // The proxy adds the Foxentry round-trip (which alone is ~2–3s, up to ~4s for
 // address search) on top of our own hop, so the client ceiling must sit above
