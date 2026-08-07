@@ -71,7 +71,7 @@ if (indexOf(disabledUriParts, 'status') < 0) {
 if (indexOf(disabledUriParts, 'store') < 0) {
   parts.push({
     key: 'store',
-    urlTitle: 'velkost',
+    urlTitle: process.env.NEXT_PUBLIC_SIZE_PARAMETER_URL_TITLE || 'velkost',
     title: 'Veľkosť', //@todo translation
     priority: 7,
   });
