@@ -38,9 +38,24 @@ export const reqApiHost = (req = {}) => {
 };
 
 export const reqGetHeadersBasic = (req = {}) => {
-  return {
+  const result = {
     'Content-Type': 'application/json',
     'Owner-Token': process.env.GRANDUS_TOKEN_OWNER,
     'Webinstance-Token': process.env.GRANDUS_TOKEN_WEBINSTANCE,
   };
+
+  // Rovnaká logika ako reqGetHeaders v grandus-lib/utils/index.js, len bez
+  // lodash/get, aby modul zostal edge-safe – importuje ho opengraph-image.js
+  // s runtime='edge' aj client komponenty (cez getImageUrl).
+  //
+  // Nutné preto, že časť fetcherov (WebInstance, category/Categories,
+  // product/Product, product/ProductSession, product/ProductElastic) používa
+  // výhradne reqGetHeadersBasic a k reqGetHeaders sa vôbec nedostane.
+  const locale = req?.cookies?.NEXT_LOCALE;
+
+  if (locale) {
+    result['Accept-Language'] = locale;
+  }
+
+  return result;
 };

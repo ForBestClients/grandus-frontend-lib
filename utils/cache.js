@@ -77,8 +77,50 @@ export const getCacheKeyByRequest = req => {
   return getCacheKey([get(req, 'url', '/'), extractUserAccessToken(req)]);
 };
 
-export const getCacheKeyByProps = props => {
-  return getCacheKey(['props', JSON.stringify(props)]);
+/**
+ * Normalizuje jazyk pre cache kľúč.
+ *
+ * Vracia `null` pre čokoľvek, čo nie je neprázdny string – undefined, null,
+ * prázdny string, medzery aj nestringové typy. Vďaka tomu majú všetky "jazyk
+ * nie je známy" prípady jeden a ten istý kľúč a nevzniknú varianty typu
+ * `locale-undefined` alebo `locale-`.
+ */
+const normalizeCacheLocale = locale => {
+  if (typeof locale !== 'string') {
+    return null;
+  }
+
+  const trimmed = locale.trim().toLowerCase();
+
+  return trimmed === '' ? null : trimmed;
+};
+
+/**
+ * Cache kľúč z props, voliteľne rozlíšený jazykom.
+ *
+ * POZOR na spätnú kompatibilitu: tento submodul používajú aj projekty, ktoré
+ * sú jednojazyčné a locale neposielajú nikdy. Bez jazyka preto musí kľúč
+ * zostať BAJT PO BAJTE rovnaký ako predtým – inak by upgrade submodulu zahodil
+ * celú ich existujúcu cache (a pri veľkej inštancii spôsobil nával na API).
+ *
+ * Jazyk sa pripája až za JSON.stringify(props), takže sa nemieša do dát a
+ * kľúč zostáva čitateľný.
+ *
+ * @param {object} props
+ * @param {string|null} [locale] interný kód jazyka ('sk', 'cz', ...)
+ */
+export const getCacheKeyByProps = (props, locale = null) => {
+  const normalizedLocale = normalizeCacheLocale(locale);
+
+  if (!normalizedLocale) {
+    return getCacheKey(['props', JSON.stringify(props)]);
+  }
+
+  return getCacheKey([
+    'props',
+    JSON.stringify(props),
+    `locale-${normalizedLocale}`,
+  ]);
 };
 
 /**
@@ -103,8 +145,13 @@ export const getCacheKeyByType = (type = 'request', options = {}) => {
       return getCacheKey(cacheParts);
     case 'request':
       return getCacheKeyByRequest(get(options, 'req', null));
-    case 'props':
-      return getCacheKeyByProps(options);
+    case 'props': {
+      // cacheLocale sa musí z props VYBRAŤ, nie nechať prejsť do
+      // JSON.stringify – inak by sa jazyk dostal do kľúča dvakrát a zmenil
+      // by jeho tvar aj projektom, ktoré ho neposielajú.
+      const { cacheLocale, ...propsWithoutLocale } = options;
+      return getCacheKeyByProps(propsWithoutLocale, cacheLocale);
+    }
     case 'wishlist':
       return getCacheKey([
         USER_WISHLIST_CONSTANT,
@@ -121,11 +168,18 @@ export const getCacheKeyByType = (type = 'request', options = {}) => {
  * @param {instance} cache sinstance of previosly initiated redis client
  * @param {object} options specified options which variate specific options
  */
-export const getCachedDataProps = async (cache, props = {}, cacheId = '') => {
+export const getCachedDataProps = async (
+  cache,
+  props = {},
+  cacheId = '',
+  locale = null,
+) => {
   return await getCachedData({}, cache, {
     cacheKeyType: 'props',
     cacheId: cacheId,
     ...props,
+    // až za ...props, aby ho volajúci nemohol omylom prepísať vlastným kľúčom
+    cacheLocale: locale,
   });
 };
 
@@ -189,11 +243,15 @@ export const saveDataToCacheProps = async (
   data,
   props = {},
   cacheId = '',
+  locale = null,
 ) => {
   return await saveDataToCache({}, cache, data, {
     cacheKeyType: 'props',
     cacheId: cacheId,
     ...props,
+    // musí sedieť s getCachedDataProps, inak sa zapisuje pod iný kľúč, než
+    // sa číta, a cache nikdy netrafí
+    cacheLocale: locale,
   });
 };
 
