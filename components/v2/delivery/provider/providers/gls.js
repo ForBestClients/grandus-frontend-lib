@@ -14,6 +14,7 @@ import * as yup from 'yup';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import assign from 'lodash/assign';
 import Script from 'next/script';
+import { updateDeliverySelection } from '../updateDeliverySelection';
 
 const WIDGET_URL = 'https://map.gls-slovakia.com/widget/gls-dpm.js';
 
@@ -65,25 +66,28 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
       let pickupPointId = toString(get(point, 'id')) || null;
       if (pickupPointId !== cart?.specificDeliveryType) {
         setIsLoading(true);
-        const updateData = { specificDeliveryType: toString(pickupPointId) };
-        if (delivery) {
-          updateData.deliveryType = delivery?.id;
-        }
-        await cartUpdate(updateData, newCart => {
-          if (newCart?.specificDeliveryType) {
-            itemAdd(
-              DELIVERY_DATA_SESSION_STORAGE_KEY,
-              pick(point, ['name', 'contact.address']),
-              sessionData =>
-                setSelectedPickupPoint(
-                  get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null),
-                ),
-            );
-          } else {
-            itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
-            setSelectedPickupPoint(null);
-          }
+
+        const newCart = await updateDeliverySelection({
+          cartUpdate,
+          cart,
+          delivery,
+          specificDeliveryType: toString(pickupPointId),
         });
+
+        if (newCart?.specificDeliveryType) {
+          itemAdd(
+            DELIVERY_DATA_SESSION_STORAGE_KEY,
+            pick(point, ['name', 'contact.address']),
+            sessionData =>
+              setSelectedPickupPoint(
+                get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null),
+              ),
+          );
+        } else {
+          itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
+          setSelectedPickupPoint(null);
+        }
+
         if (isFunction(onSelect)) {
           onSelect(pickupPointId);
         }
@@ -92,6 +96,7 @@ const GLS = ({ errors, delivery, onSelect, config = {} }) => {
     },
     [
       cart?.specificDeliveryType,
+      cart?.payment?.id,
       cartUpdate,
       delivery,
       itemAdd,

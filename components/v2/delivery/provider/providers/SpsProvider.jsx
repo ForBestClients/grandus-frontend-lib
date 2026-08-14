@@ -12,6 +12,7 @@ import toString from 'lodash/toString';
 import pick from 'lodash/pick';
 import isFunction from 'lodash/isFunction';
 import { SPS_TYPE } from '../index';
+import { updateDeliverySelection } from '../updateDeliverySelection';
 
 const WIDGET_URL = 'https://balikomat.sps-sro.sk/widget/v1/initialize.js';
 
@@ -39,33 +40,35 @@ const SpsProvider = ({ errors, delivery, onSelect, config = {} }) => {
     if (pickupPointId !== cart?.specificDeliveryType) {
       setIsLoading(true);
 
-      const updateData = { specificDeliveryType: toString(pickupPointId) };
-      if (delivery) {
-        updateData.deliveryType = delivery?.id;
-      }
-      await cartUpdate(updateData, newCart => {
-        if (newCart?.specificDeliveryType) {
-          itemAdd(
-            DELIVERY_DATA_SESSION_STORAGE_KEY,
-            pick(selected, [
-              'address',
-              'city',
-              'countryISO',
-              'description',
-              'id',
-              'type',
-              'zip',
-            ]),
-            sessionData =>
-              setSelectedPickupPoint(
-                get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null),
-              ),
-          );
-        } else {
-          itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
-          setSelectedPickupPoint(null);
-        }
+      const newCart = await updateDeliverySelection({
+        cartUpdate,
+        cart,
+        delivery,
+        specificDeliveryType: toString(pickupPointId),
       });
+
+      if (newCart?.specificDeliveryType) {
+        itemAdd(
+          DELIVERY_DATA_SESSION_STORAGE_KEY,
+          pick(selected, [
+            'address',
+            'city',
+            'countryISO',
+            'description',
+            'id',
+            'type',
+            'zip',
+          ]),
+          sessionData =>
+            setSelectedPickupPoint(
+              get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null),
+            ),
+        );
+      } else {
+        itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
+        setSelectedPickupPoint(null);
+      }
+
       if (isFunction(onSelect)) {
         onSelect(pickupPointId);
       }

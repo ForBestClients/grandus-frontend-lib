@@ -16,6 +16,7 @@ import {useEffect, useState } from "react";
 import assign from "lodash/assign";
 import Script from "next/script";
 import { PACKETERY_TYPE } from '../index';
+import { updateDeliverySelection } from '../updateDeliverySelection';
 
 const WIDGET_URL = "https://widget.packeta.com/v6/www/js/library.js";
 const PICKUP_POINT_TYPE_EXTERNAL = "external";
@@ -75,35 +76,35 @@ const Packetery = ({ errors, delivery, onSelect, config = {} }) => {
     }
     if (pickupPointId !== cart?.specificDeliveryType) {
       setIsLoading(true);
-      const updateData = { specificDeliveryType: toString(pickupPointId) };
-      if (delivery) {
-        updateData.deliveryType = delivery?.id;
+
+      const newCart = await updateDeliverySelection({
+        cartUpdate,
+        cart,
+        delivery,
+        specificDeliveryType: toString(pickupPointId),
+      });
+
+      if (newCart?.specificDeliveryType) {
+        itemAdd(
+          DELIVERY_DATA_SESSION_STORAGE_KEY,
+          pick(selected, [
+            "id",
+            "place",
+            "nameStreet",
+            "url",
+            "pickupPointType",
+            "carrierPickupPointId",
+          ]),
+          (sessionData) =>
+            setSelectedPickupPoint(
+              get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null)
+            )
+        );
+      } else {
+        itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
+        setSelectedPickupPoint(null);
       }
-      await cartUpdate(
-        updateData,
-        (newCart) => {
-          if (newCart?.specificDeliveryType) {
-            itemAdd(
-              DELIVERY_DATA_SESSION_STORAGE_KEY,
-              pick(selected, [
-                "id",
-                "place",
-                "nameStreet",
-                "url",
-                "pickupPointType",
-                "carrierPickupPointId",
-              ]),
-              (sessionData) =>
-                setSelectedPickupPoint(
-                  get(sessionData, DELIVERY_DATA_SESSION_STORAGE_KEY, null)
-                )
-            );
-          } else {
-            itemRemove(DELIVERY_DATA_SESSION_STORAGE_KEY);
-            setSelectedPickupPoint(null);
-          }
-        }
-      );
+
       if (isFunction(onSelect)) {
         onSelect(pickupPointId);
       }
