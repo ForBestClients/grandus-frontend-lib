@@ -5,7 +5,7 @@ import get from 'lodash/get';
 import useSessionStorage from 'grandus-lib/hooks/useSessionStorage';
 import useWebInstance from 'grandus-lib/hooks/useWebInstance';
 import useCart from 'grandus-lib/hooks/useCart';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DELIVERY_DATA_SESSION_STORAGE_KEY } from 'grandus-lib/constants/SessionConstants';
 import assign from 'lodash/assign';
 import toString from 'lodash/toString';
@@ -76,10 +76,14 @@ const SpsProvider = ({ errors, delivery, onSelect, config = {} }) => {
     }
   };
 
+  // the widget calls a global, so the handler must be re-registered on every
+  // render - a handler captured once would keep reading the first render's
+  // cart (still null) and delivery, and would never re-send the payment
+  const handlePickupPointSelectionRef = useRef(handlePickupPointSelection);
+  handlePickupPointSelectionRef.current = handlePickupPointSelection;
+
   useEffect(() => {
-    window.FillBoxMachine3 = pp => {
-      handlePickupPointSelection(pp);
-    };
+    window.FillBoxMachine3 = pp => handlePickupPointSelectionRef.current(pp);
   }, []);
 
   let spsOptions = {
