@@ -17,6 +17,20 @@ const safeCallback = (callback, data) => {
   }
 };
 
+// SWR fetcher for the cart - an error response must never become the cart:
+// reject it so SWR keeps the last known cart, sets `error` and retries
+const fetchCart = async url => {
+  const result = await fetch(url);
+
+  if (!result.ok) {
+    const error = new Error(`Cart request failed with status ${result.status}`);
+    error.status = result.status;
+    throw error;
+  }
+
+  return result.json();
+};
+
 export default function useCart(initialCart = false, options = {}) {
   const swrOptions = {
     revalidateOnFocus: false,
@@ -32,7 +46,7 @@ export default function useCart(initialCart = false, options = {}) {
     data: cart,
     mutate,
     isValidating,
-  } = useSWR(`/api/lib/v1/cart`, url => fetch(url).then(r => r.json()), {
+  } = useSWR(`/api/lib/v1/cart`, fetchCart, {
     ...swrOptions,
     ...options,
   });
@@ -109,38 +123,48 @@ export default function useCart(initialCart = false, options = {}) {
   const cartUpdate = async (data, callback) => {
     setIsLoading(true);
     try {
-      await mutate(
-        await fetch(`/api/lib/v1/cart`, {
-          method: 'POST',
-          body: JSON.stringify({
-            cart: {
-              ...data,
-            },
-          }),
-        })
-          .then(result => result.json())
-          .then(result => {
-            if (isFunction(callback)) {
-              callback(result);
-            }
-            return result;
-          }),
-        false,
-      );
+      let success = true;
+      const cart = await fetch(`/api/lib/v1/cart`, {
+        method: 'POST',
+        body: JSON.stringify({
+          cart: {
+            ...data,
+          },
+        }),
+      }).then(async result => {
+        success = result?.ok;
+        const data = await result.json();
+        data.success = success;
+        return data;
+      });
+
+      // never poison the cache with an error response body
+      if (success) {
+        await mutate(cart, false);
+      }
+      safeCallback(callback, cart);
     } catch (error) {
       console.error('An unexpected error happened:', error);
+      safeCallback(callback, { success: false });
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const cartDestroy = async callback => {
     setIsLoading(true);
     try {
+      let success = true;
       const data = await fetch(`/api/lib/v1/cart`, {
         method: 'DELETE',
-      }).then(result => result.json());
+      }).then(async result => {
+        success = result?.ok;
+        return result.json();
+      });
 
-      await mutate(data, false);
+      if (success) {
+        await mutate(data, false);
+      }
       safeCallback(callback, data);
     } catch (error) {
       console.error('An unexpected error happened:', error);
